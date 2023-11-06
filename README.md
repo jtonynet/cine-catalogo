@@ -73,7 +73,7 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 
 <img src="./misc/images/src/event_storm_catalog_and_ticket_contexts.png"/>
 
-<br/><br/>
+<br/>
 
 [:arrow_heading_up: back to top](#index)
 
