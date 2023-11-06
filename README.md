@@ -8,8 +8,9 @@
 
 <!-- 
     New AutoGo header test
-    <img src="./misc/images/src/autogo_title_logo_3.png"/>
+    <img src="./misc/images/src/autogo_title_logo.png"/>
 -->
+
 
 <!-- 
     icons by: https://simpleicons.org
@@ -17,11 +18,15 @@
 [<img src="./misc/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./misc/images/icons/docker.svg" width="25px" height="25px" alt="Docker" title="Docker">](https://www.docker.com/) [<img src="./misc/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv" title="DotEnv">]() [<img src="./misc/images/icons/github.svg" width="25px" height="25px" alt="GitHub" title="GitHub">](https://github.com/jtonynet) [<img src="./misc/images/icons/miro.svg" width="25px" height="25px" alt="Miro" title="Miro">](https://miro.com/)  [<img src="./misc/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="vscode" title="vscode">](https://code.visualstudio.com/) [<img src="./misc/images/icons/postman.svg" width="25px" height="25px" alt="Postman" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/)  [<img src="./misc/images/icons/postgresql.svg" width="25px" height="25px" alt="Postgres" title="Postgres">](https://www.postgresql.org/) [<img src="./misc/images/icons/redis.svg" width="25px" height="25px" alt="Redis" title="Redis">](https://redis.io/) [<img src="./misc/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger" title="Swagger">](https://swagger.io/) [<img src="./misc/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling" title="Gatling">](https://gatling.io/)  [<img src="./misc/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions" title="GithubActions">](https://gatling.io/) 
 
 
-
-
-![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green)
-
+![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/watch?v=bRPpNaPZI6s)
  __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
+
+<br/>
+
+🕸️ __Found me in web:__
+[![linkedin](https://img.shields.io/badge/Linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jos%C3%A9-r-99896a39/) [![dev.to](https://img.shields.io/badge/dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/learningenuity) [![gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:learningenuity@gmail.com) [![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/aromademirtilo) [![instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/learningenuity) 
+
+
 
 ---
 
@@ -65,13 +70,14 @@ The objective of this system is to maintain a [high level of maturity](https://m
 <a id="event-storming"></a>
 ## :umbrella: Event Storming Diagram:
 
-In November 2023, I received assistance from other developers (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)) in modeling the events of this project and other parts of 'cine-ticket.' We conducted an extensive remote Event Storming session with the aim of mapping events, commands, aggregates, and their relationships.
+In November 2023, we conducted event modeling for this project and other parts of 'cineTicket' (Thanks for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
 
-The diagram below is a product of this study and is being used as a guide for the development of this API and others that will be part of 'CineTicket.'
+You can follow part of our findings on [YouTube](https://www.youtube.com/watch?v=bRPpNaPZI6s) in PT-BR.
+
 
 At the moment, we are abstracting the authentication flow and the ticket purchase flow.
 
-<img src="./misc/images/src/event_storm_catalog_and_ticket_contexts.png"/>
+<img src="./misc/images/src/event_storm_catalog_contexts.png"/>
 
 <br/>
 
@@ -245,7 +251,7 @@ $ docker exec -ti cine-catalogue swag init --parseDependency --parseInternal  --
   - [VsCode](https://code.visualstudio.com/)
   - [Postman](https://blog.postman.com/introducing-the-postman-vs-code-extension/)
   - [DBeaver](https://dbeaver.io/)
-  - [another-redis-desktop-manager](https://github.com/qishibo/AnotherRedisDesktopManager)
+  - [Another Redis Desktop Manager](https://github.com/qishibo/AnotherRedisDesktopManager)
 
 
 <br/>
@@ -297,3 +303,11 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 <br/>
 
 [:arrow_heading_up: back to top](#index)
+
+
+<!-- 
+Request Validations in Go REST API:
+  https://www.reddit.com/r/golang/comments/13npbzj/request_validations_in_go_rest_api/
+  https://tutorialedge.net/golang/validating-http-json-requests/
+  https://github.com/go-playground/validator
+-->
