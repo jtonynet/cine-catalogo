@@ -19,6 +19,7 @@
 
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/watch?v=bRPpNaPZI6s)
+
  __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
 
 <br/>
