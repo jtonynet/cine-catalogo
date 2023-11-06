@@ -18,7 +18,7 @@
 [<img src="./misc/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./misc/images/icons/docker.svg" width="25px" height="25px" alt="Docker" title="Docker">](https://www.docker.com/) [<img src="./misc/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv" title="DotEnv">]() [<img src="./misc/images/icons/github.svg" width="25px" height="25px" alt="GitHub" title="GitHub">](https://github.com/jtonynet) [<img src="./misc/images/icons/miro.svg" width="25px" height="25px" alt="Miro" title="Miro">](https://miro.com/)  [<img src="./misc/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="vscode" title="vscode">](https://code.visualstudio.com/) [<img src="./misc/images/icons/postman.svg" width="25px" height="25px" alt="Postman" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/)  [<img src="./misc/images/icons/postgresql.svg" width="25px" height="25px" alt="Postgres" title="Postgres">](https://www.postgresql.org/) [<img src="./misc/images/icons/redis.svg" width="25px" height="25px" alt="Redis" title="Redis">](https://redis.io/) [<img src="./misc/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger" title="Swagger">](https://swagger.io/) [<img src="./misc/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling" title="Gatling">](https://gatling.io/)  [<img src="./misc/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions" title="GithubActions">](https://gatling.io/) 
 
 
-![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/watch?v=bRPpNaPZI6s)
+![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/watch?v=6nEbm71Vc3w)
 
  __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
 
@@ -73,7 +73,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 
 In November 2023, we conducted event modeling for this project and other parts of 'cineTicket' (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
 
-You can follow part of our findings on [YouTube](https://www.youtube.com/watch?v=bRPpNaPZI6s) in PT-BR.
+You can follow part of our findings on [YouTube](https://www.youtube.com/watch?v=6nEbm71Vc3w) in PT-BR.
 
 
 At the moment, we are abstracting the authentication flow and the ticket purchase flow.
