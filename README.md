@@ -70,7 +70,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 <a id="event-storming"></a>
 ## :umbrella: Event Storming Diagram:
 
-In November 2023, we conducted event modeling for this project and other parts of 'cineTicket' (Thanks for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
+In November 2023, we conducted event modeling for this project and other parts of 'cineTicket' (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
 
 You can follow part of our findings on [YouTube](https://www.youtube.com/watch?v=bRPpNaPZI6s) in PT-BR.
 
