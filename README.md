@@ -24,23 +24,21 @@
 
 <a id="index"></a>
 ## :arrow_heading_up: index
-<!--ts-->
 
 - [CineCatalog Microsservice](#cine-catalog)
-  :arrow_heading_up: [index](#arrow_heading_up-index)
-  :green_book: [About](#about)
-  :umbrella: [Event Storming](#event-storming)
-  :computer: [Run the project](#run)
-  :bar_chart: [Diagrams](#diagrams)
-  :newspaper: [API Documentation](#api-docs)
-  :toolbox: [Tools](#tools)
-  :clap: [Best Practices](#best-practices)
-  :brain: [ADR - Architecture Decision Records](#adr)
-  :1234: [Versions](#versions)
+  :arrow_heading_up: [index](#arrow_heading_up-index)<br/>
+  :green_book: [About](#about)<br/>
+  :umbrella: [Event Storming](#event-storming)<br/>
+  :computer: [Run the project](#run)<br/>
+  :bar_chart: [Diagrams](#diagrams)<br/>
+  :newspaper: [API Documentation](#api-docs)<br/>
+  :toolbox: [Tools](#tools)<br/>
+  :clap: [Best Practices](#best-practices)<br/>
+  :brain: [ADR - Architecture Decision Records](#adr)<br/>
+  :1234: [Versions](#versions)<br/>
 
 
 [:arrow_heading_up: back to top](#index)
-
 
 ---
 
@@ -224,12 +222,6 @@ $ docker exec -ti cine-catalogue swag init --parseDependency --parseInternal  --
   - [GORM](https://gorm.io/index.html)
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
-<!--
-  - [gin-contrib/pprof](https://github.com/gin-contrib/pprof)
-  - [Exponential Backoff](https://github.com/cenkalti/backoff)
-  - [go-redis](https://github.com/redis/go-redis)
-  - [amqp091-go](https://github.com/rabbitmq/amqp091-go) 
--->
   - [gjson](https://github.com/tidwall/gjson)
   - [uuid](github.com/google/uuid)
 
@@ -238,9 +230,6 @@ $ docker exec -ti cine-catalogue swag init --parseDependency --parseInternal  --
   - [Docker compose v2.21.0](https://www.docker.com/)
   - [Postgres v16.0](https://www.postgresql.org/)
   - [Redis 6.2](https://redis.io/)
-<!--
-  - [RabbitMQ v3.12.6](https://www.rabbitmq.com/)
--->
   - [Gatling v3.9.5](https://gatling.io/)
 
 
