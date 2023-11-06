@@ -8,7 +8,7 @@
 
 <!-- 
     New AutoGo header test
-    <img src="./misc/images/src/autogo_title_logo.png"/>
+    <img src="./misc/images/src/autogo_title_logo_3.png"/>
 -->
 
 <!-- 
@@ -65,7 +65,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 <a id="event-storming"></a>
 ## :umbrella: Event Storming Diagram:
 
-In November 2023, I received assistance from other developers in modeling the events of this project and other parts of 'cine-ticket.' We conducted an extensive remote Event Storming session with the aim of mapping events, commands, aggregates, and their relationships.
+In November 2023, I received assistance from other developers (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)) in modeling the events of this project and other parts of 'cine-ticket.' We conducted an extensive remote Event Storming session with the aim of mapping events, commands, aggregates, and their relationships.
 
 The diagram below is a product of this study and is being used as a guide for the development of this API and others that will be part of 'CineTicket.'
 
@@ -113,7 +113,7 @@ graph LR
   end
 
   subgraph Catalog Microsservice
-    TIC[Ticket]
+    TIC[Tickets]
     MFI --> FIL[Films]
     MRO --> ROO[Rooms]
     MSE --> SEA[Seats]
@@ -135,7 +135,7 @@ graph LR
 
 ```mermaid
 erDiagram 
-    film {
+    films {
         int id
         UUID uuid
         string description
@@ -143,7 +143,7 @@ erDiagram
         boolean subtitled
         string poster
     }
-    session {
+    sessions {
         int id
         UUID uuid
         int film_id
@@ -154,49 +154,47 @@ erDiagram
         timestamptz end_time
         string time
     }
-    room {
+    rooms {
         int id
         UUID uuid
         string name
         int capacity
     }
-    seat {
+    seats {
         int id
         UUID uuid
         int room_id
         string code
     }
-    ticket {
+    tickets {
         int id
         UUID uuid
         int session_id
         int seat_id
     }
-    address {
+    addresses {
         int id
         UUID uuid
         string country
         string state
-        string zip_code
         string telephone
         string description
         string postal_code
         string name
     }
-    room_address {
+    room_addresses {
         int id
-        UUID uuid
         int room_id
         int address_id
     }
 
-    film ||--o{ session : has
-    session ||--|| room : occurs
-    room ||--|{ seat : has
-    session ||--|{ ticket : has
-    seat ||--|{ ticket : has
-    room ||--|| room_address : located
-    room_address ||--|| address : located
+    films ||--o{ sessions : has
+    sessions ||--|| rooms : occurs
+    rooms ||--|{ seats : has
+    sessions ||--|{ tickets : has
+    seats ||--|{ tickets : has
+    rooms ||--|| room_addresses : located
+    room_addresses ||--|| addresses : located
 ```
 
 <br/>
