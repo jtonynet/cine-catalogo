@@ -16,6 +16,8 @@
 
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
+
+
 [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w) [![Miro](https://img.shields.io/badge/VISIT%20OUR-MIRO-050038?style=for-the-badge&logo=MIRO&logoColor=white)](https://miro.com/app/board/uXjVNRofMoA=/)
 
 
