@@ -270,6 +270,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - [keep a changelog](https://keepachangelog.com/en/1.0.0/)
+- [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Event Storming](https://en.wikipedia.org/wiki/Event_storming)
 - [Miro Diagrams](https://miro.com/)
 - [Mermaid Diagrams](https://mermaid.js.org)
@@ -291,6 +292,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 ## :brain: ADR - Architecture Decision Records:
 
 - [0001: Record architecture decisions](./assets/architecture/decisions/0001-record-architecture-decisions.md)
+- [0002: Gin, Gorm and Postegres in three tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postegres-in-three-tier-architecture.md)
 
 <br/>
 
