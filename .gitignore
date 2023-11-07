@@ -16,5 +16,5 @@
 # Coverage
 *.out
 
-# Docker Conf files
-docker_conf/*
+# Docker Data files
+docker_data/*
