@@ -16,7 +16,12 @@
 [<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv" title="DotEnv">]() [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro" title="Miro">](https://miro.com/)  [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="vscode" title="vscode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/)  [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="Postgres" title="Postgres">](https://www.postgresql.org/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling" title="Gatling">](https://gatling.io/)  [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions" title="GithubActions">](https://gatling.io/) 
 
 
-![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=FF0000)](https://www.youtube.com/watch?v=6nEbm71Vc3w)
+![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w)
+
+
+<!--
+[![Youtube](https://img.shields.io/badge/API%20Event%20%20storming%20PTBR%20on%20youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w)
+-->
 
  __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
 
