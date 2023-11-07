@@ -12,6 +12,6 @@ func initializeRoutes(r *gin.Engine) {
 	v1.GET("/", handlers.RootHandler)
 
 	v1.POST("/addresses", handlers.CreateAddress)
-	v1.GET("/addresses/:id", handlers.RetrieveAddress)
+	v1.GET("/addresses/:uuid", handlers.RetrieveAddress)
 
 }

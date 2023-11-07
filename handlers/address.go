@@ -14,12 +14,7 @@ import (
 func CreateAddress(ctx *gin.Context) {
 	request := requests.CreateAddress{}
 
-	err := ctx.ShouldBindJSON(&request)
-	if err != nil {
-		//log.Error("handlers:CreateAddress binding error %v", err.Error())
-		responses.SendError(ctx, http.StatusBadRequest, err.Error())
-		return
-	}
+	ctx.ShouldBindJSON(&request)
 
 	address, _ := models.NewAddress(
 		uuid.New(),
@@ -50,10 +45,10 @@ func CreateAddress(ctx *gin.Context) {
 }
 
 func RetrieveAddress(ctx *gin.Context) {
-	id := ctx.Params.ByName("id")
+	uuid := uuid.MustParse(ctx.Params.ByName("uuid"))
 
-	address := models.Address{}
-	database.DB.First(&address, id)
+	address := models.Address{UUID: uuid}
+	database.DB.Where(&models.Address{UUID: uuid}).First(&address)
 
 	response := responses.Address{
 		UUID:        address.UUID,
