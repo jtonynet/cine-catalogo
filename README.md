@@ -149,7 +149,7 @@ graph LR
 
 ```mermaid
 erDiagram 
-    films {
+    movies {
         int id
         UUID uuid
         string description
@@ -168,7 +168,7 @@ erDiagram
         timestamptz end_time
         string time
     }
-    theaters {
+    cinemas {
         int id
         UUID uuid
         string name
@@ -196,19 +196,19 @@ erDiagram
         string postal_code
         string name
     }
-    theater_addresses {
+    cinema_addresses {
         int id
         int theater_id
         int address_id
     }
 
-    films ||--o{ sessions : has
-    sessions ||--|| theaters : occurs
-    theaters ||--|{ seats : has
+    movies ||--o{ sessions : has
+    sessions ||--|| cinemas : occurs
+    cinemas ||--|{ seats : has
     sessions ||--|{ tickets : has
     seats ||--|{ tickets : has
-    theaters ||--|| theater_addresses : located
-    theater_addresses ||--|| addresses : located
+    cinemas ||--|| cinema_addresses : located
+    cinema_addresses ||--|| addresses : located
 ```
 
 <br/>

@@ -8,6 +8,7 @@ import (
 
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
+	"github.com/jtonynet/cine-catalogo/models"
 )
 
 var (
@@ -36,9 +37,9 @@ func Init(cfg config.Database) error {
 
 	l.Info("database: connection is openned")
 
-	//DB.AutoMigrate(&models.Address{})
-	//DB.AutoMigrate(&models.Theater{})
-	//DB.AutoMigrate(&models.TheaterAddress{})
+	DB.AutoMigrate(&models.Address{})
+	DB.AutoMigrate(&models.Theater{})
+	DB.AutoMigrate(&models.TheaterAddress{})
 
 	l.Info("database: tables created")
 

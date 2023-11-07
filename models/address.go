@@ -6,7 +6,7 @@ import (
 
 type Address struct {
 	BaseSchema
-	UUID        uuid.UUID `gorm:"type:uuid;unique"`
+	UUID        uuid.UUID `gorm:"type:uuid;unique;not null"`
 	Country     string
 	State       string
 	Telephone   string
@@ -16,6 +16,7 @@ type Address struct {
 }
 
 func NewAddress(
+	uuid uuid.UUID,
 	Country string,
 	State string,
 	Telephone string,
@@ -24,6 +25,7 @@ func NewAddress(
 	Name string,
 ) (Address, error) {
 	a := Address{
+		UUID:        uuid,
 		Country:     Country,
 		State:       State,
 		Telephone:   Telephone,
