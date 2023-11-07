@@ -36,3 +36,12 @@ func CreateAddress(ctx *gin.Context) {
 
 	responses.SendSuccess(ctx, http.StatusOK, "CreateAddress", model)
 }
+
+func RetrieveAddress(ctx *gin.Context) {
+	id := ctx.Query("id")
+
+	model := models.Address{}
+	database.DB.First(&model, id)
+
+	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddress", model)
+}
