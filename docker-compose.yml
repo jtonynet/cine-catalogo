@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  postgres-cine-catalogo:
+    image: postgres:16.0-alpine
+    container_name: postgres-cine-catalogo
+    hostname: postgres-cine-catalogo
+    restart: always
+    environment:
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: api_pass
+      POSTGRES_DB: cine_catalog_db
+    ports:
+      - 5431:5432
+    volumes:
+      - ./docker_data/postgres-data:/var/lib/postgresql/data  
+    networks:
+      - cine-ticket-network
+ 
+networks:
+  cine-ticket-network:
+    driver: bridge
