@@ -4,6 +4,7 @@
 -->
 <img src="./assets/images/layout/cinecatalogo_title_logo.png"/>
 
+ 
 <!-- 
     New AutoGo header test
     <img src="./assets/images/layout/autogo_title_logo.png"/>
@@ -59,7 +60,7 @@
 <a id="about"></a>
 ## :green_book: About:
 
-This project aims to address the needs of cataloging cinema halls, movies, and sessions on a cinema ticket e-commerce website. It is part of a broader study of the mentioned e-commerce. However, its responsibility as microservices is to register, maintain, and provide session and seat data.
+This project aims to address the needs of cataloging cinema halls, movies, and sessions on a cinema ticket e-commerce website. It is part of a broader study of the mentioned e-commerce called [CineTicket](https://github.com/jtonynet/cine-ticket-study-microsservices). However, its responsibility as microservices is to register, maintain, and provide session and seat data.
 
 This is a Golang version of the mentioned service. Swagger Docs, Flow Diagrams, Entity-Relationship Diagrams (DER), and Event Storming provide more context to the service's scenario.
 
@@ -74,7 +75,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 <a id="event-storming"></a>
 ## :umbrella: Event Storming Diagram:
 
-In November 2023, we conducted event modeling for this project and other parts of 'cineTicket' (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
+In November 2023, we conducted event modeling for this project and other parts of CineTicket (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
 
 You can follow part of our findings on [YouTube](https://www.youtube.com/watch?v=6nEbm71Vc3w) in PT-BR.
 
@@ -119,13 +120,13 @@ graph LR
     F --> MAD(Maintain Addresses)
     F --> MFI(Maintain Films)
     F --> MSE(Maintain Sessions)
-    F --> MRO(Maintain Rooms)
+    F --> MRO(Maintain Theaters)
   end
 
   subgraph Catalog Microsservice
     TIC[Tickets]
     MFI --> FIL[Films]
-    MRO --> ROO[Rooms]
+    MRO --> ROO[Theaters]
     MSE --> SEA[Seats]
     MAD --> ADR[Adresses]
     MSE --> SES[Sessions]
@@ -157,14 +158,14 @@ erDiagram
         int id
         UUID uuid
         int film_id
-        int room_id
+        int theater_id
         string description
         date date
         timestamptz start_time
         timestamptz end_time
         string time
     }
-    rooms {
+    theaters {
         int id
         UUID uuid
         string name
@@ -173,7 +174,7 @@ erDiagram
     seats {
         int id
         UUID uuid
-        int room_id
+        int theater_id
         string code
     }
     tickets {
@@ -192,19 +193,19 @@ erDiagram
         string postal_code
         string name
     }
-    room_addresses {
+    theater_addresses {
         int id
-        int room_id
+        int theater_id
         int address_id
     }
 
     films ||--o{ sessions : has
-    sessions ||--|| rooms : occurs
-    rooms ||--|{ seats : has
+    sessions ||--|| theaters : occurs
+    theaters ||--|{ seats : has
     sessions ||--|{ tickets : has
     seats ||--|{ tickets : has
-    rooms ||--|| room_addresses : located
-    room_addresses ||--|| addresses : located
+    theaters ||--|| theater_addresses : located
+    theater_addresses ||--|| addresses : located
 ```
 
 <br/>
