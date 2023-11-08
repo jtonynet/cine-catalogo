@@ -14,7 +14,7 @@ import (
 func CreateMovie(ctx *gin.Context) {
 	request := requests.Movie{}
 
-	err := ctx.ShouldBind(&request)
+	err := ctx.ShouldBindJSON(&request)
 	if err != nil {
 		//TODO: Implements in future
 		return

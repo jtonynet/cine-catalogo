@@ -173,6 +173,7 @@ erDiagram
         int id
         UUID uuid
         string name
+        string description
         int capacity
     }
     seats {

@@ -39,6 +39,7 @@ func Init(cfg config.Database) error {
 
 	DB.AutoMigrate(&models.Address{})
 	DB.AutoMigrate(&models.Movie{})
+	DB.AutoMigrate(&models.Cinema{})
 
 	l.Info("database: tables created")
 
