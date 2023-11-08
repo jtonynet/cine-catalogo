@@ -1,4 +1,4 @@
-# 2. Gin, Gorm and Postgres in three tier architecture 
+# 2. Gin, Gorm and Postgres in Two tier architecture 
 
 Date: 2023-11-07
 
@@ -14,7 +14,7 @@ We need to determine the framework, ORM, and database from the market options to
 
 Let's adopt the most widely used framework in the Golang community at the moment [Gin v1.9.1](https://github.com/gin-gonic/gin), with over __72K__ stars on [GitHub](https://github.com/gin-gonic) and a proven track record of usage. For the same reasons of adoption, we will also use the [Gorm v1.25.4](https://gorm.io/index.html) ORM with a [PostgreSQL v1.5.4](https://www.postgresql.org/) database, which will provide us with fast SQL queries on a scalable basis.
 
-We decided to use [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/migrate/) from the very beginning to ease development. Additionally, we chose a [Two-tier architecture](https://en.wikipedia.org/wiki/Multitier_architecture#Three-tier_architecture) to maintain proper separation of concerns and adhered to the [Standard Go Project Layout](https://github.com/golang-standards/project-layout/blob/master/README.md) with over __42k__ stars on GitHub to ensure development uniformity.
+We decided to use [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/migrate/) from the very beginning to ease development. Additionally, we chose a [Two-tier architecture](https://en.wikipedia.org/wiki/Multitier_architecture#Three-tier_architecture) to simplicity and maintain proper separation of concerns and adhered to the [Standard Go Project Layout](https://github.com/golang-standards/project-layout/blob/master/README.md) with over __42k__ stars on GitHub to ensure development uniformity.
 
 As we develop, we intend to maintain the [RESTful](https://restfulapi.net/) standard as close to its original specifications as possible, using [HATEOAS](https://restfulapi.net/hateoas/) and achieving a [High Level of Maturity](https://martinfowler.com/articles/richardsonMaturityModel.html).
 

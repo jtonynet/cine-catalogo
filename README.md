@@ -16,7 +16,7 @@
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv" title="DotEnv">]() [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="vscode" title="vscode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="Postgres" title="Postgres">](https://www.postgresql.org/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph" title="Ceph">](https://ceph.io/en/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions" title="GithubActions">](https://gatling.io/) 
+[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv" title="DotEnv">]() [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="vscode" title="vscode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="Postgres" title="Postgres">](https://www.postgresql.org/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph" title="Ceph">](https://ceph.io/en/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions" title="GithubActions">](https://docs.github.com/en/actions) 
 
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
@@ -123,13 +123,13 @@ graph LR
     F --> MAD(Maintain Addresses)
     F --> MFI(Maintain Films)
     F --> MSE(Maintain Sessions)
-    F --> MRO(Maintain Theaters)
+    F --> MRO(Maintain Cinemas)
   end
 
   subgraph Catalog Microsservice
     TIC[Tickets]
     MFI --> FIL[Films]
-    MRO --> ROO[Theaters]
+    MRO --> ROO[Cinemas]
     MSE --> SEA[Seats]
     MAD --> ADR[Adresses]
     MSE --> SES[Sessions]
@@ -296,7 +296,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 ## :brain: ADR - Architecture Decision Records:
 
 - [0001: Record architecture decisions](./assets/architecture/decisions/0001-record-architecture-decisions.md)
-- [0002: Gin, Gorm and Postegres in three tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postgres-in-three-tier-architecture.md)
+- [0002: Gin, Gorm and Postegres in two tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
 
 <br/>
 
