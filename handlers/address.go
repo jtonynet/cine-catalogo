@@ -62,3 +62,30 @@ func RetrieveAddress(ctx *gin.Context) {
 
 	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddress", response)
 }
+
+func RetrieveAddressList(ctx *gin.Context) {
+	addresses := []models.Address{}
+
+	if err := database.DB.Find(&addresses).Error; err != nil {
+		//TODO: Implements in future
+		return
+	}
+
+	response := []responses.Address{}
+	for _, address := range addresses {
+		response = append(
+			response,
+			responses.Address{
+				UUID:        address.UUID,
+				Country:     address.Country,
+				State:       address.State,
+				Telephone:   address.Telephone,
+				Description: address.Description,
+				PostalCode:  address.PostalCode,
+				Name:        address.Name,
+			},
+		)
+	}
+
+	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddressList", response)
+}
