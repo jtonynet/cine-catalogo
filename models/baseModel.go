@@ -4,6 +4,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type BaseSchema struct {
+type BaseModel struct {
 	gorm.Model
 }

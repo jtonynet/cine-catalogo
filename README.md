@@ -152,6 +152,7 @@ erDiagram
     movies {
         int id
         UUID uuid
+        string name
         string description
         int age_rating
         boolean subtitled

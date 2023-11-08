@@ -5,7 +5,7 @@ import (
 )
 
 type Address struct {
-	BaseSchema
+	BaseModel
 	UUID        uuid.UUID `gorm:"type:uuid;unique;not null"`
 	Country     string
 	State       string

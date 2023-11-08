@@ -14,4 +14,5 @@ func initializeRoutes(r *gin.Engine) {
 	v1.POST("/addresses", handlers.CreateAddress)
 	v1.GET("/addresses/:uuid", handlers.RetrieveAddress)
 
+	v1.POST("/movies", handlers.CreateMovie)
 }
