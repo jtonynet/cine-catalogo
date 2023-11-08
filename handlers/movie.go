@@ -49,3 +49,29 @@ func CreateMovie(ctx *gin.Context) {
 
 	responses.SendSuccess(ctx, http.StatusOK, "CreateMovie", response)
 }
+
+func RetrieveMovieList(ctx *gin.Context) {
+	movies := []models.Movie{}
+
+	if err := database.DB.Find(&movies).Error; err != nil {
+		//TODO: Implements in future
+		return
+	}
+
+	response := []responses.Movie{}
+	for _, movie := range movies {
+		response = append(
+			response,
+			responses.Movie{
+				UUID:        movie.UUID,
+				Name:        movie.Name,
+				Description: movie.Description,
+				AgeRating:   movie.AgeRating,
+				Subtitled:   movie.Subtitled,
+				Poster:      movie.Poster,
+			},
+		)
+	}
+
+	responses.SendSuccess(ctx, http.StatusOK, "RetrieveMovieList", response)
+}

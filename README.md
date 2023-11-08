@@ -329,4 +329,7 @@ Golang-standards:
 Claudson
   Bad Prac tices: https://www.youtube.com/watch?v=bRPpNaPZI6s
   Stripe: https://www.youtube.com/watch?v=bRPpNaPZI6s
+
+Go - Maneira idiomática de mapear uma estrutura para outra
+  https://stackoverflow.com/questions/75551930/go-idiomatic-way-to-map-one-struct-to-another
 -->
