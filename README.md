@@ -167,6 +167,7 @@ erDiagram
     }
     cinemas {
         int id
+        int address_id
         UUID uuid
         string name
         string description
