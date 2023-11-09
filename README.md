@@ -324,6 +324,9 @@ Golang-standards:
   https://github.com/golang-standards/project-layout/blob/master/README_ptBR.md
 
 Claudson
-  Bad Prac tices: https://www.youtube.com/watch?v=bRPpNaPZI6s
+  Bad Practices: https://www.youtube.com/watch?v=bRPpNaPZI6s
   Stripe: https://www.youtube.com/watch?v=bRPpNaPZI6s
+
+Docker - Bind for 0.0.0.0:4000 failed: port is already allocated
+  https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated
 -->

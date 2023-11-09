@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: api_pass
       POSTGRES_DB: cine_catalog_db
     ports:
-      - 5431:5432
+      - 5432:5432
     volumes:
       - ./docker_data/postgres-data:/var/lib/postgresql/data  
     networks:
