@@ -58,7 +58,7 @@ func CreateAddresses(ctx *gin.Context) {
 }
 
 func RetrieveAddress(ctx *gin.Context) {
-	uuid := uuid.MustParse(ctx.Params.ByName("uuid"))
+	uuid := uuid.MustParse(ctx.Param("addressId"))
 
 	address := models.Address{UUID: uuid}
 	database.DB.Where(&models.Address{UUID: uuid}).First(&address)

@@ -12,6 +12,14 @@ import (
 )
 
 func CreateCinemas(ctx *gin.Context) {
+	addressUUID := uuid.MustParse(ctx.Param("addressId"))
+
+	var address models.Address
+	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+		//TODO: Implements in future
+		return
+	}
+
 	requestList := []requests.Cinema{}
 	err := ctx.ShouldBindJSON(&requestList)
 	if err != nil {
@@ -23,6 +31,7 @@ func CreateCinemas(ctx *gin.Context) {
 	for _, request := range requestList {
 		cinema, err := models.NewCinema(
 			uuid.New(),
+			address.ID,
 			request.Name,
 			request.Description,
 			request.Capacity,
