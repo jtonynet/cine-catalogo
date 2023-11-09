@@ -11,43 +11,53 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
-func CreateMovie(ctx *gin.Context) {
-	request := requests.Movie{}
+func CreateMovies(ctx *gin.Context) {
+	requestList := []requests.Movie{}
 
-	err := ctx.ShouldBindJSON(&request)
+	err := ctx.ShouldBindJSON(&requestList)
 	if err != nil {
 		//TODO: Implements in future
 		return
 	}
 
-	movie, err := models.NewMovie(
-		uuid.New(),
-		request.Name,
-		request.Description,
-		request.AgeRating,
-		*request.Subtitled,
-		request.Poster,
-	)
-	if err != nil {
+	movieList := []models.Movie{}
+	for _, request := range requestList {
+		movie, err := models.NewMovie(
+			uuid.New(),
+			request.Name,
+			request.Description,
+			request.AgeRating,
+			*request.Subtitled,
+			request.Poster,
+		)
+		if err != nil {
+			//TODO: Implements in future
+			return
+		}
+
+		movieList = append(movieList, movie)
+	}
+
+	if err := database.DB.Create(&movieList).Error; err != nil {
 		//TODO: Implements in future
 		return
 	}
 
-	if err := database.DB.Create(&movie).Error; err != nil {
-		//TODO: Implements in future
-		return
+	responseList := []responses.Movie{}
+	for _, movie := range movieList {
+		responseList = append(responseList,
+			responses.Movie{
+				UUID:        movie.UUID,
+				Name:        movie.Name,
+				Description: movie.Description,
+				AgeRating:   movie.AgeRating,
+				Subtitled:   movie.Subtitled,
+				Poster:      movie.Poster,
+			},
+		)
 	}
 
-	response := responses.Movie{
-		UUID:        movie.UUID,
-		Name:        movie.Name,
-		Description: movie.Description,
-		AgeRating:   movie.AgeRating,
-		Subtitled:   movie.Subtitled,
-		Poster:      movie.Poster,
-	}
-
-	responses.SendSuccess(ctx, http.StatusOK, "CreateMovie", response)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateMovies", responseList)
 }
 
 func RetrieveMovieList(ctx *gin.Context) {

@@ -41,19 +41,20 @@ func CreateAddresses(ctx *gin.Context) {
 
 	responseList := []responses.Address{}
 	for _, address := range addressList {
-		response := responses.Address{
-			UUID:        address.UUID,
-			Country:     address.Country,
-			State:       address.State,
-			Telephone:   address.Telephone,
-			Description: address.Description,
-			PostalCode:  address.PostalCode,
-			Name:        address.Name,
-		}
-		responseList = append(responseList, response)
+		responseList = append(responseList,
+			responses.Address{
+				UUID:        address.UUID,
+				Country:     address.Country,
+				State:       address.State,
+				Telephone:   address.Telephone,
+				Description: address.Description,
+				PostalCode:  address.PostalCode,
+				Name:        address.Name,
+			},
+		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateAddress", responseList)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList)
 }
 
 func RetrieveAddress(ctx *gin.Context) {

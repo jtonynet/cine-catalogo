@@ -15,7 +15,7 @@ func initializeRoutes(r *gin.Engine) {
 
 	v1.POST("/cinemas", handlers.CreateCinema)
 
-	v1.POST("/movies", handlers.CreateMovie)
+	v1.POST("/movies", handlers.CreateMovies)
 	v1.GET("/movies", handlers.RetrieveMovieList)
 
 }
