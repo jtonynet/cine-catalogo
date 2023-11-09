@@ -295,8 +295,8 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 <a id="adr"></a>
 ## :brain: ADR - Architecture Decision Records:
 
-- [0001: Record architecture decisions](./assets/architecture/decisions/0001-record-architecture-decisions.md)
-- [0002: Gin, Gorm and Postegres in two tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
+- [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
+- [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
 
 <br/>
 
