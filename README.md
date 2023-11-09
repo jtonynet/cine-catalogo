@@ -7,10 +7,6 @@
   alt="CineCataloGO, Study RESTful APIs in Golang for cinema catalog management"
   title="CineCataloGO"
 />
-<!-- 
-    New AutoGo header test
-    <img src="./assets/images/layout/autogo_title_logo.png"/>
--->
 
 
 <!-- 
