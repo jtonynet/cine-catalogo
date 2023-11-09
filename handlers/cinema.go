@@ -11,36 +11,46 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
-func CreateCinema(ctx *gin.Context) {
-	request := requests.Cinema{}
-	err := ctx.ShouldBindJSON(&request)
+func CreateCinemas(ctx *gin.Context) {
+	requestList := []requests.Cinema{}
+	err := ctx.ShouldBindJSON(&requestList)
 	if err != nil {
 		//TODO: Implements in future
 		return
 	}
 
-	cinema, err := models.NewCinema(
-		uuid.New(),
-		request.Name,
-		request.Description,
-		request.Capacity,
-	)
-	if err != nil {
+	cinemaList := []models.Cinema{}
+	for _, request := range requestList {
+		cinema, err := models.NewCinema(
+			uuid.New(),
+			request.Name,
+			request.Description,
+			request.Capacity,
+		)
+		if err != nil {
+			//TODO: Implements in future
+			return
+		}
+
+		cinemaList = append(cinemaList, cinema)
+	}
+
+	if err := database.DB.Create(&cinemaList).Error; err != nil {
 		//TODO: Implements in future
 		return
 	}
 
-	if err := database.DB.Create(&cinema).Error; err != nil {
-		//TODO: Implements in future
-		return
+	responseList := []responses.Cinema{}
+	for _, cinema := range cinemaList {
+		responseList = append(responseList,
+			responses.Cinema{
+				UUID:        cinema.UUID,
+				Name:        cinema.Name,
+				Description: cinema.Description,
+				Capacity:    cinema.Capacity,
+			},
+		)
 	}
 
-	response := responses.Cinema{
-		UUID:        cinema.UUID,
-		Name:        cinema.Name,
-		Description: cinema.Description,
-		Capacity:    cinema.Capacity,
-	}
-
-	responses.SendSuccess(ctx, http.StatusOK, "CreateCinema", response)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList)
 }
