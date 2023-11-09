@@ -11,37 +11,49 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
-func CreateAddress(ctx *gin.Context) {
-	request := requests.CreateAddress{}
+func CreateAddresses(ctx *gin.Context) {
+	requestList := []requests.CreateAddress{}
+	ctx.ShouldBindJSON(&requestList)
 
-	ctx.ShouldBindJSON(&request)
+	var addressList []models.Address
+	for _, request := range requestList {
+		address, err := models.NewAddress(
+			uuid.New(),
+			request.Country,
+			request.State,
+			request.Telephone,
+			request.Description,
+			request.PostalCode,
+			request.Name,
+		)
+		if err != nil {
+			//TODO Implements
+			return
+		}
 
-	address, _ := models.NewAddress(
-		uuid.New(),
-		request.Country,
-		request.State,
-		request.Telephone,
-		request.Description,
-		request.PostalCode,
-		request.Name,
-	)
+		addressList = append(addressList, address)
+	}
 
-	if err := database.DB.Create(&address).Error; err != nil {
+	if err := database.DB.Create(&addressList).Error; err != nil {
 		responses.SendError(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	response := responses.Address{
-		UUID:        address.UUID,
-		Country:     address.Country,
-		State:       address.State,
-		Telephone:   address.Telephone,
-		Description: address.Description,
-		PostalCode:  address.PostalCode,
-		Name:        address.Name,
+	responseList := []responses.Address{}
+	for _, address := range addressList {
+		response := responses.Address{
+			UUID:        address.UUID,
+			Country:     address.Country,
+			State:       address.State,
+			Telephone:   address.Telephone,
+			Description: address.Description,
+			PostalCode:  address.PostalCode,
+			Name:        address.Name,
+		}
+		responseList = append(responseList, response)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateAddress", response)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateAddress", responseList)
 }
 
 func RetrieveAddress(ctx *gin.Context) {

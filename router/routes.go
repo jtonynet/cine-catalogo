@@ -9,7 +9,7 @@ func initializeRoutes(r *gin.Engine) {
 	basePath := "/v1"
 	v1 := r.Group(basePath)
 
-	v1.POST("/addresses", handlers.CreateAddress)
+	v1.POST("/addresses", handlers.CreateAddresses)
 	v1.GET("/addresses", handlers.RetrieveAddressList)
 	v1.GET("/addresses/:uuid", handlers.RetrieveAddress)
 
