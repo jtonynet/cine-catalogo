@@ -240,6 +240,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
   - [uuid](github.com/google/uuid)
+  - [go2hall](https://github.com/pmoule/go2hall)
 
 - Infra & Technologies
   - [Docker v24.0.6](https://www.docker.com/)
