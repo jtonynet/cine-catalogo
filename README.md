@@ -9,7 +9,6 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   title="CineCataloGO"
 />
 
-
 <!-- 
     icons by: https://simpleicons.org
 -->
@@ -311,6 +310,7 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 [:arrow_heading_up: back to top](#index)
 
 ---
+
 <a id="ia"></a>
 ### :robot: Use of AI:
 
@@ -329,6 +329,8 @@ __The following prompts were used, in PT-BR, for creation in [Bing IA:](https://
 
 AI also helped in some research in this study by being used as a support tool; however, __arts and development are, above all, human creative activities. Value people!__
 
+Hire artists for commercial or more elaborate projects and Learn Ingenuity!
+
 [:arrow_heading_up: back to top](#index)
 
 <!-- 
@@ -346,4 +348,15 @@ Claudson
 
 Docker - Bind for 0.0.0.0:4000 failed: port is already allocated
   https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated
+
+
+HATEOAS:
+  https://github.com/toedter/hal-explorer
+  https://en.wikipedia.org/wiki/Hypertext_Application_Language
+
+HTTP API Best Practice:
+  https://www.rfc-editor.org/rfc/rfc7807
+
+CORS GIN
+  https://stackoverflow.com/questions/29418478/go-gin-framework-cors
 -->
