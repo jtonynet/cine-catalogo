@@ -4,21 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jtonynet/cine-catalogo/handlers/responses"
+	"github.com/pmoule/go2hal/hal"
 )
 
 func RetrieveRootResources(ctx *gin.Context) {
-	ctx.Header("Content-Type", "application/hal+json")
-	s := responses.Self{
-		HRef: "http://localhost:8080/v1/",
-	}
-	l := responses.Links{Self: s}
-	r := responses.RootResources{
-		Links: l,
-		ID:    "cine-catalogo",
-		Name:  "Cine CataloGO",
+	root := hal.NewResourceObject()
+	link := &hal.LinkObject{Href: "http://localhost:8080/v1/"}
+
+	self, _ := hal.NewLinkRelation("self") //skipped error handling
+	self.SetLink(link)
+
+	root.AddLink(self)
+
+	encoder := hal.NewEncoder()
+	bytes, error := encoder.ToJSON(root)
+	if error != nil {
+		//TODO Implements in future
+		return
 	}
 
-	ctx.JSON(http.StatusOK, r)
-
+	ctx.Data(http.StatusOK, "application/json", bytes)
 }
