@@ -49,6 +49,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   :clap: [Best Practices](#best-practices)<br/>
   :brain: [ADR - Architecture Decision Records](#adr)<br/>
   :1234: [Versions](#versions)<br/>
+  :traffic_light: [HATEOAS HAL](#HATEOAS)<br/>
   :robot: [Use of AI](#ia)<br>
 
 <br/>
@@ -312,6 +313,19 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 
 ---
 
+<a id="HATEOAS"></a>
+
+### :traffic_light: HATEOAS HAL
+
+Implementation in draft.
+See the [documentation](https://en.wikipedia.org/wiki/Hypertext_Application_Language) and [online test](https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&uri=http://localhost:8080/v1/), more details coming soon.
+
+
+[:arrow_heading_up: back to top](#index)
+
+
+---
+
 <a id="ia"></a>
 ### :robot: Use of AI:
 
@@ -334,6 +348,7 @@ Hire artists for commercial or more elaborate projects and Learn Ingenuity!
 
 [:arrow_heading_up: back to top](#index)
 
+
 <!-- 
 Request Validations in Go REST API:
   https://www.reddit.com/r/golang/comments/13npbzj/request_validations_in_go_rest_api/
@@ -350,7 +365,6 @@ Claudson
 Docker - Bind for 0.0.0.0:4000 failed: port is already allocated
   https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated
 
-
 HATEOAS:
   https://github.com/toedter/hal-explorer
   https://en.wikipedia.org/wiki/Hypertext_Application_Language
@@ -360,4 +374,8 @@ HTTP API Best Practice:
 
 CORS GIN
   https://stackoverflow.com/questions/29418478/go-gin-framework-cors
+
+Fix #216: Enable to call binding multiple times in some formats
+  https://github.com/gin-gonic/gin/pull/1341
+
 -->

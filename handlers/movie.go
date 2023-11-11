@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
+
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
@@ -12,12 +14,17 @@ import (
 )
 
 func CreateMovies(ctx *gin.Context) {
-	requestList := []requests.Movie{}
+	// INFO: Accepts requestList || singleRequest (transforms into a list with a single value)
+	var requestList []requests.Movie
+	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 
-	err := ctx.ShouldBindJSON(&requestList)
-	if err != nil {
-		//TODO: Implements in future
-		return
+		var singleRequest requests.Movie
+		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
+			// TODO: Implements in future
+			return
+		}
+
+		requestList = append(requestList, singleRequest)
 	}
 
 	movieList := []models.Movie{}
@@ -31,7 +38,7 @@ func CreateMovies(ctx *gin.Context) {
 			request.Poster,
 		)
 		if err != nil {
-			//TODO: Implements in future
+			// TODO: Implements in future
 			return
 		}
 
@@ -39,7 +46,7 @@ func CreateMovies(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Create(&movieList).Error; err != nil {
-		//TODO: Implements in future
+		// TODO: Implements in future
 		return
 	}
 
@@ -64,7 +71,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	movies := []models.Movie{}
 
 	if err := database.DB.Find(&movies).Error; err != nil {
-		//TODO: Implements in future
+		// TODO: Implements in future
 		return
 	}
 

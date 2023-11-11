@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
+
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
@@ -12,8 +14,18 @@ import (
 )
 
 func CreateAddresses(ctx *gin.Context) {
-	requestList := []requests.CreateAddress{}
-	ctx.ShouldBindJSON(&requestList)
+	// INFO: Accepts requestList || singleRequest (transforms into a list with a single value)
+	var requestList []requests.CreateAddress
+	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
+
+		var singleRequest requests.CreateAddress
+		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
+			// TODO: Implements in future
+			return
+		}
+
+		requestList = append(requestList, singleRequest)
+	}
 
 	var addressList []models.Address
 	for _, request := range requestList {
@@ -27,7 +39,7 @@ func CreateAddresses(ctx *gin.Context) {
 			request.Name,
 		)
 		if err != nil {
-			//TODO Implements
+			// TODO Implements
 			return
 		}
 
@@ -80,7 +92,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 	addresses := []models.Address{}
 
 	if err := database.DB.Find(&addresses).Error; err != nil {
-		//TODO: Implements in future
+		// TODO: Implements in future
 		return
 	}
 

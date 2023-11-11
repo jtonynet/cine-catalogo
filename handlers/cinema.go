@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
+
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
@@ -16,15 +18,21 @@ func CreateCinemas(ctx *gin.Context) {
 
 	var address models.Address
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		//TODO: Implements in future
+		// TODO: Implements in future
 		return
 	}
 
-	requestList := []requests.Cinema{}
-	err := ctx.ShouldBindJSON(&requestList)
-	if err != nil {
-		//TODO: Implements in future
-		return
+	// INFO: Accepts requestList || singleRequest (transforms into a list with a single value)
+	var requestList []requests.Cinema
+	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
+
+		var singleRequest requests.Cinema
+		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
+			// TODO: Implements in future
+			return
+		}
+
+		requestList = append(requestList, singleRequest)
 	}
 
 	cinemaList := []models.Cinema{}
@@ -37,7 +45,7 @@ func CreateCinemas(ctx *gin.Context) {
 			request.Capacity,
 		)
 		if err != nil {
-			//TODO: Implements in future
+			// TODO: Implements in future
 			return
 		}
 
@@ -45,7 +53,7 @@ func CreateCinemas(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Create(&cinemaList).Error; err != nil {
-		//TODO: Implements in future
+		// TODO: Implements in future
 		return
 	}
 

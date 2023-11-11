@@ -4,8 +4,10 @@ import "github.com/gin-gonic/gin"
 
 func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Enable access to HAL HATEOAS online tools
+		// Enable access to HAL HATEOAS online tools for study and tests purpouses
+		// TODO: Run HAL HATEOAS online tools on docker locally for more API security in near future
 		// Access endpoint to test: https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&uri=http://localhost:8080/v1/
+
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "https://hal-explorer.com")
 
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
