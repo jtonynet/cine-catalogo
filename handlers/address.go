@@ -14,10 +14,10 @@ import (
 )
 
 func CreateAddresses(ctx *gin.Context) {
-	var requestList []requests.CreateAddress
+	var requestList []requests.Address
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 
-		var singleRequest requests.CreateAddress
+		var singleRequest requests.Address
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
 			// TODO: Implements in future
 			return

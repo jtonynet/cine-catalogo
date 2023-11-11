@@ -14,6 +14,8 @@ import (
 // https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&hkey0=Accept&hval0=application/prs.hal-forms+json&uri=http://localhost:8080/v1/
 
 func RetrieveRootResources(ctx *gin.Context) {
+	ctx.Header("Content-Type", "application/prs.hal-forms+json")
+
 	// Root defines:
 	rootResourceUrl := "http://localhost:8080/v1"
 	root := halforms.NewDocument(rootResourceUrl)
@@ -24,7 +26,64 @@ func RetrieveRootResources(ctx *gin.Context) {
 	addressResourcePostTemplate := halforms.NewTemplate()
 	addressResourcePostTemplate.Method = http.MethodPost
 	addressResourcePostTemplate.Target = addressResourceURL
+	addressResourcePostTemplate.Key = "createAddresses"
+	addressResourcePostTemplate.Title = ""
+
 	// ...properties from template
+	countryProp := halforms.NewProperty("country")
+	countryProp.Prompt = "Country"
+	countryProp.Placeholder = "the country of address"
+	countryProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		countryProp,
+	)
+
+	stateProp := halforms.NewProperty("state")
+	stateProp.Prompt = "State"
+	stateProp.Placeholder = "the state address"
+	stateProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		stateProp,
+	)
+
+	telProp := halforms.NewProperty("telephone")
+	telProp.Prompt = "Telephone"
+	telProp.Placeholder = "the telephone of address"
+	telProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		telProp,
+	)
+
+	descProp := halforms.NewProperty("description")
+	descProp.Prompt = "Description"
+	descProp.Placeholder = "the description of address"
+	descProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		descProp,
+	)
+
+	postalCodeProp := halforms.NewProperty("postalCode")
+	postalCodeProp.Prompt = "PostalCode"
+	postalCodeProp.Placeholder = "the postalCode of address"
+	postalCodeProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		postalCodeProp,
+	)
+
+	nameProp := halforms.NewProperty("name")
+	nameProp.Prompt = "Name"
+	nameProp.Placeholder = "the name of address"
+	nameProp.Required = true
+	addressResourcePostTemplate.Properties = append(
+		addressResourcePostTemplate.Properties,
+		nameProp,
+	)
+
 	root.AddTemplate(addressResourcePostTemplate)
 
 	root.AddLink(addressResourcePost)
