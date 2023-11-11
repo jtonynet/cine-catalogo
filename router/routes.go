@@ -15,9 +15,18 @@ func initializeRoutes(r *gin.Engine) {
 
 	v1.GET("/addresses", handlers.RetrieveAddressList)
 	v1.GET("/addresses/:addressId", handlers.RetrieveAddress)
+
 	v1.POST("/addresses", handlers.CreateAddresses)
+	v1.OPTIONS("/addresses", handlers.Option)
+	v1.HEAD("/addresses", handlers.Head)
+
 	v1.POST("addresses/:addressId/cinemas", handlers.CreateCinemas)
+	v1.OPTIONS("addresses/:addressId/cinemas", handlers.Option)
+	v1.HEAD("addresses/:addressId/cinemas", handlers.Head)
 
 	v1.POST("/movies", handlers.CreateMovies)
+	v1.OPTIONS("/movies", handlers.Option)
+	v1.HEAD("/movies", handlers.Head)
+
 	v1.GET("/movies", handlers.RetrieveMovieList)
 }

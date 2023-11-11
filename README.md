@@ -12,7 +12,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu-color.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) 
+[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu-color.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) 
 
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
@@ -219,7 +219,7 @@ erDiagram
 With the 'cine-catalogo' image running, type:
 
 ```bash
-$ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  --generalInfo cmd/api/main.go
+$ docker exec -ti cine-catalogo swag init --parseDependency --parseInternal  --generalInfo cmd/api/main.go
 ```
 
 <br/>
@@ -260,7 +260,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 
 <br/>
 
-[:arrow_heading_up: voltar](#indice)
+[:arrow_heading_up: back to top](#index)
 
 ---
 
@@ -300,7 +300,7 @@ $ docker exec -ti cine-catalogoue swag init --parseDependency --parseInternal  -
 
 ---
 
-<a id="adr"></a>
+<a id="versions"></a>
 ## :1234: Versions:
 
 Version tags are being created manually as studies progress with notable improvements in the project. Each feature is developed on a separate branch, and when completed, a tag is generated and merged into the master branch.
@@ -314,12 +314,16 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 ---
 
 <a id="HATEOAS"></a>
-
 ### :traffic_light: HATEOAS HAL
+
+TODO: 
 
 Implementation in draft.
 See the [documentation](https://en.wikipedia.org/wiki/Hypertext_Application_Language) and [online test](https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&uri=http://localhost:8080/v1/), more details coming soon.
 
+[HAL Local Tests](http://localhost:4200/#uri=http://localhost:8080/v1/)
+
+<br/>
 
 [:arrow_heading_up: back to top](#index)
 
