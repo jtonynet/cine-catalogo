@@ -1,6 +1,6 @@
 package requests
 
-type CreateAddress struct {
+type Address struct {
 	Country     string `json:"country" binding:"required"`
 	State       string `json:"state" binding:"required"`
 	Telephone   string `json:"telephone" binding:"required"`
