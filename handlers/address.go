@@ -14,7 +14,6 @@ import (
 )
 
 func CreateAddresses(ctx *gin.Context) {
-	// INFO: Accepts requestList || singleRequest (transforms into a list with a single value)
 	var requestList []requests.CreateAddress
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 

@@ -22,7 +22,6 @@ func CreateCinemas(ctx *gin.Context) {
 		return
 	}
 
-	// INFO: Accepts requestList || singleRequest (transforms into a list with a single value)
 	var requestList []requests.Cinema
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 

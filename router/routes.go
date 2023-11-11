@@ -6,6 +6,8 @@ import (
 	"github.com/jtonynet/cine-catalogo/middlewares"
 )
 
+// INFO: To manage OPTION and HEAD verbs requests its necessary to implements HATEOAS HAL routes
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#identifying_allowed_request_methods
 func initializeRoutes(r *gin.Engine) {
 	basePath := "/v1"
 	v1 := r.Group(basePath)
