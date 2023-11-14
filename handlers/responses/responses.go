@@ -6,7 +6,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SendError(ctx *gin.Context, code int, msg string) {
+type header struct {
+	key   string
+	value string
+}
+
+var (
+	JSONDefaultHeaders = []header{{key: "Content-type", value: "application/json"}}
+	HALHeaders         = []header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}
+)
+
+func SendError(ctx *gin.Context, code int, msg string, headers []header) {
+	setHeaders(ctx, headers)
+
 	ctx.Header("Content-type", "application/json")
 	ctx.JSON(code, gin.H{
 		"message": msg,
@@ -14,10 +26,21 @@ func SendError(ctx *gin.Context, code int, msg string) {
 	})
 }
 
-func SendSuccess(ctx *gin.Context, code int, op string, data interface{}) {
-	ctx.Header("Content-type", "application/json")
+func SendSuccess(ctx *gin.Context, code int, op string, data interface{}, headers []header) {
+	setHeaders(ctx, headers)
+
 	ctx.JSON(code, gin.H{
-		"message": fmt.Sprintf("operation from handler: %s successful", op),
-		"data":    data,
+		"message":   fmt.Sprintf("operation from handler: %s successful", op),
+		"_embedded": data,
 	})
+}
+
+func setHeaders(ctx *gin.Context, headers []header) {
+	if headers == nil {
+		headers = JSONDefaultHeaders
+	}
+
+	for _, header := range headers {
+		ctx.Header(header.key, header.value)
+	}
 }

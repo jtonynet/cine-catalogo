@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,21 @@ func RetrieveRootResources(ctx *gin.Context) {
 	rootURL := "http://localhost:8080/v1"
 	root := hateoas.NewRoot(rootURL)
 
-	createAddressesPost, err := hateoas.NewResource("createAddresses", "addresses", http.MethodPost)
+	// ---------
+	// TODO:
+	// Implements WithRequest option
+	// hateoas.NewResource(
+	// 	"createAddresses",
+	// 	"addresses",
+	// 	http.MethodPost,
+	// 	hateoas.WithRequest(requests.Address{}),
+	// )
+	//---------
+	createAddressesPost, err := hateoas.NewResource(
+		"createAddresses",
+		fmt.Sprintf("%s/%s", rootURL, "addresses"),
+		http.MethodPost,
+	)
 	if err != nil {
 		// TODO: implements on future
 		return
@@ -25,7 +40,22 @@ func RetrieveRootResources(ctx *gin.Context) {
 	createAddressesPost.RequestToProperties(requests.Address{})
 	root.AddResource(createAddressesPost)
 
-	createMoviesPost, err := hateoas.NewResource("createMovies", "movies", http.MethodPost)
+	retrieveAddressListGet, err := hateoas.NewResource(
+		"retrieveAddresses",
+		fmt.Sprintf("%s/%s", rootURL, "addresses"),
+		http.MethodGet,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+	root.AddResource(retrieveAddressListGet)
+
+	createMoviesPost, err := hateoas.NewResource(
+		"createMovies",
+		fmt.Sprintf("%s/%s", rootURL, "movies"),
+		http.MethodPost,
+	)
 	if err != nil {
 		// TODO: implements on future
 		return
@@ -33,11 +63,22 @@ func RetrieveRootResources(ctx *gin.Context) {
 	createMoviesPost.RequestToProperties(requests.Movie{})
 	root.AddResource(createMoviesPost)
 
-	rootRendered, err := root.Render()
+	retrieveMovieListGet, err := hateoas.NewResource(
+		"retrieveMovieList",
+		fmt.Sprintf("%s/%s", rootURL, "movies"),
+		http.MethodGet,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+	root.AddResource(retrieveMovieListGet)
+
+	rootJSON, err := root.ToJSON()
 	if err != nil {
 		// TODO: implements on future
 		return
 	}
 
-	ctx.Data(http.StatusOK, "application/json", rootRendered)
+	ctx.Data(http.StatusOK, "application/json", rootJSON)
 }

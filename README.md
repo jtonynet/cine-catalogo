@@ -275,6 +275,7 @@ $ docker exec -ti cine-catalogo swag init --parseDependency --parseInternal  --g
 - [Mermaid Diagrams](https://mermaid.js.org)
 - [Swagger](https://swagger.io/)
 - [RESTful](https://restfulapi.net/)
+- [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
 - [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
 
 <!-- 

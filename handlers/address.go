@@ -46,7 +46,7 @@ func CreateAddresses(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Create(&addressList).Error; err != nil {
-		responses.SendError(ctx, http.StatusBadRequest, err.Error())
+		responses.SendError(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
@@ -65,7 +65,7 @@ func CreateAddresses(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList, nil)
 }
 
 func RetrieveAddress(ctx *gin.Context) {
@@ -84,10 +84,11 @@ func RetrieveAddress(ctx *gin.Context) {
 		Name:        address.Name,
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddress", response)
+	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddress", response, nil)
 }
 
 func RetrieveAddressList(ctx *gin.Context) {
+
 	addresses := []models.Address{}
 
 	if err := database.DB.Find(&addresses).Error; err != nil {
@@ -111,5 +112,11 @@ func RetrieveAddressList(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddressList", response)
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"RetrieveAddressList",
+		response,
+		responses.HALHeaders,
+	)
 }

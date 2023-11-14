@@ -2,7 +2,6 @@ package hateoas
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 
@@ -14,7 +13,9 @@ import (
 // WRAPPER FOR go2hal/hal AND go2hal/halforms TO SIMPLIFY USE
 // https://rwcbook.github.io/hal-forms/#_the_hal_forms_media_type
 // https://github.com/pmoule/go2hall
-// https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&hkey0=Accept&hval0=application/prs.hal-forms+json&uri=http://localhost:8080/v1/
+//
+// HAL Client runs on docker image in port 4200
+// http://localhost:4200/#uri=http://localhost:8080/v1/
 
 type resource struct {
 	name         string
@@ -23,8 +24,7 @@ type resource struct {
 	template     halforms.Template
 }
 
-func NewResource(name, segmentURL, httpMethod string) (*resource, error) {
-	resourceURL := fmt.Sprintf("%s/%s", rootURL, segmentURL)
+func NewResource(name, resourceURL, httpMethod string) (*resource, error) {
 	linkRelation, err := halforms.NewHALFormsRelation(name, resourceURL)
 	if err != nil {
 		return nil, err
@@ -80,6 +80,10 @@ func (r *resource) RequestToProperties(request interface{}) error {
 					property.Prompt = propKeyValue[1]
 				case "placeholder":
 					property.Placeholder = propKeyValue[1]
+				case "value":
+					property.Value = propKeyValue[1]
+				case "type":
+					property.Type = propKeyValue[1]
 				case "required":
 					required, _ := utils.StringParseBoolean(propKeyValue[1])
 					property.Required = required

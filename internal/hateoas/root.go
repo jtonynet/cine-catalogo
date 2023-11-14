@@ -5,9 +5,9 @@ import "github.com/pmoule/go2hal/halforms"
 // WRAPPER FOR go2hal/hal AND go2hal/halforms TO SIMPLIFY USE
 // https://rwcbook.github.io/hal-forms/#_the_hal_forms_media_type
 // https://github.com/pmoule/go2hall
-// https://hal-explorer.com/#theme=Dark&allHttpMethodsForLinks=true&hkey0=Accept&hval0=application/prs.hal-forms+json&uri=http://localhost:8080/v1/
-
-var rootURL string
+//
+// HAL Client runs on docker image in port 4200
+// http://localhost:4200/#uri=http://localhost:8080/v1/
 
 type root struct {
 	document  halforms.Document
@@ -15,8 +15,6 @@ type root struct {
 }
 
 func NewRoot(href string) *root {
-	rootURL = href
-
 	return &root{
 		document: halforms.NewDocument(href),
 	}
@@ -29,7 +27,7 @@ func (r *root) AddResource(resource *resource) {
 	r.document.AddLink(resource.linkRelation)
 }
 
-func (r *root) Render() ([]byte, error) {
+func (r *root) ToJSON() ([]byte, error) {
 	encoder := halforms.NewEncoder()
 	bytes, err := encoder.ToJSON(r.document)
 	if err != nil {

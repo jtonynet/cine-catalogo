@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -63,7 +65,7 @@ func CreateMovies(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateMovies", responseList)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateMovies", responseList, nil)
 }
 
 func RetrieveMovieList(ctx *gin.Context) {
@@ -89,5 +91,45 @@ func RetrieveMovieList(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "RetrieveMovieList", response)
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"RetrieveMovieList",
+		response,
+		responses.HALHeaders,
+	)
+}
+
+func UploadMoviePoster(ctx *gin.Context) {
+	movieUUID := uuid.MustParse(ctx.Param("movieId"))
+
+	var movie models.Movie
+	if err := database.DB.Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+		// TODO: Implements in future
+		fmt.Println("dont found movie")
+		return
+	}
+
+	file, err := ctx.FormFile("poster")
+	if err != nil {
+		// TODO: Implements in future
+		fmt.Printf("dont sended poster file %v", err)
+		return
+	}
+
+	// TODO: posters dirs, move to ceph s3 in future and manage by envVars
+	uploadPath := "./posters/"
+	posterPath := filepath.Join(uploadPath, movieUUID.String()+filepath.Ext(file.Filename))
+	if err := ctx.SaveUploadedFile(file, posterPath); err != nil {
+		// TODO: Implements in future
+		fmt.Println("dont save poster file")
+		return
+	}
+
+	movie.Poster = posterPath
+	if err := database.DB.Save(&movie).Error; err != nil {
+		// TODO: Implements in future
+		fmt.Println("dont update movie")
+		return
+	}
 }

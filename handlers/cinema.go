@@ -68,5 +68,5 @@ func CreateCinemas(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList, nil)
 }

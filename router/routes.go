@@ -8,6 +8,7 @@ import (
 
 // INFO: To manage OPTION and HEAD verbs requests its necessary to implements HATEOAS HAL routes
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#identifying_allowed_request_methods
+
 func initializeRoutes(r *gin.Engine) {
 	basePath := "/v1"
 	v1 := r.Group(basePath)
@@ -27,6 +28,7 @@ func initializeRoutes(r *gin.Engine) {
 	v1.HEAD("addresses/:addressId/cinemas", handlers.Head)
 
 	v1.POST("/movies", handlers.CreateMovies)
+	v1.PUT("/movies/:movieId", handlers.UploadMoviePoster)
 	v1.OPTIONS("/movies", handlers.Option)
 	v1.HEAD("/movies", handlers.Head)
 
