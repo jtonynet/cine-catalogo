@@ -74,7 +74,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 	}
 	root.AddResource(retrieveMovieListGet)
 
-	rootJSON, err := root.ToJSON()
+	rootJSON, err := root.Encode()
 	if err != nil {
 		// TODO: implements on future
 		return

@@ -1,10 +1,24 @@
 package responses
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
+
+type HATEOASResultEmbedded struct {
+	Embedded interface{} `json:"_embedded"`
+	Links    interface{} `json:"_links"`
+}
+type HATEOASProperties struct {
+	Links interface{} `json:"_links"`
+}
+
+type HATEOASBaseLinks struct {
+	Self HREFObject `json:"self"`
+}
+
+type HREFObject struct {
+	HREF string `json:"href"`
+}
 
 type header struct {
 	key   string
@@ -29,10 +43,7 @@ func SendError(ctx *gin.Context, code int, msg string, headers []header) {
 func SendSuccess(ctx *gin.Context, code int, op string, data interface{}, headers []header) {
 	setHeaders(ctx, headers)
 
-	ctx.JSON(code, gin.H{
-		"message":   fmt.Sprintf("operation from handler: %s successful", op),
-		"_embedded": data,
-	})
+	ctx.JSON(code, data)
 }
 
 func setHeaders(ctx *gin.Context, headers []header) {

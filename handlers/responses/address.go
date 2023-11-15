@@ -10,4 +10,6 @@ type Address struct {
 	Description string    `json:"description"`
 	PostalCode  string    `json:"postalCode"`
 	Name        string    `json:"name"`
+
+	HATEOASProperties
 }

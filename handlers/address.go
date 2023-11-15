@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -65,7 +66,7 @@ func CreateAddresses(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList, nil)
+	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList, responses.HALHeaders)
 }
 
 func RetrieveAddress(ctx *gin.Context) {
@@ -108,15 +109,46 @@ func RetrieveAddressList(ctx *gin.Context) {
 				Description: address.Description,
 				PostalCode:  address.PostalCode,
 				Name:        address.Name,
+
+				HATEOASProperties: responses.HATEOASProperties{
+					Links: responses.HATEOASBaseLinks{
+						Self: responses.HREFObject{
+							HREF: fmt.Sprintf("http://localhost:8080/v1/addresses/%s", address.UUID.String()),
+						},
+					},
+				},
 			},
 		)
+	}
+
+	addressesLinks := AddressesLinks{
+		Self:            responses.HREFObject{HREF: "http://localhost:8080/v1/addresses"},
+		CreateAddresses: responses.HREFObject{HREF: "http://localhost:8080/v1/addresses"},
+	}
+
+	addressResponseList := AddressResponseList{
+		Addresses: &response,
+	}
+
+	resultEmbedded := responses.HATEOASResultEmbedded{
+		Embedded: addressResponseList,
+		Links:    addressesLinks,
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
 		"RetrieveAddressList",
-		response,
+		resultEmbedded,
 		responses.HALHeaders,
 	)
+}
+
+type AddressResponseList struct {
+	Addresses *[]responses.Address `json:"addresses"`
+}
+
+type AddressesLinks struct {
+	Self            responses.HREFObject `json:"self"`
+	CreateAddresses responses.HREFObject `json:"create-addresses"`
 }

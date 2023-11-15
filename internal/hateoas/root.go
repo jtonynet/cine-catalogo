@@ -27,7 +27,7 @@ func (r *root) AddResource(resource *resource) {
 	r.document.AddLink(resource.linkRelation)
 }
 
-func (r *root) ToJSON() ([]byte, error) {
+func (r *root) Encode() ([]byte, error) {
 	encoder := halforms.NewEncoder()
 	bytes, err := encoder.ToJSON(r.document)
 	if err != nil {
