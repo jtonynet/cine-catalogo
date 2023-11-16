@@ -7,4 +7,17 @@ type Cinema struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Capacity    int64     `json:"capacity"`
+
+	HATEOASListItemProperties
+}
+
+type HATEOASCinemaItemLinks struct {
+	Self HREFObject `json:"self"`
+}
+
+type HATEOASCinemaListLinks struct {
+	Self HREFObject `json:"self"`
+}
+type HATEOASCinemaList struct {
+	Cinemas *[]Cinema `json:"cinemas"`
 }

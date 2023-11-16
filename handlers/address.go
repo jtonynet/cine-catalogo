@@ -70,7 +70,7 @@ func CreateAddresses(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateAddresses", responseList, responses.HALHeaders)
+	responses.SendSuccess(ctx, http.StatusOK, "create-addresses", responseList, responses.HALHeaders)
 }
 
 func RetrieveAddress(ctx *gin.Context) {
@@ -89,12 +89,16 @@ func RetrieveAddress(ctx *gin.Context) {
 		Name:        address.Name,
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "RetrieveAddress", response, nil)
+	responses.SendSuccess(ctx, http.StatusOK, "retrieve-address", response, nil)
 }
 
 func RetrieveAddressList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	rootURL := cfg.Host
+	if rootURL == "" {
+		// TODO: Implements in future
+		return
+	}
 
 	addresses := []models.Address{}
 
@@ -103,11 +107,11 @@ func RetrieveAddressList(ctx *gin.Context) {
 		return
 	}
 
-	response := []responses.Address{}
+	addressListResponse := []responses.Address{}
 	for _, address := range addresses {
 
-		response = append(
-			response,
+		addressListResponse = append(
+			addressListResponse,
 			responses.Address{
 				UUID:        address.UUID,
 				Country:     address.Country,
@@ -118,7 +122,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 				Name:        address.Name,
 
 				HATEOASListItemProperties: responses.HATEOASListItemProperties{
-					Links: HATEOASAddressesLinks{
+					Links: responses.HATEOASAddressItemLinks{
 						Self: responses.HREFObject{
 							HREF: fmt.Sprintf("%s/addresses/%s", rootURL, address.UUID.String()),
 						},
@@ -131,13 +135,13 @@ func RetrieveAddressList(ctx *gin.Context) {
 		)
 	}
 
-	addressesLinks := AddressesLinks{
+	addressListLinks := responses.HATEOASAddressListLinks{
 		Self:            responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", rootURL)},
 		CreateAddresses: responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", rootURL)},
 	}
 
-	addressResponseList := AddressResponseList{
-		Addresses: &response,
+	addressList := responses.HATEOASAddressList{
+		Addresses: &addressListResponse,
 	}
 
 	root := hateoas.NewRoot(rootURL)
@@ -176,9 +180,9 @@ func RetrieveAddressList(ctx *gin.Context) {
 	var templateJSON interface{}
 	json.Unmarshal([]byte(templateString), &templateJSON)
 
-	resultEmbedded := responses.HATEOASResultEmbedded{
-		Embedded:  addressResponseList,
-		Links:     addressesLinks,
+	result := responses.HATEOASResult{
+		Embedded:  addressList,
+		Links:     addressListLinks,
 		Templates: templateJSON,
 	}
 
@@ -186,21 +190,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 		ctx,
 		http.StatusOK,
 		"retrieve-address-list",
-		resultEmbedded,
+		result,
 		responses.HALHeaders,
 	)
-}
-
-type HATEOASAddressesLinks struct {
-	Self                   responses.HREFObject `json:"self"`
-	CreateAddressesCinemas responses.HREFObject `json:"create-addresses-cinemas"`
-}
-
-type AddressResponseList struct {
-	Addresses *[]responses.Address `json:"addresses"`
-}
-
-type AddressesLinks struct {
-	Self            responses.HREFObject `json:"self"`
-	CreateAddresses responses.HREFObject `json:"create-addresses"`
 }

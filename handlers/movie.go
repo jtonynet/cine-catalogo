@@ -65,7 +65,7 @@ func CreateMovies(ctx *gin.Context) {
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateMovies", responseList, nil)
+	responses.SendSuccess(ctx, http.StatusOK, "create-movies", responseList, nil)
 }
 
 func RetrieveMovieList(ctx *gin.Context) {

@@ -13,3 +13,16 @@ type Address struct {
 
 	HATEOASListItemProperties
 }
+
+type HATEOASAddressItemLinks struct {
+	Self                   HREFObject `json:"self"`
+	CreateAddressesCinemas HREFObject `json:"create-addresses-cinemas"`
+}
+
+type HATEOASAddressListLinks struct {
+	Self            HREFObject `json:"self"`
+	CreateAddresses HREFObject `json:"create-addresses"`
+}
+type HATEOASAddressList struct {
+	Addresses *[]Address `json:"addresses"`
+}

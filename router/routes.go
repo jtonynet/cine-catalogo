@@ -35,7 +35,6 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.HEAD("/movies", handlers.Head)
 
 	v1.GET("/cinemas", handlers.RetrieveCinemaList)
-	//http://localhost:8080/v1/cinemas?addressId=2eaee488-77f1-42df-b8c6-8828204ff9e3 RetrieveCinemaList
 
 	v1.GET("/movies", handlers.RetrieveMovieList)
 }

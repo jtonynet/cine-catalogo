@@ -1,16 +1,20 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
+	"github.com/tidwall/gjson"
 
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
+	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
@@ -76,22 +80,24 @@ func CreateCinemas(ctx *gin.Context) {
 // Retrieve Cinema List
 // http://localhost:8080/api/cinemas?addressId={uuid} RetrieveCinemaList
 // if addressId is dont informed, return 403 - forbbiden
-//func RetrieveCinemaList (ctx *gin.Context){}
 
-// 2eaee488-77f1-42df-b8c6-8828204ff9e3
 func RetrieveCinemaList(ctx *gin.Context) {
-
-	fmt.Println("TESTE")
-
-	addressId, ok := ctx.GetQuery("addressId")
-	if !ok {
-		// if addressId is dont informed, return 403 - forbbiden
-		fmt.Printf("403")
+	cfg := ctx.MustGet("cfg").(config.API)
+	rootURL := cfg.Host
+	if rootURL == "" {
+		// TODO: Implements in future
 		return
 	}
 
-	addressUUID := uuid.MustParse(addressId)
+	addressId, ok := ctx.GetQuery("addressId")
+	if !ok || !IsValidUUID(addressId) {
+
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		return
+	}
+
 	var address models.Address
+	addressUUID := uuid.MustParse(addressId)
 	if err := database.DB.Find(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		fmt.Println("Cannot obtains address %v", err)
 		return
@@ -103,16 +109,67 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		return
 	}
 
-	var cinemasResponse []responses.Cinema
+	var cinemaListResponse []responses.Cinema
 	for _, cinema := range cinemas {
-		cinemasResponse = append(cinemasResponse,
+		cinemaListResponse = append(cinemaListResponse,
 			responses.Cinema{
 				UUID:        cinema.UUID,
 				Name:        cinema.Name,
 				Description: cinema.Description,
 				Capacity:    cinema.Capacity,
+
+				HATEOASListItemProperties: responses.HATEOASListItemProperties{
+					Links: responses.HATEOASCinemaItemLinks{
+						Self: responses.HREFObject{
+							HREF: fmt.Sprintf("%s/cinemas/%s", rootURL, cinema.UUID.String()),
+						},
+					},
+				},
 			})
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "retrieve-cinema-list", cinemasResponse, nil)
+	cinemaListLinks := responses.HATEOASCinemaListLinks{
+		Self: responses.HREFObject{HREF: fmt.Sprintf("%s/cinemas", rootURL)},
+	}
+
+	cinemaList := responses.HATEOASCinemaList{
+		Cinemas: &cinemaListResponse,
+	}
+
+	root := hateoas.NewRoot(rootURL)
+
+	retrieveCinemaListGet, err := hateoas.NewResource(
+		"retrieve-cinema-list",
+		fmt.Sprintf("%s/%s", rootURL, "cinemas"),
+		http.MethodGet,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+	root.AddResource(retrieveCinemaListGet)
+
+	rootEncoded, err := root.Encode()
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+
+	templateString := gjson.Get(string(rootEncoded), "_templates").String()
+	var templateJSON interface{}
+	json.Unmarshal([]byte(templateString), &templateJSON)
+
+	result := responses.HATEOASResult{
+		Embedded:  cinemaList,
+		Links:     cinemaListLinks,
+		Templates: templateJSON,
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-cinema-list",
+		result,
+		responses.HALHeaders,
+	)
 }

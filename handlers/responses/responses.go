@@ -4,19 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HATEOASResultEmbedded struct {
-	Embedded  interface{} `json:"_embedded"`
-	Links     interface{} `json:"_links"`
-	Templates interface{} `json:"_templates"`
-}
-type HATEOASListItemProperties struct {
-	Links interface{} `json:"_links"`
-}
-
-type HREFObject struct {
-	HREF string `json:"href"`
-}
-
 type header struct {
 	key   string
 	value string
