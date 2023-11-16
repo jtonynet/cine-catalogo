@@ -76,23 +76,54 @@ func CreateCinemas(ctx *gin.Context) {
 	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList, responses.HALHeaders)
 }
 
-// TODO:
-// Retrieve Cinema List
-// http://localhost:8080/api/cinemas?addressId={uuid} RetrieveCinemaList
-// if addressId is dont informed, return 403 - forbbiden
-
-func RetrieveCinemaList(ctx *gin.Context) {
+func RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
+
 	rootURL := cfg.Host
 	if rootURL == "" {
 		// TODO: Implements in future
 		return
 	}
 
-	addressId, ok := ctx.GetQuery("addressId")
-	if !ok || !IsValidUUID(addressId) {
+	cinemaId := ctx.Param("cinemaId")
+	if !IsValidUUID(cinemaId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinemaId", nil)
+		return
+	}
+	cinemaUUID := uuid.MustParse(cinemaId)
+	cinema := models.Cinema{UUID: cinemaUUID}
+	database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema)
 
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+	response := responses.Cinema{
+		UUID:        cinema.UUID,
+		Name:        cinema.Name,
+		Description: cinema.Description,
+		Capacity:    cinema.Capacity,
+
+		HATEOASListItemProperties: responses.HATEOASListItemProperties{
+			Links: responses.HATEOASCinemaItemLinks{
+				Self: responses.HREFObject{
+					HREF: fmt.Sprintf("%s/cinemas/%s", rootURL, cinema.UUID.String()),
+				},
+			},
+		},
+	}
+
+	responses.SendSuccess(ctx, http.StatusOK, "retrieve-cinema", response, nil)
+}
+
+func RetrieveCinemaList(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+
+	rootURL := cfg.Host
+	if rootURL == "" {
+		// TODO: Implements in future
+		return
+	}
+
+	addressId := ctx.Param("addressId")
+	if !IsValidUUID(addressId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed addressId", nil)
 		return
 	}
 
@@ -128,8 +159,9 @@ func RetrieveCinemaList(ctx *gin.Context) {
 			})
 	}
 
+	selfURL := fmt.Sprintf("%s/addresses/%s/cinemas", rootURL, addressId)
 	cinemaListLinks := responses.HATEOASCinemaListLinks{
-		Self: responses.HREFObject{HREF: fmt.Sprintf("%s/cinemas", rootURL)},
+		Self: responses.HREFObject{HREF: selfURL},
 	}
 
 	cinemaList := responses.HATEOASCinemaList{
@@ -140,7 +172,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 
 	retrieveCinemaListGet, err := hateoas.NewResource(
 		"retrieve-cinema-list",
-		fmt.Sprintf("%s/%s", rootURL, "cinemas"),
+		selfURL,
 		http.MethodGet,
 	)
 	if err != nil {

@@ -24,6 +24,5 @@ func main() {
 		Env:        "dev",
 		Host:       "http://localhost:8080/v1",
 	}
-
 	router.Init(cfgAPI)
 }

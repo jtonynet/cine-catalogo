@@ -26,15 +26,17 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.HEAD("/addresses", handlers.Head)
 
 	v1.POST("addresses/:addressId/cinemas", handlers.CreateCinemas)
-	v1.OPTIONS("addresses/:addressId/cinemas", handlers.Option)
-	v1.HEAD("addresses/:addressId/cinemas", handlers.Head)
+	v1.GET("/addresses/:addressId/cinemas", handlers.RetrieveCinemaList)
+
+	v1.OPTIONS("/addresses/:addressId/cinemas", handlers.Option)
+	v1.HEAD("/addresses/:addressId/cinemas", handlers.Head)
+
+	v1.GET("/cinemas/:cinemaId", handlers.RetrieveCinema)
 
 	v1.POST("/movies", handlers.CreateMovies)
 	v1.PUT("/movies/:movieId", handlers.UploadMoviePoster)
 	v1.OPTIONS("/movies", handlers.Option)
 	v1.HEAD("/movies", handlers.Head)
-
-	v1.GET("/cinemas", handlers.RetrieveCinemaList)
 
 	v1.GET("/movies", handlers.RetrieveMovieList)
 }
