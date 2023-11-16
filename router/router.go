@@ -2,12 +2,13 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jtonynet/cine-catalogo/config"
 )
 
-func Init() {
+func Init(cfg config.API) {
 	r := gin.Default()
 
-	initializeRoutes(r)
+	initializeRoutes(r, cfg)
 
-	r.Run(":8080")
+	r.Run(cfg.Port)
 }

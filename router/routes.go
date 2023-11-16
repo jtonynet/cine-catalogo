@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers"
 	"github.com/jtonynet/cine-catalogo/middlewares"
 )
@@ -9,9 +10,10 @@ import (
 // INFO: To manage OPTION and HEAD verbs requests its necessary to implements HATEOAS HAL routes
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#identifying_allowed_request_methods
 
-func initializeRoutes(r *gin.Engine) {
+func initializeRoutes(r *gin.Engine, cfg config.API) {
 	basePath := "/v1"
 	v1 := r.Group(basePath)
+	v1.Use(middlewares.ConfigInject(cfg))
 	v1.Use(middlewares.CORS())
 
 	v1.GET("/", handlers.RetrieveRootResources)
@@ -31,6 +33,9 @@ func initializeRoutes(r *gin.Engine) {
 	v1.PUT("/movies/:movieId", handlers.UploadMoviePoster)
 	v1.OPTIONS("/movies", handlers.Option)
 	v1.HEAD("/movies", handlers.Head)
+
+	v1.GET("/cinemas", handlers.RetrieveCinemaList)
+	//http://localhost:8080/v1/cinemas?addressId=2eaee488-77f1-42df-b8c6-8828204ff9e3 RetrieveCinemaList
 
 	v1.GET("/movies", handlers.RetrieveMovieList)
 }

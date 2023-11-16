@@ -1,16 +1,20 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
+	"github.com/tidwall/gjson"
 
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
+	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
@@ -89,6 +93,8 @@ func RetrieveAddress(ctx *gin.Context) {
 }
 
 func RetrieveAddressList(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	rootURL := cfg.Host
 
 	addresses := []models.Address{}
 
@@ -99,6 +105,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 
 	response := []responses.Address{}
 	for _, address := range addresses {
+
 		response = append(
 			response,
 			responses.Address{
@@ -110,10 +117,13 @@ func RetrieveAddressList(ctx *gin.Context) {
 				PostalCode:  address.PostalCode,
 				Name:        address.Name,
 
-				HATEOASProperties: responses.HATEOASProperties{
-					Links: responses.HATEOASBaseLinks{
+				HATEOASListItemProperties: responses.HATEOASListItemProperties{
+					Links: HATEOASAddressesLinks{
 						Self: responses.HREFObject{
-							HREF: fmt.Sprintf("http://localhost:8080/v1/addresses/%s", address.UUID.String()),
+							HREF: fmt.Sprintf("%s/addresses/%s", rootURL, address.UUID.String()),
+						},
+						CreateAddressesCinemas: responses.HREFObject{
+							HREF: fmt.Sprintf("%s/addresses/%s/cinemas", rootURL, address.UUID.String()),
 						},
 					},
 				},
@@ -122,26 +132,68 @@ func RetrieveAddressList(ctx *gin.Context) {
 	}
 
 	addressesLinks := AddressesLinks{
-		Self:            responses.HREFObject{HREF: "http://localhost:8080/v1/addresses"},
-		CreateAddresses: responses.HREFObject{HREF: "http://localhost:8080/v1/addresses"},
+		Self:            responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", rootURL)},
+		CreateAddresses: responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", rootURL)},
 	}
 
 	addressResponseList := AddressResponseList{
 		Addresses: &response,
 	}
 
+	root := hateoas.NewRoot(rootURL)
+	createAddressesPost, err := hateoas.NewResource(
+		"create-addresses",
+		fmt.Sprintf("%s/%s", rootURL, "addresses"),
+		http.MethodPost,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+	createAddressesPost.RequestToProperties(requests.Address{})
+	root.AddResource(createAddressesPost)
+
+	createCinemasUrl := fmt.Sprintf("%s/addresses/:addressId/cinemas", rootURL)
+	createCinemasPost, err := hateoas.NewResource(
+		"create-addresses-cinemas",
+		createCinemasUrl,
+		http.MethodPost,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+	createCinemasPost.RequestToProperties(requests.Cinema{})
+	root.AddResource(createCinemasPost)
+
+	rootEncoded, err := root.Encode()
+	if err != nil {
+		// TODO: implements on future
+		return
+	}
+
+	templateString := gjson.Get(string(rootEncoded), "_templates").String()
+	var templateJSON interface{}
+	json.Unmarshal([]byte(templateString), &templateJSON)
+
 	resultEmbedded := responses.HATEOASResultEmbedded{
-		Embedded: addressResponseList,
-		Links:    addressesLinks,
+		Embedded:  addressResponseList,
+		Links:     addressesLinks,
+		Templates: templateJSON,
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"RetrieveAddressList",
+		"retrieve-address-list",
 		resultEmbedded,
 		responses.HALHeaders,
 	)
+}
+
+type HATEOASAddressesLinks struct {
+	Self                   responses.HREFObject `json:"self"`
+	CreateAddressesCinemas responses.HREFObject `json:"create-addresses-cinemas"`
 }
 
 type AddressResponseList struct {

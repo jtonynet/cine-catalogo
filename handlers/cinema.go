@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -69,4 +70,49 @@ func CreateCinemas(ctx *gin.Context) {
 	}
 
 	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList, responses.HALHeaders)
+}
+
+// TODO:
+// Retrieve Cinema List
+// http://localhost:8080/api/cinemas?addressId={uuid} RetrieveCinemaList
+// if addressId is dont informed, return 403 - forbbiden
+//func RetrieveCinemaList (ctx *gin.Context){}
+
+// 2eaee488-77f1-42df-b8c6-8828204ff9e3
+func RetrieveCinemaList(ctx *gin.Context) {
+
+	fmt.Println("TESTE")
+
+	addressId, ok := ctx.GetQuery("addressId")
+	if !ok {
+		// if addressId is dont informed, return 403 - forbbiden
+		fmt.Printf("403")
+		return
+	}
+
+	addressUUID := uuid.MustParse(addressId)
+	var address models.Address
+	if err := database.DB.Find(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+		fmt.Println("Cannot obtains address %v", err)
+		return
+	}
+
+	var cinemas []models.Cinema
+	if err := database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
+		fmt.Println("Cannot obtains cinemas %v", err)
+		return
+	}
+
+	var cinemasResponse []responses.Cinema
+	for _, cinema := range cinemas {
+		cinemasResponse = append(cinemasResponse,
+			responses.Cinema{
+				UUID:        cinema.UUID,
+				Name:        cinema.Name,
+				Description: cinema.Description,
+				Capacity:    cinema.Capacity,
+			})
+	}
+
+	responses.SendSuccess(ctx, http.StatusOK, "retrieve-cinema-list", cinemasResponse, nil)
 }

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 )
@@ -13,9 +14,11 @@ import (
 // Using hateoas import as wrapper to go2hal/hal and go2hal/halforms
 
 func RetrieveRootResources(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+
 	ctx.Header("Content-Type", "application/prs.hal-forms+json")
 
-	rootURL := "http://localhost:8080/v1"
+	rootURL := cfg.Host
 	root := hateoas.NewRoot(rootURL)
 
 	// ---------
@@ -29,7 +32,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 	// )
 	//---------
 	createAddressesPost, err := hateoas.NewResource(
-		"createAddresses",
+		"create-addresses",
 		fmt.Sprintf("%s/%s", rootURL, "addresses"),
 		http.MethodPost,
 	)
@@ -41,7 +44,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 	root.AddResource(createAddressesPost)
 
 	retrieveAddressListGet, err := hateoas.NewResource(
-		"retrieveAddresses",
+		"retrieve-addresses",
 		fmt.Sprintf("%s/%s", rootURL, "addresses"),
 		http.MethodGet,
 	)
@@ -52,7 +55,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 	root.AddResource(retrieveAddressListGet)
 
 	createMoviesPost, err := hateoas.NewResource(
-		"createMovies",
+		"create-movies",
 		fmt.Sprintf("%s/%s", rootURL, "movies"),
 		http.MethodPost,
 	)
@@ -64,7 +67,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 	root.AddResource(createMoviesPost)
 
 	retrieveMovieListGet, err := hateoas.NewResource(
-		"retrieveMovieList",
+		"retrieve-movie-list",
 		fmt.Sprintf("%s/%s", rootURL, "movies"),
 		http.MethodGet,
 	)
@@ -80,5 +83,5 @@ func RetrieveRootResources(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Data(http.StatusOK, "application/json", rootJSON)
+	ctx.Data(http.StatusOK, "application/prs.hal-forms+json", rootJSON)
 }

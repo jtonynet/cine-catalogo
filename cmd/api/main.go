@@ -8,14 +8,22 @@ import (
 
 func main() {
 
-	cfg := config.Database{
+	cfgDB := config.Database{
 		Host: "localhost",
 		User: "api_user",
 		Pass: "api_pass",
 		DB:   "cine_catalog_db",
 		Port: 5432,
 	}
-	database.Init(cfg)
+	database.Init(cfgDB)
 
-	router.Init()
+	cfgAPI := config.API{
+		Name:       "catalogo",
+		Port:       ":8080",
+		TagVersion: "0.0.0",
+		Env:        "dev",
+		Host:       "http://localhost:8080/v1",
+	}
+
+	router.Init(cfgAPI)
 }

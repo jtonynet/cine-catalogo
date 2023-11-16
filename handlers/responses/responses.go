@@ -5,15 +5,12 @@ import (
 )
 
 type HATEOASResultEmbedded struct {
-	Embedded interface{} `json:"_embedded"`
-	Links    interface{} `json:"_links"`
+	Embedded  interface{} `json:"_embedded"`
+	Links     interface{} `json:"_links"`
+	Templates interface{} `json:"_templates"`
 }
-type HATEOASProperties struct {
+type HATEOASListItemProperties struct {
 	Links interface{} `json:"_links"`
-}
-
-type HATEOASBaseLinks struct {
-	Self HREFObject `json:"self"`
 }
 
 type HREFObject struct {

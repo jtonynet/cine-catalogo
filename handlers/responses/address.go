@@ -11,5 +11,5 @@ type Address struct {
 	PostalCode  string    `json:"postalCode"`
 	Name        string    `json:"name"`
 
-	HATEOASProperties
+	HATEOASListItemProperties
 }
