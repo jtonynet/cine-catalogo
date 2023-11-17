@@ -24,6 +24,16 @@ type resource struct {
 	template     halforms.Template
 }
 
+// TODO:
+// Implements Options Pattern
+// hateoas.NewResource(
+//
+//	"createAddresses",
+//	"addresses",
+//	http.MethodPost,
+//	hateoas.WithRequest(requests.Address{}),
+//
+// )
 func NewResource(name, resourceURL, httpMethod string) (*resource, error) {
 	linkRelation, err := halforms.NewHALFormsRelation(name, resourceURL)
 	if err != nil {

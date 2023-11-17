@@ -17,7 +17,6 @@ var (
 func SendError(ctx *gin.Context, code int, msg string, headers []header) {
 	setHeaders(ctx, headers)
 
-	ctx.Header("Content-type", "application/json")
 	ctx.JSON(code, gin.H{
 		"message": msg,
 		"code":    code,

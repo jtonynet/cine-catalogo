@@ -22,7 +22,7 @@ func main() {
 		Port:       ":8080",
 		TagVersion: "0.0.0",
 		Env:        "dev",
-		Host:       "http://localhost:8080/v1",
+		Host:       "http://localhost:8080",
 	}
 	router.Init(cfgAPI)
 }

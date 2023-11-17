@@ -19,6 +19,9 @@ import (
 )
 
 func CreateCinemas(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
 	addressUUID := uuid.MustParse(ctx.Param("addressId"))
 
 	var address models.Address
@@ -64,12 +67,7 @@ func CreateCinemas(ctx *gin.Context) {
 	responseList := []responses.Cinema{}
 	for _, cinema := range cinemaList {
 		responseList = append(responseList,
-			responses.Cinema{
-				UUID:        cinema.UUID,
-				Name:        cinema.Name,
-				Description: cinema.Description,
-				Capacity:    cinema.Capacity,
-			},
+			responses.NewCinema(cinema, versionURL),
 		)
 	}
 
@@ -78,12 +76,7 @@ func CreateCinemas(ctx *gin.Context) {
 
 func RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
-
-	rootURL := cfg.Host
-	if rootURL == "" {
-		// TODO: Implements in future
-		return
-	}
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
 	cinemaId := ctx.Param("cinemaId")
 	if !IsValidUUID(cinemaId) {
@@ -94,32 +87,14 @@ func RetrieveCinema(ctx *gin.Context) {
 	cinema := models.Cinema{UUID: cinemaUUID}
 	database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema)
 
-	response := responses.Cinema{
-		UUID:        cinema.UUID,
-		Name:        cinema.Name,
-		Description: cinema.Description,
-		Capacity:    cinema.Capacity,
-
-		HATEOASListItemProperties: responses.HATEOASListItemProperties{
-			Links: responses.HATEOASCinemaItemLinks{
-				Self: responses.HREFObject{
-					HREF: fmt.Sprintf("%s/cinemas/%s", rootURL, cinema.UUID.String()),
-				},
-			},
-		},
-	}
+	response := responses.NewCinema(cinema, versionURL)
 
 	responses.SendSuccess(ctx, http.StatusOK, "retrieve-cinema", response, nil)
 }
 
 func RetrieveCinemaList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
-
-	rootURL := cfg.Host
-	if rootURL == "" {
-		// TODO: Implements in future
-		return
-	}
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
 	addressId := ctx.Param("addressId")
 	if !IsValidUUID(addressId) {
@@ -143,23 +118,11 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	var cinemaListResponse []responses.Cinema
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
-			responses.Cinema{
-				UUID:        cinema.UUID,
-				Name:        cinema.Name,
-				Description: cinema.Description,
-				Capacity:    cinema.Capacity,
-
-				HATEOASListItemProperties: responses.HATEOASListItemProperties{
-					Links: responses.HATEOASCinemaItemLinks{
-						Self: responses.HREFObject{
-							HREF: fmt.Sprintf("%s/cinemas/%s", rootURL, cinema.UUID.String()),
-						},
-					},
-				},
-			})
+			responses.NewCinema(cinema, versionURL),
+		)
 	}
 
-	selfURL := fmt.Sprintf("%s/addresses/%s/cinemas", rootURL, addressId)
+	selfURL := fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, addressId)
 	cinemaListLinks := responses.HATEOASCinemaListLinks{
 		Self: responses.HREFObject{HREF: selfURL},
 	}
@@ -168,28 +131,11 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		Cinemas: &cinemaListResponse,
 	}
 
-	root := hateoas.NewRoot(rootURL)
-
-	retrieveCinemaListGet, err := hateoas.NewResource(
-		"retrieve-cinema-list",
-		selfURL,
-		http.MethodGet,
-	)
+	templateJSON, err := getHATEOASCinemaTemplate(selfURL, versionURL)
 	if err != nil {
-		// TODO: implements on future
+		// TODO: Implements in future
 		return
 	}
-	root.AddResource(retrieveCinemaListGet)
-
-	rootEncoded, err := root.Encode()
-	if err != nil {
-		// TODO: implements on future
-		return
-	}
-
-	templateString := gjson.Get(string(rootEncoded), "_templates").String()
-	var templateJSON interface{}
-	json.Unmarshal([]byte(templateString), &templateJSON)
 
 	result := responses.HATEOASResult{
 		Embedded:  cinemaList,
@@ -204,4 +150,31 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		result,
 		responses.HALHeaders,
 	)
+}
+
+func getHATEOASCinemaTemplate(baseURL, selfURL string) (interface{}, error) {
+	root := hateoas.NewRootDocument(baseURL)
+
+	retrieveCinemaListGet, err := hateoas.NewResource(
+		"retrieve-cinema-list",
+		selfURL,
+		http.MethodGet,
+	)
+	if err != nil {
+		// TODO: implements on future
+		return nil, err
+	}
+	root.AddResource(retrieveCinemaListGet)
+
+	rootEncoded, err := root.Encode()
+	if err != nil {
+		// TODO: implements on future
+		return nil, err
+	}
+
+	templateString := gjson.Get(string(rootEncoded), "_templates").String()
+	var templateJSON interface{}
+	json.Unmarshal([]byte(templateString), &templateJSON)
+
+	return templateJSON, nil
 }

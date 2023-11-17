@@ -12,3 +12,10 @@ type HATEOASListItemProperties struct {
 type HREFObject struct {
 	HREF string `json:"href"`
 }
+
+type HATEOASTemplateParams struct {
+	Name          string
+	ResourceURL   string
+	HTTPMethod    string
+	RequestStruct interface{}
+}

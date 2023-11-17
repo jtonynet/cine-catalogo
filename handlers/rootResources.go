@@ -18,22 +18,13 @@ func RetrieveRootResources(ctx *gin.Context) {
 
 	ctx.Header("Content-Type", "application/prs.hal-forms+json")
 
-	rootURL := cfg.Host
-	root := hateoas.NewRoot(rootURL)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	// ---------
-	// TODO:
-	// Implements WithRequest option
-	// hateoas.NewResource(
-	// 	"createAddresses",
-	// 	"addresses",
-	// 	http.MethodPost,
-	// 	hateoas.WithRequest(requests.Address{}),
-	// )
-	//---------
+	root := hateoas.NewRootDocument(versionURL)
+
 	createAddressesPost, err := hateoas.NewResource(
 		"create-addresses",
-		fmt.Sprintf("%s/%s", rootURL, "addresses"),
+		fmt.Sprintf("%s/%s", versionURL, "addresses"),
 		http.MethodPost,
 	)
 	if err != nil {
@@ -44,8 +35,8 @@ func RetrieveRootResources(ctx *gin.Context) {
 	root.AddResource(createAddressesPost)
 
 	retrieveAddressListGet, err := hateoas.NewResource(
-		"retrieve-addresses",
-		fmt.Sprintf("%s/%s", rootURL, "addresses"),
+		"retrieve-address-list",
+		fmt.Sprintf("%s/%s", versionURL, "addresses"),
 		http.MethodGet,
 	)
 	if err != nil {
@@ -56,7 +47,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 
 	createMoviesPost, err := hateoas.NewResource(
 		"create-movies",
-		fmt.Sprintf("%s/%s", rootURL, "movies"),
+		fmt.Sprintf("%s/%s", versionURL, "movies"),
 		http.MethodPost,
 	)
 	if err != nil {
@@ -68,7 +59,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 
 	retrieveMovieListGet, err := hateoas.NewResource(
 		"retrieve-movie-list",
-		fmt.Sprintf("%s/%s", rootURL, "movies"),
+		fmt.Sprintf("%s/%s", versionURL, "movies"),
 		http.MethodGet,
 	)
 	if err != nil {

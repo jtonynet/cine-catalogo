@@ -14,7 +14,7 @@ type root struct {
 	resources []resource
 }
 
-func NewRoot(href string) *root {
+func NewRootDocument(href string) *root {
 	return &root{
 		document: halforms.NewDocument(href),
 	}
