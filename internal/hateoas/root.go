@@ -1,6 +1,11 @@
 package hateoas
 
-import "github.com/pmoule/go2hal/halforms"
+import (
+	"encoding/json"
+
+	"github.com/pmoule/go2hal/halforms"
+	"github.com/tidwall/gjson"
+)
 
 // WRAPPER FOR go2hal/hal AND go2hal/halforms TO SIMPLIFY USE
 // https://rwcbook.github.io/hal-forms/#_the_hal_forms_media_type
@@ -14,7 +19,14 @@ type root struct {
 	resources []resource
 }
 
-func NewRootDocument(href string) *root {
+type TemplateParams struct {
+	Name          string
+	ResourceURL   string
+	HTTPMethod    string
+	RequestStruct interface{}
+}
+
+func NewRoot(href string) *root {
 	return &root{
 		document: halforms.NewDocument(href),
 	}
@@ -27,6 +39,10 @@ func (r *root) AddResource(resource *resource) {
 	r.document.AddLink(resource.linkRelation)
 }
 
+func (r *root) GetDocument() halforms.Document {
+	return r.document
+}
+
 func (r *root) Encode() ([]byte, error) {
 	encoder := halforms.NewEncoder()
 	bytes, err := encoder.ToJSON(r.document)
@@ -35,4 +51,41 @@ func (r *root) Encode() ([]byte, error) {
 		return nil, err
 	}
 	return bytes, nil
+}
+
+func TemplateFactory(
+	baseURL string,
+	TemplateParams []TemplateParams) (interface{}, error) {
+
+	root := NewRoot(baseURL)
+
+	for _, param := range TemplateParams {
+		resource, err := NewResource(
+			param.Name,
+			param.ResourceURL,
+			param.HTTPMethod,
+		)
+		if err != nil {
+			// TODO: implements on future
+			return nil, err
+		}
+
+		if param.RequestStruct != nil {
+			resource.RequestToProperties(param.RequestStruct)
+		}
+
+		root.AddResource(resource)
+	}
+
+	rootEncoded, err := root.Encode()
+	if err != nil {
+		// TODO: implements on future
+		return nil, err
+	}
+
+	templateString := gjson.Get(string(rootEncoded), "_templates").String()
+	var templateJSON interface{}
+	json.Unmarshal([]byte(templateString), &templateJSON)
+
+	return templateJSON, nil
 }

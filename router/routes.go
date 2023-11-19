@@ -41,4 +41,5 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.HEAD("/movies", handlers.Head)
 
 	v1.GET("/movies", handlers.RetrieveMovieList)
+	v1.GET("/movies/:movieId", handlers.RetrieveMovie)
 }

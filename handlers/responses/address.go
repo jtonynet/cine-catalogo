@@ -16,45 +16,63 @@ type Address struct {
 	PostalCode  string    `json:"postalCode"`
 	Name        string    `json:"name"`
 
-	HATEOASListItemProperties
+	HATEOASListItemResult
 }
 
 type HATEOASAddressItemLinks struct {
-	Self                   HREFObject `json:"self"`
-	CreateAddressesCinemas HREFObject `json:"create-addresses-cinemas"`
-	RetrieveCinemaList     HREFObject `json:"retrieve-cinema-list"`
+	Self                   HATEOASLink `json:"self"`
+	CreateAddressesCinemas HATEOASLink `json:"create-addresses-cinemas"`
+	RetrieveCinemaList     HATEOASLink `json:"retrieve-cinema-list"`
 }
 
 type HATEOASAddressListLinks struct {
-	Self            HREFObject `json:"self"`
-	CreateAddresses HREFObject `json:"create-addresses"`
+	Self            HATEOASLink `json:"self"`
+	CreateAddresses HATEOASLink `json:"create-addresses"`
 }
 type HATEOASAddressList struct {
 	Addresses *[]Address `json:"addresses"`
 }
 
-func NewAddress(a models.Address, baseURL string) Address {
-	return Address{
-		UUID:        a.UUID,
-		Country:     a.Country,
-		State:       a.State,
-		Telephone:   a.Telephone,
-		Description: a.Description,
-		PostalCode:  a.PostalCode,
-		Name:        a.Name,
+type AddressOption func(*Address)
 
-		HATEOASListItemProperties: HATEOASListItemProperties{
+func NewAddress(
+	model models.Address,
+	baseURL string,
+	options ...AddressOption,
+) *Address {
+	address := &Address{
+		UUID:        model.UUID,
+		Country:     model.Country,
+		State:       model.State,
+		Telephone:   model.Telephone,
+		Description: model.Description,
+		PostalCode:  model.PostalCode,
+		Name:        model.Name,
+
+		HATEOASListItemResult: HATEOASListItemResult{
 			Links: HATEOASAddressItemLinks{
-				Self: HREFObject{
-					HREF: fmt.Sprintf("%s/addresses/%s", baseURL, a.UUID.String()),
+				Self: HATEOASLink{
+					HREF: fmt.Sprintf("%s/addresses/%s", baseURL, model.UUID.String()),
 				},
-				CreateAddressesCinemas: HREFObject{
-					HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, a.UUID.String()),
+				CreateAddressesCinemas: HATEOASLink{
+					HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, model.UUID.String()),
 				},
-				RetrieveCinemaList: HREFObject{
-					HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, a.UUID.String()),
+				RetrieveCinemaList: HATEOASLink{
+					HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, model.UUID.String()),
 				},
 			},
 		},
+	}
+
+	for _, opt := range options {
+		opt(address)
+	}
+
+	return address
+}
+
+func WithAddressTemplates(templates interface{}) AddressOption {
+	return func(address *Address) {
+		address.Templates = templates
 	}
 }

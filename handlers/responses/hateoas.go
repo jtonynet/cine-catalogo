@@ -1,21 +1,15 @@
 package responses
 
-type HATEOASResult struct {
+type HATEOASListResult struct {
 	Embedded  interface{} `json:"_embedded"`
 	Links     interface{} `json:"_links"`
 	Templates interface{} `json:"_templates"`
 }
-type HATEOASListItemProperties struct {
-	Links interface{} `json:"_links"`
+type HATEOASListItemResult struct {
+	Links     interface{} `json:"_links"`
+	Templates interface{} `json:"_templates,omitempty"`
 }
 
-type HREFObject struct {
+type HATEOASLink struct {
 	HREF string `json:"href"`
-}
-
-type HATEOASTemplateParams struct {
-	Name          string
-	ResourceURL   string
-	HTTPMethod    string
-	RequestStruct interface{}
 }

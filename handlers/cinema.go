@@ -1,14 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
-	"github.com/tidwall/gjson"
 
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
@@ -22,7 +20,12 @@ func CreateCinemas(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	addressUUID := uuid.MustParse(ctx.Param("addressId"))
+	addressId := ctx.Param("addressId")
+	if !IsValidUUID(addressId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		return
+	}
+	addressUUID := uuid.MustParse(addressId)
 
 	var address models.Address
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
@@ -32,7 +35,6 @@ func CreateCinemas(ctx *gin.Context) {
 
 	var requestList []requests.Cinema
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
-
 		var singleRequest requests.Cinema
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
 			// TODO: Implements in future
@@ -42,7 +44,7 @@ func CreateCinemas(ctx *gin.Context) {
 		requestList = append(requestList, singleRequest)
 	}
 
-	cinemaList := []models.Cinema{}
+	var cinemas []models.Cinema
 	for _, request := range requestList {
 		cinema, err := models.NewCinema(
 			uuid.New(),
@@ -56,22 +58,55 @@ func CreateCinemas(ctx *gin.Context) {
 			return
 		}
 
-		cinemaList = append(cinemaList, cinema)
+		cinemas = append(cinemas, cinema)
 	}
 
-	if err := database.DB.Create(&cinemaList).Error; err != nil {
+	if err := database.DB.Create(&cinemas).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
 
 	responseList := []responses.Cinema{}
-	for _, cinema := range cinemaList {
+	for _, cinema := range cinemas {
 		responseList = append(responseList,
-			responses.NewCinema(cinema, versionURL),
+			*responses.NewCinema(cinema, versionURL),
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "CreateCinemas", responseList, responses.HALHeaders)
+	cinemaList := responses.HATEOASCinemaList{
+		Cinemas: &responseList,
+	}
+
+	cinemaListLinks := responses.HATEOASCinemasItemLinks{
+		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "retrieve-cinema-list",
+			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	result := responses.HATEOASListResult{
+		Embedded:  cinemaList,
+		Links:     cinemaListLinks,
+		Templates: templateJSON,
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"create-cinemas",
+		result,
+		responses.HALHeaders,
+	)
 }
 
 func RetrieveCinema(ctx *gin.Context) {
@@ -84,12 +119,36 @@ func RetrieveCinema(ctx *gin.Context) {
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)
+
 	cinema := models.Cinema{UUID: cinemaUUID}
 	database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema)
 
-	response := responses.NewCinema(cinema, versionURL)
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "retrieve-cinema",
+			ResourceURL: fmt.Sprintf("%s/cinemas/%s", versionURL, cinemaId),
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "retrieve-cinema", response, nil)
+	response := responses.NewCinema(
+		cinema,
+		versionURL,
+		responses.WithCinemaTemplates(templateJSON),
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-cinema",
+		response,
+		nil,
+	)
 }
 
 func RetrieveCinemaList(ctx *gin.Context) {
@@ -104,40 +163,49 @@ func RetrieveCinemaList(ctx *gin.Context) {
 
 	var address models.Address
 	addressUUID := uuid.MustParse(addressId)
+
 	if err := database.DB.Find(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		fmt.Println("Cannot obtains address %v", err)
 		return
 	}
 
 	var cinemas []models.Cinema
-	if err := database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
-		fmt.Println("Cannot obtains cinemas %v", err)
+	// TODO: BUG DA PORRA
+	// if err := database.DB.Find(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
+	if err := database.DB.Where("address_id = ?", address.ID).Find(&cinemas).Error; err != nil {
+		// TODO: Implements in future
 		return
 	}
 
 	var cinemaListResponse []responses.Cinema
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
-			responses.NewCinema(cinema, versionURL),
+			*responses.NewCinema(cinema, versionURL),
 		)
-	}
-
-	selfURL := fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, addressId)
-	cinemaListLinks := responses.HATEOASCinemaListLinks{
-		Self: responses.HREFObject{HREF: selfURL},
 	}
 
 	cinemaList := responses.HATEOASCinemaList{
 		Cinemas: &cinemaListResponse,
 	}
 
-	templateJSON, err := getHATEOASCinemaTemplate(selfURL, versionURL)
+	cinemaListLinks := responses.HATEOASCinemaListLinks{
+		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, addressId)},
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "retrieve-cinema-list",
+			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
 		return
 	}
 
-	result := responses.HATEOASResult{
+	result := responses.HATEOASListResult{
 		Embedded:  cinemaList,
 		Links:     cinemaListLinks,
 		Templates: templateJSON,
@@ -150,31 +218,4 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		result,
 		responses.HALHeaders,
 	)
-}
-
-func getHATEOASCinemaTemplate(baseURL, selfURL string) (interface{}, error) {
-	root := hateoas.NewRootDocument(baseURL)
-
-	retrieveCinemaListGet, err := hateoas.NewResource(
-		"retrieve-cinema-list",
-		selfURL,
-		http.MethodGet,
-	)
-	if err != nil {
-		// TODO: implements on future
-		return nil, err
-	}
-	root.AddResource(retrieveCinemaListGet)
-
-	rootEncoded, err := root.Encode()
-	if err != nil {
-		// TODO: implements on future
-		return nil, err
-	}
-
-	templateString := gjson.Get(string(rootEncoded), "_templates").String()
-	var templateJSON interface{}
-	json.Unmarshal([]byte(templateString), &templateJSON)
-
-	return templateJSON, nil
 }

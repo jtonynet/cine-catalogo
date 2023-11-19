@@ -12,6 +12,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
+	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
@@ -31,7 +32,7 @@ func CreateAddresses(ctx *gin.Context) {
 		requestList = append(requestList, singleRequest)
 	}
 
-	var addressList []models.Address
+	var addresses []models.Address
 	for _, request := range requestList {
 		address, err := models.NewAddress(
 			uuid.New(),
@@ -47,36 +48,110 @@ func CreateAddresses(ctx *gin.Context) {
 			return
 		}
 
-		addressList = append(addressList, address)
+		addresses = append(addresses, address)
 	}
 
-	if err := database.DB.Create(&addressList).Error; err != nil {
+	if err := database.DB.Create(&addresses).Error; err != nil {
 		responses.SendError(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
 	responseList := []responses.Address{}
-	for _, address := range addressList {
+	for _, address := range addresses {
 		responseList = append(responseList,
-			responses.NewAddress(address, versionURL),
+			*responses.NewAddress(address, versionURL),
 		)
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "create-addresses", responseList, responses.HALHeaders)
+	addressList := responses.HATEOASAddressList{
+		Addresses: &responseList,
+	}
+
+	addressListLinks := responses.HATEOASAddressItemLinks{
+		Self:                   responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId", versionURL)},
+		CreateAddressesCinemas: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
+		RetrieveCinemaList:     responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:          "create-addresses-cinemas",
+			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:    http.MethodPost,
+			RequestStruct: requests.Cinema{},
+		},
+		{
+			Name:        "retrieve-cinema-list",
+			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	result := responses.HATEOASListResult{
+		Embedded:  addressList,
+		Links:     addressListLinks,
+		Templates: templateJSON,
+	}
+
+	responses.SendSuccess(
+		ctx, http.StatusOK,
+		"create-addresses",
+		result,
+		responses.HALHeaders,
+	)
 }
 
 func RetrieveAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	uuid := uuid.MustParse(ctx.Param("addressId"))
+	addressId := ctx.Param("addressId")
+	if !IsValidUUID(addressId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		return
+	}
+	addressUUID := uuid.MustParse(addressId)
 
-	address := models.Address{UUID: uuid}
-	database.DB.Where(&models.Address{UUID: uuid}).First(&address)
+	address := models.Address{UUID: addressUUID}
+	database.DB.Where(&models.Address{UUID: addressUUID}).First(&address)
 
-	response := responses.NewAddress(address, versionURL)
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:          "create-addresses-cinemas",
+			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:    http.MethodPost,
+			RequestStruct: requests.Cinema{},
+		},
+		{
+			Name:        "retrieve-cinema-list",
+			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "retrieve-address", response, nil)
+	response := responses.NewAddress(
+		address,
+		versionURL,
+		responses.WithAddressTemplates(templateJSON),
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-address",
+		response,
+		nil,
+	)
 }
 
 func RetrieveAddressList(ctx *gin.Context) {
@@ -93,7 +168,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 	for _, address := range addresses {
 		addressListResponse = append(
 			addressListResponse,
-			responses.NewAddress(address, versionURL),
+			*responses.NewAddress(address, versionURL),
 		)
 	}
 
@@ -102,11 +177,11 @@ func RetrieveAddressList(ctx *gin.Context) {
 	}
 
 	addressListLinks := responses.HATEOASAddressListLinks{
-		Self:            responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", versionURL)},
-		CreateAddresses: responses.HREFObject{HREF: fmt.Sprintf("%s/addresses", versionURL)},
+		Self:            responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
+		CreateAddresses: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
 	}
 
-	templateParams := []responses.HATEOASTemplateParams{
+	templateParams := []hateoas.TemplateParams{
 		{
 			Name:          "create-addresses",
 			ResourceURL:   fmt.Sprintf("%s/addresses", versionURL),
@@ -125,13 +200,13 @@ func RetrieveAddressList(ctx *gin.Context) {
 			HTTPMethod:  http.MethodGet,
 		},
 	}
-	templateJSON, err := templateFactory(versionURL, templateParams)
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
 		return
 	}
 
-	result := responses.HATEOASResult{
+	result := responses.HATEOASListResult{
 		Embedded:  addressList,
 		Links:     addressListLinks,
 		Templates: templateJSON,

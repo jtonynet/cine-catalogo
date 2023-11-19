@@ -20,7 +20,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	root := hateoas.NewRootDocument(versionURL)
+	root := hateoas.NewRoot(versionURL)
 
 	createAddressesPost, err := hateoas.NewResource(
 		"create-addresses",

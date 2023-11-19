@@ -9,9 +9,11 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
 
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
+	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
@@ -68,7 +70,52 @@ func CreateMovies(ctx *gin.Context) {
 	responses.SendSuccess(ctx, http.StatusOK, "create-movies", responseList, nil)
 }
 
+func RetrieveMovie(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
+	movieId := ctx.Param("movieId")
+	if !IsValidUUID(movieId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing movieId", nil)
+		return
+	}
+	movieUUID := uuid.MustParse(movieId)
+
+	movie := models.Movie{UUID: movieUUID}
+	database.DB.Where(&models.Movie{UUID: movieUUID}).First(&movie)
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "upload-movie-poster",
+			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
+			HTTPMethod:  http.MethodPut,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	response := *responses.NewMovie(
+		movie,
+		versionURL,
+		responses.WithMovieTemplates(templateJSON),
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-address",
+		response,
+		nil,
+	)
+}
+
 func RetrieveMovieList(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
 	movies := []models.Movie{}
 
 	if err := database.DB.Find(&movies).Error; err != nil {
@@ -76,26 +123,62 @@ func RetrieveMovieList(ctx *gin.Context) {
 		return
 	}
 
-	response := []responses.Movie{}
+	movieListResponse := []responses.Movie{}
 	for _, movie := range movies {
-		response = append(
-			response,
-			responses.Movie{
-				UUID:        movie.UUID,
-				Name:        movie.Name,
-				Description: movie.Description,
-				AgeRating:   movie.AgeRating,
-				Subtitled:   movie.Subtitled,
-				Poster:      movie.Poster,
-			},
+		movieListResponse = append(
+			movieListResponse,
+			*responses.NewMovie(
+				movie,
+				versionURL,
+			),
 		)
+	}
+
+	movieList := responses.HATEOASMovieList{
+		Movies: &movieListResponse,
+	}
+
+	movieListLinks := responses.HATEOASMovieListLinks{
+		Self:         responses.HATEOASLink{HREF: fmt.Sprintf("%s/movies", versionURL)},
+		CreateMovies: responses.HATEOASLink{HREF: fmt.Sprintf("%s/movies", versionURL)},
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "retrieve-movie-list",
+			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
+			HTTPMethod:  http.MethodGet,
+		},
+		{
+			Name:          "create-movies",
+			ResourceURL:   fmt.Sprintf("%s/movies", versionURL),
+			HTTPMethod:    http.MethodPost,
+			RequestStruct: requests.Movie{},
+		},
+		{
+			Name:        "upload-movie-poster",
+			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
+			HTTPMethod:  http.MethodPut,
+			//RequestStruct: requests.Movie{},
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	result := responses.HATEOASListResult{
+		Embedded:  movieList,
+		Links:     movieListLinks,
+		Templates: templateJSON,
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"RetrieveMovieList",
-		response,
+		"retrieve-movie-list",
+		result,
 		responses.HALHeaders,
 	)
 }

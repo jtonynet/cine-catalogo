@@ -13,33 +13,51 @@ type Cinema struct {
 	Description string    `json:"description"`
 	Capacity    int64     `json:"capacity"`
 
-	HATEOASListItemProperties
+	HATEOASListItemResult
 }
 
-type HATEOASCinemaItemLinks struct {
-	Self HREFObject `json:"self"`
+type HATEOASCinemasItemLinks struct {
+	Self HATEOASLink `json:"self"`
 }
 
 type HATEOASCinemaListLinks struct {
-	Self HREFObject `json:"self"`
+	Self HATEOASLink `json:"self"`
 }
 type HATEOASCinemaList struct {
 	Cinemas *[]Cinema `json:"cinemas"`
 }
 
-func NewCinema(c models.Cinema, baseURL string) Cinema {
-	return Cinema{
-		UUID:        c.UUID,
-		Name:        c.Name,
-		Description: c.Description,
-		Capacity:    c.Capacity,
+type CinemaOption func(*Cinema)
 
-		HATEOASListItemProperties: HATEOASListItemProperties{
-			Links: HATEOASCinemaItemLinks{
-				Self: HREFObject{
-					HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, c.UUID.String()),
+func NewCinema(
+	model models.Cinema,
+	baseURL string,
+	options ...CinemaOption,
+) *Cinema {
+	cinema := &Cinema{
+		UUID:        model.UUID,
+		Name:        model.Name,
+		Description: model.Description,
+		Capacity:    model.Capacity,
+
+		HATEOASListItemResult: HATEOASListItemResult{
+			Links: HATEOASCinemasItemLinks{
+				Self: HATEOASLink{
+					HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String()),
 				},
 			},
 		},
+	}
+
+	for _, opt := range options {
+		opt(cinema)
+	}
+
+	return cinema
+}
+
+func WithCinemaTemplates(templates interface{}) CinemaOption {
+	return func(cinema *Cinema) {
+		cinema.Templates = templates
 	}
 }
