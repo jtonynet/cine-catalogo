@@ -68,7 +68,7 @@ func CreateMovies(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getMovieListResult(movies, versionURL)
+	result, err := getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -112,6 +112,7 @@ func RetrieveMovie(ctx *gin.Context) {
 
 	response := *responses.NewMovie(
 		movie,
+		cfg.Host,
 		versionURL,
 		responses.WithMovieTemplates(templateJSON),
 	)
@@ -136,7 +137,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getMovieListResult(movies, versionURL)
+	result, err := getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -151,7 +152,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	)
 }
 
-func getMovieListResult(movies []models.Movie, versionURL string) (*responses.HATEOASListResult, error) {
+func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.Movie{}
 
 	for _, movie := range movies {
@@ -159,6 +160,7 @@ func getMovieListResult(movies []models.Movie, versionURL string) (*responses.HA
 			movieListResponse,
 			*responses.NewMovie(
 				movie,
+				baseURL,
 				versionURL,
 			),
 		)

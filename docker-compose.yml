@@ -17,6 +17,24 @@ services:
     networks:
       - ticket-network
 
+  catalogo-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    depends_on:
+      - postgres-catalogo
+    container_name: catalogo-api
+    hostname: catalogo-api
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - ./:/usr/src/app/
+    tty: true
+    # command: go run cmd/api/main.go -b 0.0.0.0
+    networks:
+      - ticket-network
+
   hal:
     build:
       context: ./hal

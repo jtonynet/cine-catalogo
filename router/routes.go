@@ -12,6 +12,9 @@ import (
 
 func initializeRoutes(r *gin.Engine, cfg config.API) {
 	basePath := "/v1"
+
+	r.Static("/posters", "./posters")
+
 	v1 := r.Group(basePath)
 	v1.Use(middlewares.ConfigInject(cfg))
 	v1.Use(middlewares.CORS())

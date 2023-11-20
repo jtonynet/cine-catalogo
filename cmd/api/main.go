@@ -9,7 +9,7 @@ import (
 func main() {
 
 	cfgDB := config.Database{
-		Host: "localhost",
+		Host: "postgres-catalogo", // postgres-catalogo | localhost
 		User: "api_user",
 		Pass: "api_pass",
 		DB:   "cine_catalog_db",

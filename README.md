@@ -388,4 +388,5 @@ GO Design Patterns
 
 Multiple files
   https://gin-gonic.com/docs/examples/upload-file/multiple-file/
+  https://stackoverflow.com/questions/64873546/how-to-upload-multipart-file-and-json-in-go-with-gin-gonic
 -->

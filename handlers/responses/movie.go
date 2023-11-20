@@ -37,15 +37,18 @@ type MovieOption func(*Movie)
 func NewMovie(
 	model models.Movie,
 	baseURL string,
+	versionURL string,
 	options ...MovieOption,
 ) *Movie {
+	posterPath := fmt.Sprintf("%s/%s", baseURL, model.Poster)
+
 	movie := &Movie{
 		UUID:        model.UUID,
 		Name:        model.Name,
 		Description: model.Description,
 		AgeRating:   model.AgeRating,
 		Subtitled:   model.Subtitled,
-		Poster:      model.Poster,
+		Poster:      posterPath,
 
 		HATEOASListItemResult: HATEOASListItemResult{
 			Links: HATEOASMovieItemLinks{

@@ -12,6 +12,7 @@ type header struct {
 var (
 	JSONDefaultHeaders = []header{{key: "Content-type", value: "application/json"}}
 	HALHeaders         = []header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}
+	MultipartFormData  = []header{{key: "Content-Type", value: "multipart/form-data"}}
 )
 
 func SendError(ctx *gin.Context, code int, msg string, headers []header) {
