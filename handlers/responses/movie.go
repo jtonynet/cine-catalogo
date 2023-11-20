@@ -19,8 +19,8 @@ type Movie struct {
 }
 
 type HATEOASMovieItemLinks struct {
-	Self              HATEOASLink `json:"self"`
-	UploadMoviePoster HATEOASLink `json:"upload-movie-poster"`
+	Self        HATEOASLink `json:"self"`
+	UpdateMovie HATEOASLink `json:"update-movie"`
 }
 
 type HATEOASMovieListLinks struct {
@@ -52,7 +52,7 @@ func NewMovie(
 				Self: HATEOASLink{
 					HREF: fmt.Sprintf("%s/movies/%s", baseURL, model.UUID.String()),
 				},
-				UploadMoviePoster: HATEOASLink{
+				UpdateMovie: HATEOASLink{
 					HREF: fmt.Sprintf("%s/movies/%s", baseURL, model.UUID.String()),
 				},
 			},

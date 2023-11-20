@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
 
 	"github.com/jtonynet/cine-catalogo/config"
@@ -18,56 +18,69 @@ import (
 )
 
 func CreateMovies(ctx *gin.Context) {
-	var requestList []requests.Movie
-	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
+	// https://gin-gonic.com/docs/examples/upload-file/multiple-file/
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-		var singleRequest requests.Movie
-		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
-			// TODO: Implements in future
-			return
-		}
+	form, _ := ctx.MultipartForm()
 
-		requestList = append(requestList, singleRequest)
+	names, _ := form.Value["name[]"]
+	descriptions, _ := form.Value["description[]"]
+	ageRatings, _ := form.Value["age_rating[]"]
+	subtitleds, _ := form.Value["subtitled[]"]
+
+	posters, ok := form.File["poster[]"]
+	if !ok {
+		// TODO: Implements in future
+		fmt.Printf("dont get sended poster file")
+		return
 	}
 
-	movieList := []models.Movie{}
-	for _, request := range requestList {
+	uploadPath := "./posters/"
+	movies := []models.Movie{}
+	for idx, poster := range posters {
+		movieUUID := uuid.New()
+		posterPath := filepath.Join(uploadPath, movieUUID.String()+filepath.Ext(poster.Filename))
+		ctx.SaveUploadedFile(poster, posterPath)
+
+		ageRating, _ := strconv.ParseInt(ageRatings[idx], 10, 64)
+		subtitled, _ := strconv.ParseBool(subtitleds[idx])
+
 		movie, err := models.NewMovie(
-			uuid.New(),
-			request.Name,
-			request.Description,
-			request.AgeRating,
-			*request.Subtitled,
-			request.Poster,
+			movieUUID,
+			names[idx],
+			descriptions[idx],
+			ageRating,
+			subtitled,
+			posterPath,
 		)
 		if err != nil {
 			// TODO: Implements in future
 			return
 		}
 
-		movieList = append(movieList, movie)
+		movies = append(movies, movie)
+
 	}
 
-	if err := database.DB.Create(&movieList).Error; err != nil {
+	if err := database.DB.Create(&movies).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
 
-	responseList := []responses.Movie{}
-	for _, movie := range movieList {
-		responseList = append(responseList,
-			responses.Movie{
-				UUID:        movie.UUID,
-				Name:        movie.Name,
-				Description: movie.Description,
-				AgeRating:   movie.AgeRating,
-				Subtitled:   movie.Subtitled,
-				Poster:      movie.Poster,
-			},
-		)
+	result, err := getMovieListResult(movies, versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return
 	}
 
-	responses.SendSuccess(ctx, http.StatusOK, "create-movies", responseList, nil)
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-movie-list",
+		result,
+		responses.HALHeaders,
+	)
 }
 
 func RetrieveMovie(ctx *gin.Context) {
@@ -86,9 +99,9 @@ func RetrieveMovie(ctx *gin.Context) {
 
 	templateParams := []hateoas.TemplateParams{
 		{
-			Name:        "upload-movie-poster",
-			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
-			HTTPMethod:  http.MethodPut,
+			Name:        "update-movie",
+			ResourceURL: fmt.Sprintf("%s/movies/:movieId", versionURL),
+			HTTPMethod:  http.MethodPatch,
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
@@ -123,7 +136,24 @@ func RetrieveMovieList(ctx *gin.Context) {
 		return
 	}
 
+	result, err := getMovieListResult(movies, versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-movie-list",
+		result,
+		responses.HALHeaders,
+	)
+}
+
+func getMovieListResult(movies []models.Movie, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.Movie{}
+
 	for _, movie := range movies {
 		movieListResponse = append(
 			movieListResponse,
@@ -156,16 +186,16 @@ func RetrieveMovieList(ctx *gin.Context) {
 			RequestStruct: requests.Movie{},
 		},
 		{
-			Name:        "upload-movie-poster",
-			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
-			HTTPMethod:  http.MethodPut,
+			Name:        "update-movie",
+			ResourceURL: fmt.Sprintf("%s/movies/:movieId", versionURL),
+			HTTPMethod:  http.MethodPatch,
 			//RequestStruct: requests.Movie{},
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
-		return
+		return nil, err
 	}
 
 	result := responses.HATEOASListResult{
@@ -174,45 +204,5 @@ func RetrieveMovieList(ctx *gin.Context) {
 		Templates: templateJSON,
 	}
 
-	responses.SendSuccess(
-		ctx,
-		http.StatusOK,
-		"retrieve-movie-list",
-		result,
-		responses.HALHeaders,
-	)
-}
-
-func UploadMoviePoster(ctx *gin.Context) {
-	movieUUID := uuid.MustParse(ctx.Param("movieId"))
-
-	var movie models.Movie
-	if err := database.DB.Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
-		// TODO: Implements in future
-		fmt.Println("dont found movie")
-		return
-	}
-
-	file, err := ctx.FormFile("poster")
-	if err != nil {
-		// TODO: Implements in future
-		fmt.Printf("dont sended poster file %v", err)
-		return
-	}
-
-	// TODO: posters dirs, move to ceph s3 in future and manage by envVars
-	uploadPath := "./posters/"
-	posterPath := filepath.Join(uploadPath, movieUUID.String()+filepath.Ext(file.Filename))
-	if err := ctx.SaveUploadedFile(file, posterPath); err != nil {
-		// TODO: Implements in future
-		fmt.Println("dont save poster file")
-		return
-	}
-
-	movie.Poster = posterPath
-	if err := database.DB.Save(&movie).Error; err != nil {
-		// TODO: Implements in future
-		fmt.Println("dont update movie")
-		return
-	}
+	return &result, nil
 }

@@ -66,38 +66,10 @@ func CreateCinemas(ctx *gin.Context) {
 		return
 	}
 
-	responseList := []responses.Cinema{}
-	for _, cinema := range cinemas {
-		responseList = append(responseList,
-			*responses.NewCinema(cinema, versionURL),
-		)
-	}
-
-	cinemaList := responses.HATEOASCinemaList{
-		Cinemas: &responseList,
-	}
-
-	cinemaListLinks := responses.HATEOASCinemasItemLinks{
-		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
-	}
-
-	templateParams := []hateoas.TemplateParams{
-		{
-			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
-			HTTPMethod:  http.MethodGet,
-		},
-	}
-	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	result, err := getCinemaListResult(cinemas, versionURL, addressId)
 	if err != nil {
 		// TODO: Implements in future
 		return
-	}
-
-	result := responses.HATEOASListResult{
-		Embedded:  cinemaList,
-		Links:     cinemaListLinks,
-		Templates: templateJSON,
 	}
 
 	responses.SendSuccess(
@@ -157,27 +129,41 @@ func RetrieveCinemaList(ctx *gin.Context) {
 
 	addressId := ctx.Param("addressId")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed addressId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
 		return
 	}
-
-	var address models.Address
 	addressUUID := uuid.MustParse(addressId)
 
-	if err := database.DB.Find(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	address := models.Address{UUID: addressUUID}
+	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		fmt.Println("Cannot obtains address %v", err)
 		return
 	}
 
-	var cinemas []models.Cinema
-	// TODO: BUG DA PORRA
-	// if err := database.DB.Find(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
-	if err := database.DB.Where("address_id = ?", address.ID).Find(&cinemas).Error; err != nil {
+	cinemas := []models.Cinema{}
+	if err := database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
 
+	result, err := getCinemaListResult(cinemas, versionURL, addressId)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-cinema-list",
+		result,
+		responses.HALHeaders,
+	)
+}
+
+func getCinemaListResult(cinemas []models.Cinema, versionURL, addressId string) (*responses.HATEOASListResult, error) {
 	var cinemaListResponse []responses.Cinema
+
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
 			*responses.NewCinema(cinema, versionURL),
@@ -202,20 +188,14 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
-		return
+		return nil, err
 	}
 
-	result := responses.HATEOASListResult{
+	result := &responses.HATEOASListResult{
 		Embedded:  cinemaList,
 		Links:     cinemaListLinks,
 		Templates: templateJSON,
 	}
 
-	responses.SendSuccess(
-		ctx,
-		http.StatusOK,
-		"retrieve-cinema-list",
-		result,
-		responses.HALHeaders,
-	)
+	return result, nil
 }

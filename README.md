@@ -386,4 +386,6 @@ Fix #216: Enable to call binding multiple times in some formats
 GO Design Patterns
   https://dev.to/kittipat1413/understanding-the-options-pattern-in-go-390c
 
+Multiple files
+  https://gin-gonic.com/docs/examples/upload-file/multiple-file/
 -->

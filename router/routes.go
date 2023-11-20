@@ -36,7 +36,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.POST("/movies", handlers.CreateMovies)
 
 	// Movies
-	v1.PUT("/movies/:movieId", handlers.UploadMoviePoster)
+	//v1.PUT("/movies/:movieId", handlers.UploadMoviePoster)
 	v1.OPTIONS("/movies", handlers.Option)
 	v1.HEAD("/movies", handlers.Head)
 

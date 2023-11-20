@@ -56,46 +56,10 @@ func CreateAddresses(ctx *gin.Context) {
 		return
 	}
 
-	responseList := []responses.Address{}
-	for _, address := range addresses {
-		responseList = append(responseList,
-			*responses.NewAddress(address, versionURL),
-		)
-	}
-
-	addressList := responses.HATEOASAddressList{
-		Addresses: &responseList,
-	}
-
-	addressListLinks := responses.HATEOASAddressItemLinks{
-		Self:                   responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId", versionURL)},
-		CreateAddressesCinemas: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
-		RetrieveCinemaList:     responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL)},
-	}
-
-	templateParams := []hateoas.TemplateParams{
-		{
-			Name:          "create-addresses-cinemas",
-			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
-			HTTPMethod:    http.MethodPost,
-			RequestStruct: requests.Cinema{},
-		},
-		{
-			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
-			HTTPMethod:  http.MethodGet,
-		},
-	}
-	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	result, err := getAddresListResult(addresses, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
-	}
-
-	result := responses.HATEOASListResult{
-		Embedded:  addressList,
-		Links:     addressListLinks,
-		Templates: templateJSON,
 	}
 
 	responses.SendSuccess(
@@ -164,7 +128,24 @@ func RetrieveAddressList(ctx *gin.Context) {
 		return
 	}
 
+	result, err := getAddresListResult(addresses, versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-address-list",
+		result,
+		responses.HALHeaders,
+	)
+}
+
+func getAddresListResult(addresses []models.Address, versionURL string) (*responses.HATEOASListResult, error) {
 	addressListResponse := []responses.Address{}
+
 	for _, address := range addresses {
 		addressListResponse = append(
 			addressListResponse,
@@ -203,7 +184,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
-		return
+		return nil, err
 	}
 
 	result := responses.HATEOASListResult{
@@ -212,11 +193,5 @@ func RetrieveAddressList(ctx *gin.Context) {
 		Templates: templateJSON,
 	}
 
-	responses.SendSuccess(
-		ctx,
-		http.StatusOK,
-		"retrieve-address-list",
-		result,
-		responses.HALHeaders,
-	)
+	return &result, nil
 }
