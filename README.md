@@ -44,6 +44,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 - [CineCatalog Microsservice](#cine-catalogo)<br/>
   :arrow_heading_up: [index](#arrow_heading_up-index)<br/>
   :green_book: [About](#about)<br/>
+  :traffic_light: [HATEOAS HAL](#HATEOAS)<br/>
   :umbrella: [Event Storming](#event-storming)<br/>
   :computer: [Run the project](#run)<br/>
   :bar_chart: [Diagrams](#diagrams)<br/>
@@ -52,7 +53,6 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   :clap: [Best Practices](#best-practices)<br/>
   :brain: [ADR - Architecture Decision Records](#adr)<br/>
   :1234: [Versions](#versions)<br/>
-  :traffic_light: [HATEOAS HAL](#HATEOAS)<br/>
   :robot: [Use of AI](#ia)<br>
 
 <br/>
@@ -69,6 +69,19 @@ This project aims to address the needs of cataloging cinema halls, movies, and s
 This is a Golang version of the mentioned service. Swagger Docs, Flow Diagrams, Entity-Relationship Diagrams (DER), and Event Storming provide more context to the service's scenario.
 
 The objective of this system is to maintain a [high level of maturity](https://martinfowler.com/articles/richardsonMaturityModel.html) with a consistent RESTful API, along with the possibility of caching and a robust logging system.
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="HATEOAS"></a>
+### :traffic_light: HATEOAS HAL
+
+The API is being developed following RESTful guidelines at maturity level 4 for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
+
+<img src="./assets/images/screen_captures/hal.png"/>
 
 <br/>
 
@@ -316,20 +329,6 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 <br/>
 
 [:arrow_heading_up: back to top](#index)
-
----
-
-<a id="HATEOAS"></a>
-### :traffic_light: HATEOAS HAL
-
-The API is being developed following RESTful guidelines at maturity level 4 for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
-
-<img src="./assets/images/screen_captures/hal.png"/>
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
 
 ---
 

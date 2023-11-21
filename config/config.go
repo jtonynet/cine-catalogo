@@ -8,6 +8,7 @@ type API struct {
 	TagVersion string `mapstructure:"API_TAG_VERSION"`
 	Env        string `mapstructure:"API_ENV"`
 	Host       string `mapstructure:"API_HOST"`
+	PostersDir string `mapstructure:"API_POSTERS_DIR"`
 }
 
 type Database struct {

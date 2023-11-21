@@ -36,7 +36,7 @@ func CreateMovies(ctx *gin.Context) {
 		return
 	}
 
-	uploadPath := "./posters/"
+	uploadPath := cfg.PostersDir
 	movies := []models.Movie{}
 	for idx, poster := range posters {
 		movieUUID := uuid.New()
