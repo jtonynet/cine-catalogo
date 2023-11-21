@@ -79,7 +79,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 <a id="HATEOAS"></a>
 ### :traffic_light: HATEOAS HAL
 
-The API is being developed following RESTful guidelines at maturity level 4 for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
+The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
 
 <img src="./assets/images/screen_captures/hal.png"/>
 
