@@ -115,6 +115,7 @@ func RetrieveMovie(ctx *gin.Context) {
 		cfg.Host,
 		versionURL,
 		responses.WithMovieTemplates(templateJSON),
+		responses.WithMoviePosterEmbedded(cfg.Host, movie.Poster),
 	)
 
 	responses.SendSuccess(

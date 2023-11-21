@@ -7,14 +7,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
+var MoviePosterContentType = "image/png"
+
 type Movie struct {
 	UUID        uuid.UUID `json:"uuid"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	AgeRating   int64     `json:"age_rating"`
 	Subtitled   bool      `json:"subtitled"`
-	Poster      string    `json:"poster"`
 
+	HATEOASEmbeddedPosterItem
 	HATEOASListItemResult
 }
 
@@ -32,6 +34,10 @@ type HATEOASMovieList struct {
 	Movies *[]Movie `json:"movies"`
 }
 
+type HATEOASMovieItemEmbedded struct {
+	Embedded HATEOASLink `json:"_embedded"`
+}
+
 type MovieOption func(*Movie)
 
 func NewMovie(
@@ -40,7 +46,6 @@ func NewMovie(
 	versionURL string,
 	options ...MovieOption,
 ) *Movie {
-	posterPath := fmt.Sprintf("%s/%s", baseURL, model.Poster)
 
 	movie := &Movie{
 		UUID:        model.UUID,
@@ -48,15 +53,14 @@ func NewMovie(
 		Description: model.Description,
 		AgeRating:   model.AgeRating,
 		Subtitled:   model.Subtitled,
-		Poster:      posterPath,
 
 		HATEOASListItemResult: HATEOASListItemResult{
 			Links: HATEOASMovieItemLinks{
 				Self: HATEOASLink{
-					HREF: fmt.Sprintf("%s/movies/%s", baseURL, model.UUID.String()),
+					HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String()),
 				},
 				UpdateMovie: HATEOASLink{
-					HREF: fmt.Sprintf("%s/movies/%s", baseURL, model.UUID.String()),
+					HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String()),
 				},
 			},
 		},
@@ -72,5 +76,35 @@ func NewMovie(
 func WithMovieTemplates(templates interface{}) MovieOption {
 	return func(movie *Movie) {
 		movie.Templates = templates
+	}
+}
+
+type HATEOASEmbeddedPosterItem struct {
+	Embedded *HATEOASPosterItem `json:"_embedded,omitempty"`
+}
+
+type HATEOASPosterItem struct {
+	Poster HATEOASPosterItemLinks `json:"poster,omitempty"`
+}
+
+type HATEOASPosterItemLinks struct {
+	Links HATEOASPosterLinks `json:"_links,omitempty"`
+}
+
+type HATEOASPosterLinks struct {
+	HREF        string `json:"href,omitempty"`
+	ContentType string `json:"contentType,omitempty"`
+}
+
+func WithMoviePosterEmbedded(baseURL, posterPath string) MovieOption {
+	return func(movie *Movie) {
+		movie.Embedded = &HATEOASPosterItem{
+			Poster: HATEOASPosterItemLinks{
+				Links: HATEOASPosterLinks{
+					HREF:        fmt.Sprintf("%s/%s", baseURL, posterPath),
+					ContentType: MoviePosterContentType,
+				},
+			},
+		}
 	}
 }
