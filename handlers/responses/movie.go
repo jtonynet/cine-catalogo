@@ -31,7 +31,8 @@ type HATEOASMovieListLinks struct {
 }
 
 type HATEOASMovieList struct {
-	Movies *[]Movie `json:"movies"`
+	Movies  *[]Movie              `json:"movies"`
+	Posters *[]HATEOASPosterLinks `json:"posters"`
 }
 
 type HATEOASMovieItemEmbedded struct {
@@ -98,13 +99,21 @@ type HATEOASPosterLinks struct {
 
 func WithMoviePosterEmbedded(baseURL, posterPath string) MovieOption {
 	return func(movie *Movie) {
-		movie.Embedded = &HATEOASPosterItem{
-			Poster: HATEOASPosterItemLinks{
-				Links: HATEOASPosterLinks{
-					HREF:        fmt.Sprintf("%s/%s", baseURL, posterPath),
-					ContentType: MoviePosterContentType,
-				},
-			},
-		}
+		movie.Embedded = NewPosterItem(baseURL, posterPath)
+	}
+}
+
+func NewPosterItem(baseURL, posterPath string) *HATEOASPosterItem {
+	return &HATEOASPosterItem{
+		Poster: HATEOASPosterItemLinks{
+			Links: *NewPosterLinks(baseURL, posterPath),
+		},
+	}
+}
+
+func NewPosterLinks(baseURL, posterPath string) *HATEOASPosterLinks {
+	return &HATEOASPosterLinks{
+		HREF:        fmt.Sprintf("%s/%s", baseURL, posterPath),
+		ContentType: MoviePosterContentType,
 	}
 }

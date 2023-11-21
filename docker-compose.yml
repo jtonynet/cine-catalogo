@@ -31,7 +31,6 @@ services:
     volumes: 
       - ./:/usr/src/app/
     tty: true
-    # command: go run cmd/api/main.go -b 0.0.0.0
     networks:
       - ticket-network
 

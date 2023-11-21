@@ -155,6 +155,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 
 func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.Movie{}
+	posterListResponse := []responses.HATEOASPosterLinks{}
 
 	for _, movie := range movies {
 		movieListResponse = append(
@@ -165,10 +166,19 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 				versionURL,
 			),
 		)
+
+		posterListResponse = append(
+			posterListResponse,
+			*responses.NewPosterLinks(
+				baseURL,
+				movie.Poster,
+			),
+		)
 	}
 
-	movieList := responses.HATEOASMovieList{
-		Movies: &movieListResponse,
+	movieAndPosterList := responses.HATEOASMovieList{
+		Movies:  &movieListResponse,
+		Posters: &posterListResponse,
 	}
 
 	movieListLinks := responses.HATEOASMovieListLinks{
@@ -202,7 +212,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 	}
 
 	result := responses.HATEOASListResult{
-		Embedded:  movieList,
+		Embedded:  movieAndPosterList,
 		Links:     movieListLinks,
 		Templates: templateJSON,
 	}
