@@ -7,22 +7,12 @@ import (
 )
 
 func main() {
-
-	cfgDB := config.Database{
-		Host: "postgres-catalogo", // postgres-catalogo | localhost
-		User: "api_user",
-		Pass: "api_pass",
-		DB:   "cine_catalog_db",
-		Port: 5432,
+	cfg, err := config.LoadConfig(".")
+	if err != nil {
+		//TODO: Implements in future
+		return
 	}
-	database.Init(cfgDB)
 
-	cfgAPI := config.API{
-		Name:       "catalogo",
-		Port:       ":8080",
-		TagVersion: "0.0.0",
-		Env:        "dev",
-		Host:       "http://localhost:8080",
-	}
-	router.Init(cfgAPI)
+	database.Init(cfg.Database)
+	router.Init(cfg.API)
 }

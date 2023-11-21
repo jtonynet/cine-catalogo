@@ -1,6 +1,8 @@
 package router
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jtonynet/cine-catalogo/config"
 )
@@ -10,5 +12,5 @@ func Init(cfg config.API) {
 
 	initializeRoutes(r, cfg)
 
-	r.Run(cfg.Port)
+	r.Run(fmt.Sprintf(":%s", cfg.Port))
 }
