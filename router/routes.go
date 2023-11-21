@@ -3,8 +3,8 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jtonynet/cine-catalogo/config"
-	"github.com/jtonynet/cine-catalogo/handlers"
-	"github.com/jtonynet/cine-catalogo/middlewares"
+	"github.com/jtonynet/cine-catalogo/internal/handlers"
+	"github.com/jtonynet/cine-catalogo/internal/middlewares"
 )
 
 // INFO: To manage OPTION and HEAD verbs requests its necessary to implements HATEOAS HAL routes

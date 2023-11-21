@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jtonynet/cine-catalogo/config"
-	"github.com/jtonynet/cine-catalogo/handlers/requests"
+	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 )
 

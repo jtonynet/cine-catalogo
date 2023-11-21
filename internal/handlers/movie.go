@@ -10,9 +10,9 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/jtonynet/cine-catalogo/config"
-	"github.com/jtonynet/cine-catalogo/handlers/requests"
-	"github.com/jtonynet/cine-catalogo/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/database"
+	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
+	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
 	"github.com/jtonynet/cine-catalogo/models"
 )
