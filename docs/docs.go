@@ -27,7 +27,42 @@ const docTemplate = `{
                 "tags": [
                     "Movies"
                 ],
-                "summary": "Retrieve List Movies",
+                "summary": "Retrieve Movie List",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MovieListResult"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create List of Movies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Create Movies",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/requests.Movie"
+                            }
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -72,6 +107,32 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "requests.Movie": {
+            "type": "object",
+            "required": [
+                "age_rating",
+                "description",
+                "name",
+                "subtitled"
+            ],
+            "properties": {
+                "age_rating": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "poster": {
+                    "type": "string"
+                },
+                "subtitled": {
+                    "type": "boolean"
+                }
+            }
+        },
         "responses.HATEOASLink": {
             "type": "object",
             "properties": {
@@ -138,11 +199,17 @@ const docTemplate = `{
         "responses.HATEOASPosterLinks": {
             "type": "object",
             "properties": {
-                "contentType": {
-                    "type": "string"
+                "delete-poster": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
                 },
-                "href": {
-                    "type": "string"
+                "image": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "self": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "update-poster": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }
         },

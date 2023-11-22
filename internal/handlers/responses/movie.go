@@ -7,9 +7,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
-var MoviePosterContentType = "image/png"
-
-type BaseMovie struct {
+type baseMovie struct {
 	UUID        uuid.UUID `json:"uuid"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
@@ -18,14 +16,14 @@ type BaseMovie struct {
 }
 
 type Movie struct {
-	BaseMovie
+	baseMovie
 
 	Templates interface{} `json:"_templates,omitempty"`
 	HATEOASEmbeddedPosterItem
 }
 
 type MovieListItem struct {
-	BaseMovie
+	baseMovie
 
 	MovieListItemResult
 }
@@ -59,10 +57,9 @@ func NewMovie(
 	model models.Movie,
 	templates interface{},
 	baseURL string,
-	versionURL string,
 ) Movie {
 	movie := Movie{
-		BaseMovie: BaseMovie{
+		baseMovie: baseMovie{
 			UUID:        model.UUID,
 			Name:        model.Name,
 			Description: model.Description,
@@ -70,13 +67,14 @@ func NewMovie(
 			Subtitled:   model.Subtitled,
 		},
 
+		// TODO: CHANGE TO EMBEDDED POSTER ENTITY
 		HATEOASEmbeddedPosterItem: HATEOASEmbeddedPosterItem{
 			Embedded: &HATEOASPosterItem{
+				// TODO:
+				//Poster: NewPoster( model models.Poster, baseURL string, posterPath string, templates interface{})
+
 				Poster: HATEOASPosterItemLinks{
-					Links: HATEOASPosterLinks{
-						HREF:        fmt.Sprintf("%s/%s", baseURL, model.Poster),
-						ContentType: MoviePosterContentType,
-					},
+					Links: NewPosterLinks(model.UUID, uuid.New(), baseURL, model.Poster),
 				},
 			},
 		},
@@ -93,7 +91,7 @@ func NewMovieListItem(
 	versionURL string,
 ) MovieListItem {
 	movie := MovieListItem{
-		BaseMovie: BaseMovie{
+		baseMovie: baseMovie{
 			UUID:        model.UUID,
 			Name:        model.Name,
 			Description: model.Description,
@@ -125,30 +123,6 @@ type HATEOASPosterItem struct {
 }
 
 // swagger:ignore
-type HATEOASPosterItemLinks struct {
-	Links HATEOASPosterLinks `json:"_links,omitempty"`
-}
-
-// swagger:ignore
-type HATEOASPosterLinks struct {
-	HREF        string `json:"href,omitempty"`
-	ContentType string `json:"contentType,omitempty"`
-}
-
-func NewPosterItem(baseURL, posterPath string) *HATEOASPosterItem {
-	return &HATEOASPosterItem{
-		Poster: HATEOASPosterItemLinks{
-			Links: *NewPosterLinks(baseURL, posterPath),
-		},
-	}
-}
-
-func NewPosterLinks(baseURL, posterPath string) *HATEOASPosterLinks {
-	return &HATEOASPosterLinks{
-		HREF:        fmt.Sprintf("%s/%s", baseURL, posterPath),
-		ContentType: MoviePosterContentType,
-	}
-}
 
 // swagger:ignore
 type MovieListResult struct {

@@ -3,10 +3,9 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"path/filepath"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
 
 	"github.com/jtonynet/cine-catalogo/config"
@@ -17,42 +16,40 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
+// @BasePath /v1
+
+// @Summary Create Movies
+// @Description Create List of Movies
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param request body []requests.Movie true "Request body"
+// @Success 200 {object} responses.MovieListResult
+// @Router /movies [post]
 func CreateMovies(ctx *gin.Context) {
-	// https://gin-gonic.com/docs/examples/upload-file/multiple-file/
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	form, _ := ctx.MultipartForm()
+	var requestList []requests.Movie
+	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
+		var singleRequest requests.Movie
+		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
+			// TODO: Implements in future
+			return
+		}
 
-	names, _ := form.Value["name[]"]
-	descriptions, _ := form.Value["description[]"]
-	ageRatings, _ := form.Value["age_rating[]"]
-	subtitleds, _ := form.Value["subtitled[]"]
-
-	posters, ok := form.File["poster[]"]
-	if !ok {
-		// TODO: Implements in future
-		fmt.Printf("dont get sended poster file")
-		return
+		requestList = append(requestList, singleRequest)
 	}
 
-	uploadPath := cfg.PostersDir
 	movies := []models.Movie{}
-	for idx, poster := range posters {
-		movieUUID := uuid.New()
-		posterPath := filepath.Join(uploadPath, movieUUID.String()+filepath.Ext(poster.Filename))
-		ctx.SaveUploadedFile(poster, posterPath)
-
-		ageRating, _ := strconv.ParseInt(ageRatings[idx], 10, 64)
-		subtitled, _ := strconv.ParseBool(subtitleds[idx])
-
+	for _, request := range requestList {
 		movie, err := models.NewMovie(
-			movieUUID,
-			names[idx],
-			descriptions[idx],
-			ageRating,
-			subtitled,
-			posterPath,
+			uuid.New(),
+			request.Name,
+			request.Description,
+			request.AgeRating,
+			*request.Subtitled,
+			request.Poster,
 		)
 		if err != nil {
 			// TODO: Implements in future
@@ -60,7 +57,6 @@ func CreateMovies(ctx *gin.Context) {
 		}
 
 		movies = append(movies, movie)
-
 	}
 
 	if err := database.DB.Create(&movies).Error; err != nil {
@@ -77,7 +73,7 @@ func CreateMovies(ctx *gin.Context) {
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-movie-list",
+		"create-movies",
 		result,
 		responses.HALHeaders,
 	)
@@ -124,7 +120,6 @@ func RetrieveMovie(ctx *gin.Context) {
 		movie,
 		templateJSON,
 		cfg.Host,
-		versionURL,
 	)
 
 	responses.SendSuccess(
@@ -138,7 +133,7 @@ func RetrieveMovie(ctx *gin.Context) {
 
 // @BasePath /v1
 
-// @Summary Retrieve List Movies
+// @Summary Retrieve Movie List
 // @Description Retrieve List all Movies
 // @Tags Movies
 // @Accept json
@@ -188,6 +183,8 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		posterListResponse = append(
 			posterListResponse,
 			*responses.NewPosterLinks(
+				movie.UUID,
+				uuid.New(),
 				baseURL,
 				movie.Poster,
 			),

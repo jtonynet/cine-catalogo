@@ -17,17 +17,17 @@ type Cinema struct {
 
 func NewCinema(
 	UUID uuid.UUID,
-	AddressID uint,
-	Name string,
-	Description string,
-	Capacity int64,
+	addressID uint,
+	name string,
+	description string,
+	capacity int64,
 ) (Cinema, error) {
 	c := Cinema{
 		UUID:        UUID,
-		AddressID:   AddressID,
-		Name:        Name,
-		Description: Description,
-		Capacity:    Capacity,
+		AddressID:   addressID,
+		Name:        name,
+		Description: description,
+		Capacity:    capacity,
 	}
 
 	return c, nil

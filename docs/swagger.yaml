@@ -1,4 +1,22 @@
 definitions:
+  requests.Movie:
+    properties:
+      age_rating:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      poster:
+        type: string
+      subtitled:
+        type: boolean
+    required:
+    - age_rating
+    - description
+    - name
+    - subtitled
+    type: object
   responses.HATEOASLink:
     properties:
       href:
@@ -41,10 +59,14 @@ definitions:
     type: object
   responses.HATEOASPosterLinks:
     properties:
-      contentType:
-        type: string
-      href:
-        type: string
+      delete-poster:
+        $ref: '#/definitions/responses.HATEOASLink'
+      image:
+        $ref: '#/definitions/responses.HATEOASLink'
+      self:
+        $ref: '#/definitions/responses.HATEOASLink'
+      update-poster:
+        $ref: '#/definitions/responses.HATEOASLink'
     type: object
   responses.Movie:
     properties:
@@ -100,7 +122,30 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.MovieListResult'
-      summary: Retrieve List Movies
+      summary: Retrieve Movie List
+      tags:
+      - Movies
+    post:
+      consumes:
+      - application/json
+      description: Create List of Movies
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/requests.Movie'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.MovieListResult'
+      summary: Create Movies
       tags:
       - Movies
   /movies/{movieId}:

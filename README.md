@@ -399,4 +399,6 @@ Multiple files
   https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
 
   https://github.com/Dwolla/hal-forms#form-transcoding
+
+  https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
 -->

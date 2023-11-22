@@ -4,6 +4,7 @@ import "github.com/google/uuid"
 
 type Movie struct {
 	BaseModel
+
 	UUID        uuid.UUID `gorm:"type:uuid;unique;not null"`
 	Name        string
 	Description string
