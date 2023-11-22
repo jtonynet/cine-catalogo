@@ -1,0 +1,198 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/movies": {
+            "get": {
+                "description": "Retrieve List all Movies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Retrieve List Movies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MovieListResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/movies/{movieId}": {
+            "get": {
+                "description": "Retrieve one Movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Retrieve Movie",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID of the movie",
+                        "name": "movieId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Movie"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "responses.HATEOASLink": {
+            "type": "object",
+            "properties": {
+                "href": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.HATEOASMovieAndPostersList": {
+            "type": "object",
+            "properties": {
+                "movies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.MovieListItem"
+                    }
+                },
+                "posters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.HATEOASPosterLinks"
+                    }
+                }
+            }
+        },
+        "responses.HATEOASMovieItemLinks": {
+            "type": "object",
+            "properties": {
+                "self": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "update-movie": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                }
+            }
+        },
+        "responses.HATEOASMovieListLinks": {
+            "type": "object",
+            "properties": {
+                "create-movies": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "self": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                }
+            }
+        },
+        "responses.HATEOASPosterItem": {
+            "type": "object",
+            "properties": {
+                "poster": {
+                    "$ref": "#/definitions/responses.HATEOASPosterItemLinks"
+                }
+            }
+        },
+        "responses.HATEOASPosterItemLinks": {
+            "type": "object",
+            "properties": {
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASPosterLinks"
+                }
+            }
+        },
+        "responses.HATEOASPosterLinks": {
+            "type": "object",
+            "properties": {
+                "contentType": {
+                    "type": "string"
+                },
+                "href": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.Movie": {
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "$ref": "#/definitions/responses.HATEOASPosterItem"
+                },
+                "_templates": {},
+                "age_rating": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "subtitled": {
+                    "type": "boolean"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.MovieListItem": {
+            "type": "object",
+            "properties": {
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASMovieItemLinks"
+                },
+                "age_rating": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "subtitled": {
+                    "type": "boolean"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.MovieListResult": {
+            "type": "object",
+            "properties": {
+                "_embedded": {
+                    "$ref": "#/definitions/responses.HATEOASMovieAndPostersList"
+                },
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASMovieListLinks"
+                },
+                "_templates": {}
+            }
+        }
+    }
+}

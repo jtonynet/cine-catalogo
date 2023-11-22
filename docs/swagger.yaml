@@ -1,0 +1,127 @@
+definitions:
+  responses.HATEOASLink:
+    properties:
+      href:
+        type: string
+    type: object
+  responses.HATEOASMovieAndPostersList:
+    properties:
+      movies:
+        items:
+          $ref: '#/definitions/responses.MovieListItem'
+        type: array
+      posters:
+        items:
+          $ref: '#/definitions/responses.HATEOASPosterLinks'
+        type: array
+    type: object
+  responses.HATEOASMovieItemLinks:
+    properties:
+      self:
+        $ref: '#/definitions/responses.HATEOASLink'
+      update-movie:
+        $ref: '#/definitions/responses.HATEOASLink'
+    type: object
+  responses.HATEOASMovieListLinks:
+    properties:
+      create-movies:
+        $ref: '#/definitions/responses.HATEOASLink'
+      self:
+        $ref: '#/definitions/responses.HATEOASLink'
+    type: object
+  responses.HATEOASPosterItem:
+    properties:
+      poster:
+        $ref: '#/definitions/responses.HATEOASPosterItemLinks'
+    type: object
+  responses.HATEOASPosterItemLinks:
+    properties:
+      _links:
+        $ref: '#/definitions/responses.HATEOASPosterLinks'
+    type: object
+  responses.HATEOASPosterLinks:
+    properties:
+      contentType:
+        type: string
+      href:
+        type: string
+    type: object
+  responses.Movie:
+    properties:
+      _embedded:
+        $ref: '#/definitions/responses.HATEOASPosterItem'
+      _templates: {}
+      age_rating:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      subtitled:
+        type: boolean
+      uuid:
+        type: string
+    type: object
+  responses.MovieListItem:
+    properties:
+      _links:
+        $ref: '#/definitions/responses.HATEOASMovieItemLinks'
+      age_rating:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      subtitled:
+        type: boolean
+      uuid:
+        type: string
+    type: object
+  responses.MovieListResult:
+    properties:
+      _embedded:
+        $ref: '#/definitions/responses.HATEOASMovieAndPostersList'
+      _links:
+        $ref: '#/definitions/responses.HATEOASMovieListLinks'
+      _templates: {}
+    type: object
+info:
+  contact: {}
+paths:
+  /movies:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve List all Movies
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.MovieListResult'
+      summary: Retrieve List Movies
+      tags:
+      - Movies
+  /movies/{movieId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve one Movie
+      parameters:
+      - description: UUID of the movie
+        in: path
+        name: movieId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Movie'
+      summary: Retrieve Movie
+      tags:
+      - Movies
+swagger: "2.0"

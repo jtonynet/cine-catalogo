@@ -9,15 +9,25 @@ import (
 
 var MoviePosterContentType = "image/png"
 
-type Movie struct {
+type BaseMovie struct {
 	UUID        uuid.UUID `json:"uuid"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	AgeRating   int64     `json:"age_rating"`
 	Subtitled   bool      `json:"subtitled"`
+}
 
+type Movie struct {
+	BaseMovie
+
+	Templates interface{} `json:"_templates,omitempty"`
 	HATEOASEmbeddedPosterItem
-	HATEOASListItemResult
+}
+
+type MovieListItem struct {
+	BaseMovie
+
+	MovieListItemResult
 }
 
 type HATEOASMovieItemLinks struct {
@@ -30,8 +40,8 @@ type HATEOASMovieListLinks struct {
 	CreateMovies HATEOASLink `json:"create-movies"`
 }
 
-type HATEOASMovieList struct {
-	Movies  *[]Movie              `json:"movies"`
+type HATEOASMovieAndPostersList struct {
+	Movies  *[]MovieListItem      `json:"movies"`
 	Posters *[]HATEOASPosterLinks `json:"posters"`
 }
 
@@ -41,21 +51,57 @@ type HATEOASMovieItemEmbedded struct {
 
 type MovieOption func(*Movie)
 
+type MovieListItemResult struct {
+	Links HATEOASMovieItemLinks `json:"_links"`
+}
+
 func NewMovie(
 	model models.Movie,
+	templates interface{},
 	baseURL string,
 	versionURL string,
-	options ...MovieOption,
-) *Movie {
+) Movie {
+	movie := Movie{
+		BaseMovie: BaseMovie{
+			UUID:        model.UUID,
+			Name:        model.Name,
+			Description: model.Description,
+			AgeRating:   model.AgeRating,
+			Subtitled:   model.Subtitled,
+		},
 
-	movie := &Movie{
-		UUID:        model.UUID,
-		Name:        model.Name,
-		Description: model.Description,
-		AgeRating:   model.AgeRating,
-		Subtitled:   model.Subtitled,
+		HATEOASEmbeddedPosterItem: HATEOASEmbeddedPosterItem{
+			Embedded: &HATEOASPosterItem{
+				Poster: HATEOASPosterItemLinks{
+					Links: HATEOASPosterLinks{
+						HREF:        fmt.Sprintf("%s/%s", baseURL, model.Poster),
+						ContentType: MoviePosterContentType,
+					},
+				},
+			},
+		},
 
-		HATEOASListItemResult: HATEOASListItemResult{
+		Templates: templates,
+	}
+
+	return movie
+}
+
+func NewMovieListItem(
+	model models.Movie,
+	baseURL,
+	versionURL string,
+) MovieListItem {
+	movie := MovieListItem{
+		BaseMovie: BaseMovie{
+			UUID:        model.UUID,
+			Name:        model.Name,
+			Description: model.Description,
+			AgeRating:   model.AgeRating,
+			Subtitled:   model.Subtitled,
+		},
+
+		MovieListItemResult: MovieListItemResult{
 			Links: HATEOASMovieItemLinks{
 				Self: HATEOASLink{
 					HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String()),
@@ -67,17 +113,7 @@ func NewMovie(
 		},
 	}
 
-	for _, opt := range options {
-		opt(movie)
-	}
-
 	return movie
-}
-
-func WithMovieTemplates(templates interface{}) MovieOption {
-	return func(movie *Movie) {
-		movie.Templates = templates
-	}
 }
 
 type HATEOASEmbeddedPosterItem struct {
@@ -88,19 +124,15 @@ type HATEOASPosterItem struct {
 	Poster HATEOASPosterItemLinks `json:"poster,omitempty"`
 }
 
+// swagger:ignore
 type HATEOASPosterItemLinks struct {
 	Links HATEOASPosterLinks `json:"_links,omitempty"`
 }
 
+// swagger:ignore
 type HATEOASPosterLinks struct {
 	HREF        string `json:"href,omitempty"`
 	ContentType string `json:"contentType,omitempty"`
-}
-
-func WithMoviePosterEmbedded(baseURL, posterPath string) MovieOption {
-	return func(movie *Movie) {
-		movie.Embedded = NewPosterItem(baseURL, posterPath)
-	}
 }
 
 func NewPosterItem(baseURL, posterPath string) *HATEOASPosterItem {
@@ -116,4 +148,11 @@ func NewPosterLinks(baseURL, posterPath string) *HATEOASPosterLinks {
 		HREF:        fmt.Sprintf("%s/%s", baseURL, posterPath),
 		ContentType: MoviePosterContentType,
 	}
+}
+
+// swagger:ignore
+type MovieListResult struct {
+	Embedded  HATEOASMovieAndPostersList `json:"_embedded"`
+	Links     HATEOASMovieListLinks      `json:"_links"`
+	Templates interface{}                `json:"_templates"`
 }

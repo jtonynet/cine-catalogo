@@ -83,6 +83,16 @@ func CreateMovies(ctx *gin.Context) {
 	)
 }
 
+// @BasePath /v1
+
+// @Summary Retrieve Movie
+// @Description Retrieve one Movie
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param movieId path string true "UUID of the movie"
+// @Success 200 {object} responses.Movie
+// @Router /movies/{movieId} [get]
 func RetrieveMovie(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
@@ -110,12 +120,11 @@ func RetrieveMovie(ctx *gin.Context) {
 		return
 	}
 
-	response := *responses.NewMovie(
+	response := responses.NewMovie(
 		movie,
+		templateJSON,
 		cfg.Host,
 		versionURL,
-		responses.WithMovieTemplates(templateJSON),
-		responses.WithMoviePosterEmbedded(cfg.Host, movie.Poster),
 	)
 
 	responses.SendSuccess(
@@ -127,6 +136,15 @@ func RetrieveMovie(ctx *gin.Context) {
 	)
 }
 
+// @BasePath /v1
+
+// @Summary Retrieve List Movies
+// @Description Retrieve List all Movies
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.MovieListResult
+// @Router /movies [get]
 func RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
@@ -153,14 +171,14 @@ func RetrieveMovieList(ctx *gin.Context) {
 	)
 }
 
-func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
-	movieListResponse := []responses.Movie{}
+func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.MovieListResult, error) {
+	movieListResponse := []responses.MovieListItem{}
 	posterListResponse := []responses.HATEOASPosterLinks{}
 
 	for _, movie := range movies {
 		movieListResponse = append(
 			movieListResponse,
-			*responses.NewMovie(
+			responses.NewMovieListItem(
 				movie,
 				baseURL,
 				versionURL,
@@ -176,7 +194,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		)
 	}
 
-	movieAndPosterList := responses.HATEOASMovieList{
+	movieAndPosterList := responses.HATEOASMovieAndPostersList{
 		Movies:  &movieListResponse,
 		Posters: &posterListResponse,
 	}
@@ -211,7 +229,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		return nil, err
 	}
 
-	result := responses.HATEOASListResult{
+	result := responses.MovieListResult{
 		Embedded:  movieAndPosterList,
 		Links:     movieListLinks,
 		Templates: templateJSON,

@@ -44,9 +44,9 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 - [CineCatalog Microsservice](#cine-catalogo)<br/>
   :arrow_heading_up: [index](#arrow_heading_up-index)<br/>
   :green_book: [About](#about)<br/>
+  :computer: [Run the project](#run)<br/>
   :traffic_light: [HATEOAS HAL](#HATEOAS)<br/>
   :umbrella: [Event Storming](#event-storming)<br/>
-  :computer: [Run the project](#run)<br/>
   :bar_chart: [Diagrams](#diagrams)<br/>
   :newspaper: [API Documentation](#api-docs)<br/>
   :toolbox: [Tools](#tools)<br/>
@@ -69,6 +69,27 @@ This project aims to address the needs of cataloging cinema halls, movies, and s
 This is a Golang version of the mentioned service. Swagger Docs, Flow Diagrams, Entity-Relationship Diagrams (DER), and Event Storming provide more context to the service's scenario.
 
 The objective of this system is to maintain a [high level of maturity](https://martinfowler.com/articles/richardsonMaturityModel.html) with a consistent RESTful API, along with the possibility of caching and a robust logging system.
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="run"></a>
+## :computer: Run the project
+
+Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker compose up' command (according to your 'docker compose' version) in the project's root directory:
+```bash
+$ docker compose up
+```
+
+<!-- 
+> :writing_hand: **Note**:
+>
+> :window: Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
+> Git attribute settings that might affect the line ending character are not working as expected. To run the project on Windows, you will need to make changes to the './tests/gatling/entrypoint.sh' file. Convert the file from 'LF' to 'CRLF' in your preferred text editor.
+-->
 
 <br/>
 
@@ -106,26 +127,7 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 [:arrow_heading_up: back to top](#index)
 
 ---
-<a id="run"></a>
-## :computer: Run the project
 
-Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker compose up' command (according to your 'docker compose' version) in the project's root directory:
-```bash
-$ docker compose up
-```
-
-<!-- 
-> :writing_hand: **Note**:
->
-> :window: Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
-> Git attribute settings that might affect the line ending character are not working as expected. To run the project on Windows, you will need to make changes to the './tests/gatling/entrypoint.sh' file. Convert the file from 'LF' to 'CRLF' in your preferred text editor.
--->
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
----
 
 <a id="diagrams"></a>
 ## :bar_chart: System Diagrams:
@@ -237,7 +239,7 @@ erDiagram
 With the 'cine-catalogo' image running, type:
 
 ```bash
-$ docker exec -ti cine-catalogo swag init --parseDependency --parseInternal  --generalInfo cmd/api/main.go
+$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go
 ```
 
 <br/>
@@ -390,4 +392,11 @@ GO Design Patterns
 Multiple files
   https://gin-gonic.com/docs/examples/upload-file/multiple-file/
   https://stackoverflow.com/questions/64873546/how-to-upload-multipart-file-and-json-in-go-with-gin-gonic
+
+
+  https://github.com/domaindrivendev/Swashbuckle.AspNetCore/issues/846
+
+  https://swagger.io/docs/specification/data-models/oneof-anyof-allof-not/
+
+  https://github.com/Dwolla/hal-forms#form-transcoding
 -->

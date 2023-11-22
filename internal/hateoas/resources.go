@@ -79,9 +79,9 @@ func (r *resource) RequestToProperties(request interface{}) error {
 			property := halforms.NewProperty(propertyName)
 			property.Prompt = field.Name
 
-			propertiesStructTag := strings.Split(tag, ";")
+			propertiesStructTag := strings.Split(tag, ",")
 			for _, propertyStr := range propertiesStructTag {
-				propKeyValue := strings.SplitN(propertyStr, ":", 2)
+				propKeyValue := strings.SplitN(propertyStr, "=", 2)
 
 				switch propKeyValue[0] {
 				case "name":
