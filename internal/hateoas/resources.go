@@ -20,6 +20,7 @@ import (
 type resource struct {
 	name         string
 	resourceURL  string
+	ContentType  string
 	linkRelation hal.LinkRelation
 	template     halforms.Template
 }
@@ -34,7 +35,7 @@ type resource struct {
 //	hateoas.WithRequest(requests.Address{}),
 //
 // )
-func NewResource(name, resourceURL, httpMethod string) (*resource, error) {
+func NewResource(name, resourceURL, httpMethod, ContentType string) (*resource, error) {
 	linkRelation, err := halforms.NewHALFormsRelation(name, resourceURL)
 	if err != nil {
 		return nil, err
@@ -43,6 +44,7 @@ func NewResource(name, resourceURL, httpMethod string) (*resource, error) {
 	r := &resource{
 		name:         name,
 		resourceURL:  resourceURL,
+		ContentType:  ContentType,
 		linkRelation: linkRelation,
 	}
 	r.template = r.newTemplate(httpMethod)
@@ -55,6 +57,7 @@ func (r *resource) newTemplate(httpMethod string) halforms.Template {
 	template.Method = httpMethod
 	template.Target = r.resourceURL
 	template.Key = r.name
+	template.ContentType = r.ContentType
 	template.Title = ""
 
 	return *template

@@ -26,7 +26,8 @@ type Poster struct {
 func NewPoster(
 	model models.Poster,
 	movieUUID uuid.UUID,
-	baseURL string,
+	baseURL,
+	versionURL string,
 	templates interface{},
 ) Poster {
 	poster := Poster{
@@ -35,10 +36,10 @@ func NewPoster(
 			Name:            model.Name,
 			ContentType:     model.ContentType,
 			AlternativeText: model.AlternativeText,
+			Path:            model.Path,
 		},
 
-		//NewPosterLinks(model.Movie.UUID, model.UUID, baseURL, model.Path),
-		NewPosterLinks(movieUUID, model.UUID, baseURL, model.Path),
+		NewPosterLinks(movieUUID, model.UUID, baseURL, versionURL, model.Path),
 
 		//templates,
 	}
@@ -61,9 +62,11 @@ func NewPosterLinks(
 	movieUUID,
 	posterUUID uuid.UUID,
 	baseURL,
-	posterPath string) *HATEOASPosterLinks {
+	versionURL,
+	posterPath string,
+) *HATEOASPosterLinks {
 	return &HATEOASPosterLinks{
-		Self:         HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
+		Self:         HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", baseURL, movieUUID)},
 		UpdatePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
 		DeletePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
 		Image:        HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, posterPath)},

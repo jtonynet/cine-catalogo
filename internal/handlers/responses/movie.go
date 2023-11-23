@@ -29,8 +29,9 @@ type MovieListItem struct {
 }
 
 type HATEOASMovieItemLinks struct {
-	Self        HATEOASLink `json:"self"`
-	UpdateMovie HATEOASLink `json:"update-movie"`
+	Self              HATEOASLink `json:"self"`
+	UpdateMovie       HATEOASLink `json:"update-movie"`
+	UploadMoviePoster HATEOASLink `json:"upload-movie-poster"`
 }
 
 type HATEOASMovieListLinks struct {
@@ -47,16 +48,15 @@ type HATEOASMovieItemEmbedded struct {
 	Embedded HATEOASLink `json:"_embedded"`
 }
 
-type MovieOption func(*Movie)
-
 type MovieListItemResult struct {
 	Links HATEOASMovieItemLinks `json:"_links"`
 }
 
 func NewMovie(
 	model models.Movie,
+	baseURL,
+	versionURL string,
 	templates interface{},
-	baseURL string,
 ) Movie {
 	movie := Movie{
 		baseMovie: baseMovie{
@@ -67,19 +67,13 @@ func NewMovie(
 			Subtitled:   model.Subtitled,
 		},
 
-		// TODO: CHANGE TO EMBEDDED POSTER ENTITY
-		HATEOASEmbeddedPosterItem: HATEOASEmbeddedPosterItem{
-			Embedded: &HATEOASPosterItem{
-				// TODO:
-				//Poster: NewPoster( model models.Poster, baseURL string, posterPath string, templates interface{})
-
-				Poster: HATEOASPosterItemLinks{
-					Links: NewPosterLinks(model.UUID, uuid.New(), baseURL, model.Poster),
-				},
-			},
-		},
-
 		Templates: templates,
+	}
+
+	if len(model.Posters) > 0 {
+		movie.Embedded = &HATEOASPosterItem{
+			Poster: NewPoster(model.Posters[0], model.UUID, baseURL, versionURL, nil),
+		}
 	}
 
 	return movie
@@ -107,6 +101,9 @@ func NewMovieListItem(
 				UpdateMovie: HATEOASLink{
 					HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String()),
 				},
+				UploadMoviePoster: HATEOASLink{
+					HREF: fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String()),
+				},
 			},
 		},
 	}
@@ -119,12 +116,9 @@ type HATEOASEmbeddedPosterItem struct {
 }
 
 type HATEOASPosterItem struct {
-	Poster HATEOASPosterItemLinks `json:"poster,omitempty"`
+	Poster Poster `json:"poster,omitempty"`
 }
 
-// swagger:ignore
-
-// swagger:ignore
 type MovieListResult struct {
 	Embedded  HATEOASMovieAndPostersList `json:"_embedded"`
 	Links     HATEOASMovieListLinks      `json:"_links"`

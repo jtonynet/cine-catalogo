@@ -4,6 +4,7 @@ import "github.com/google/uuid"
 
 type Poster struct {
 	BaseModel
+
 	UUID            uuid.UUID `gorm:"type:uuid;unique;not null"`
 	MovieID         uint
 	Movie           Movie

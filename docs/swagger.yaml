@@ -1,4 +1,45 @@
 definitions:
+  requests.Address:
+    properties:
+      country:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      postalCode:
+        type: string
+      state:
+        type: string
+      telephone:
+        type: string
+      uuid:
+        type: string
+    required:
+    - country
+    - description
+    - name
+    - postalCode
+    - state
+    - telephone
+    - uuid
+    type: object
+  requests.Cinema:
+    properties:
+      capacity:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      uuid:
+        type: string
+    required:
+    - capacity
+    - description
+    - name
+    - uuid
+    type: object
   requests.Movie:
     properties:
       age_rating:
@@ -7,20 +48,46 @@ definitions:
         type: string
       name:
         type: string
-      poster:
-        type: string
       subtitled:
         type: boolean
+      uuid:
+        type: string
     required:
     - age_rating
     - description
     - name
     - subtitled
+    - uuid
+    type: object
+  responses.Address:
+    properties:
+      _links: {}
+      _templates: {}
+      country:
+        type: string
+      description:
+        type: string
+      name:
+        type: string
+      postalCode:
+        type: string
+      state:
+        type: string
+      telephone:
+        type: string
+      uuid:
+        type: string
     type: object
   responses.HATEOASLink:
     properties:
       href:
         type: string
+    type: object
+  responses.HATEOASListResult:
+    properties:
+      _embedded: {}
+      _links: {}
+      _templates: {}
     type: object
   responses.HATEOASMovieAndPostersList:
     properties:
@@ -39,6 +106,8 @@ definitions:
         $ref: '#/definitions/responses.HATEOASLink'
       update-movie:
         $ref: '#/definitions/responses.HATEOASLink'
+      upload-movie-poster:
+        $ref: '#/definitions/responses.HATEOASLink'
     type: object
   responses.HATEOASMovieListLinks:
     properties:
@@ -50,12 +119,7 @@ definitions:
   responses.HATEOASPosterItem:
     properties:
       poster:
-        $ref: '#/definitions/responses.HATEOASPosterItemLinks'
-    type: object
-  responses.HATEOASPosterItemLinks:
-    properties:
-      _links:
-        $ref: '#/definitions/responses.HATEOASPosterLinks'
+        $ref: '#/definitions/responses.Poster'
     type: object
   responses.HATEOASPosterLinks:
     properties:
@@ -107,9 +171,111 @@ definitions:
         $ref: '#/definitions/responses.HATEOASMovieListLinks'
       _templates: {}
     type: object
+  responses.Poster:
+    properties:
+      _templates: {}
+      alternativeText:
+        type: string
+      contentType:
+        type: string
+      name:
+        type: string
+      path:
+        type: string
+      uuid:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
+  /addresses:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve List all Address
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.HATEOASListResult'
+      summary: Retrieve Address List
+      tags:
+      - Addresses
+    post:
+      consumes:
+      - application/json
+      description: Create List of Addresses
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/requests.Address'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.HATEOASListResult'
+      summary: Create Addresses
+      tags:
+      - Addresses
+  /addresses/{address_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve one Address
+      parameters:
+      - description: UUID of the address
+        in: path
+        name: address_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Address'
+      summary: Retrieve Address
+      tags:
+      - Addresses
+  /addresses/{address_id}/cinemas:
+    post:
+      consumes:
+      - application/json
+      description: Create List of Cinemas
+      parameters:
+      - description: Address UUID
+        in: path
+        name: address_id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/requests.Cinema'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.HATEOASListResult'
+      summary: Create Addresses Cinemas
+      tags:
+      - Addresses
   /movies:
     get:
       consumes:
@@ -148,7 +314,7 @@ paths:
       summary: Create Movies
       tags:
       - Movies
-  /movies/{movieId}:
+  /movies/{movie_id}:
     get:
       consumes:
       - application/json
@@ -156,7 +322,7 @@ paths:
       parameters:
       - description: UUID of the movie
         in: path
-        name: movieId
+        name: movie_id
         required: true
         type: string
       produces:
@@ -167,6 +333,44 @@ paths:
           schema:
             $ref: '#/definitions/responses.Movie'
       summary: Retrieve Movie
+      tags:
+      - Movies
+  /movies/{movie_id}/posters:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload Movie Poster
+      parameters:
+      - description: Movie UUID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      - in: formData
+        name: alternativeText
+        required: true
+        type: string
+      - in: formData
+        name: name
+        required: true
+        type: string
+      - in: formData
+        name: uuid
+        required: true
+        type: string
+      - description: Poster Alternative Text
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Poster'
+      summary: Upload Movie Poster
       tags:
       - Movies
 swagger: "2.0"

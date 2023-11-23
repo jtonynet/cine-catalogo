@@ -15,6 +15,140 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/addresses": {
+            "get": {
+                "description": "Retrieve List all Address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Retrieve Address List",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.HATEOASListResult"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create List of Addresses",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Create Addresses",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/requests.Address"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.HATEOASListResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses/{address_id}": {
+            "get": {
+                "description": "Retrieve one Address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Retrieve Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "UUID of the address",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Address"
+                        }
+                    }
+                }
+            }
+        },
+        "/addresses/{address_id}/cinemas": {
+            "post": {
+                "description": "Create List of Cinemas",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Create Addresses Cinemas",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address UUID",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/requests.Cinema"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.HATEOASListResult"
+                        }
+                    }
+                }
+            }
+        },
         "/movies": {
             "get": {
                 "description": "Retrieve List all Movies",
@@ -73,7 +207,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/movies/{movieId}": {
+        "/movies/{movie_id}": {
             "get": {
                 "description": "Retrieve one Movie",
                 "consumes": [
@@ -90,7 +224,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "UUID of the movie",
-                        "name": "movieId",
+                        "name": "movie_id",
                         "in": "path",
                         "required": true
                     }
@@ -104,16 +238,132 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/movies/{movie_id}/posters": {
+            "post": {
+                "description": "Upload Movie Poster",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Upload Movie Poster",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Movie UUID",
+                        "name": "movie_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "alternativeText",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "uuid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Poster Alternative Text",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Poster"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "requests.Address": {
+            "type": "object",
+            "required": [
+                "country",
+                "description",
+                "name",
+                "postalCode",
+                "state",
+                "telephone",
+                "uuid"
+            ],
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "telephone": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.Cinema": {
+            "type": "object",
+            "required": [
+                "capacity",
+                "description",
+                "name",
+                "uuid"
+            ],
+            "properties": {
+                "capacity": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.Movie": {
             "type": "object",
             "required": [
                 "age_rating",
                 "description",
                 "name",
-                "subtitled"
+                "subtitled",
+                "uuid"
             ],
             "properties": {
                 "age_rating": {
@@ -125,11 +375,39 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "poster": {
-                    "type": "string"
-                },
                 "subtitled": {
                     "type": "boolean"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.Address": {
+            "type": "object",
+            "properties": {
+                "_links": {},
+                "_templates": {},
+                "country": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "telephone": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
                 }
             }
         },
@@ -139,6 +417,14 @@ const docTemplate = `{
                 "href": {
                     "type": "string"
                 }
+            }
+        },
+        "responses.HATEOASListResult": {
+            "type": "object",
+            "properties": {
+                "_embedded": {},
+                "_links": {},
+                "_templates": {}
             }
         },
         "responses.HATEOASMovieAndPostersList": {
@@ -166,6 +452,9 @@ const docTemplate = `{
                 },
                 "update-movie": {
                     "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "upload-movie-poster": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }
         },
@@ -184,15 +473,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "poster": {
-                    "$ref": "#/definitions/responses.HATEOASPosterItemLinks"
-                }
-            }
-        },
-        "responses.HATEOASPosterItemLinks": {
-            "type": "object",
-            "properties": {
-                "_links": {
-                    "$ref": "#/definitions/responses.HATEOASPosterLinks"
+                    "$ref": "#/definitions/responses.Poster"
                 }
             }
         },
@@ -270,6 +551,27 @@ const docTemplate = `{
                     "$ref": "#/definitions/responses.HATEOASMovieListLinks"
                 },
                 "_templates": {}
+            }
+        },
+        "responses.Poster": {
+            "type": "object",
+            "properties": {
+                "_templates": {},
+                "alternativeText": {
+                    "type": "string"
+                },
+                "contentType": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
             }
         }
     }

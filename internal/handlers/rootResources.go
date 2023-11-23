@@ -26,6 +26,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 		"create-addresses",
 		fmt.Sprintf("%s/%s", versionURL, "addresses"),
 		http.MethodPost,
+		"application/prs.hal-forms+json",
 	)
 	if err != nil {
 		// TODO: implements on future
@@ -38,6 +39,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 		"retrieve-address-list",
 		fmt.Sprintf("%s/%s", versionURL, "addresses"),
 		http.MethodGet,
+		"application/prs.hal-forms+json",
 	)
 	if err != nil {
 		// TODO: implements on future
@@ -49,6 +51,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 		"create-movies",
 		fmt.Sprintf("%s/%s", versionURL, "movies"),
 		http.MethodPost,
+		"application/prs.hal-forms+json",
 	)
 	if err != nil {
 		// TODO: implements on future
@@ -61,6 +64,7 @@ func RetrieveRootResources(ctx *gin.Context) {
 		"retrieve-movie-list",
 		fmt.Sprintf("%s/%s", versionURL, "movies"),
 		http.MethodGet,
+		"application/prs.hal-forms+json",
 	)
 	if err != nil {
 		// TODO: implements on future

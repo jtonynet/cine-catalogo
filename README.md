@@ -239,7 +239,7 @@ erDiagram
 With the 'cine-catalogo' image running, type:
 
 ```bash
-$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go
+$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web
 ```
 
 <br/>
@@ -401,4 +401,6 @@ Multiple files
   https://github.com/Dwolla/hal-forms#form-transcoding
 
   https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
+
+  https://github.com/swaggo/swag/blob/master/example/basic/api/api.go
 -->

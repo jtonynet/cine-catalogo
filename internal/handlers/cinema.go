@@ -16,13 +16,24 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
+// @BasePath /v1
+
+// @Summary Create Addresses Cinemas
+// @Description Create List of Cinemas
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Router /addresses/{address_id}/cinemas [post]
+// @Param address_id path string true "Address UUID"
+// @Param request body []requests.Cinema true "Request body"
+// @Success 200 {object} responses.HATEOASListResult
 func CreateCinemas(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	addressId := ctx.Param("addressId")
+	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
@@ -47,7 +58,7 @@ func CreateCinemas(ctx *gin.Context) {
 	var cinemas []models.Cinema
 	for _, request := range requestList {
 		cinema, err := models.NewCinema(
-			uuid.New(),
+			request.UUID,
 			address.ID,
 			request.Name,
 			request.Description,
@@ -85,9 +96,9 @@ func RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	cinemaId := ctx.Param("cinemaId")
+	cinemaId := ctx.Param("cinema_id")
 	if !IsValidUUID(cinemaId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinemaId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)
@@ -99,6 +110,7 @@ func RetrieveCinema(ctx *gin.Context) {
 		{
 			Name:        "retrieve-cinema",
 			ResourceURL: fmt.Sprintf("%s/cinemas/%s", versionURL, cinemaId),
+			ContentType: "application/json",
 			HTTPMethod:  http.MethodGet,
 		},
 	}
@@ -127,9 +139,9 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	addressId := ctx.Param("addressId")
+	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
@@ -181,7 +193,8 @@ func getCinemaListResult(cinemas []models.Cinema, versionURL, addressId string) 
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			ResourceURL: fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
+			ContentType: "application/json",
 			HTTPMethod:  http.MethodGet,
 		},
 	}

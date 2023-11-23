@@ -23,6 +23,7 @@ type TemplateParams struct {
 	Name          string
 	ResourceURL   string
 	HTTPMethod    string
+	ContentType   string
 	RequestStruct interface{}
 }
 
@@ -64,6 +65,7 @@ func TemplateFactory(
 			param.Name,
 			param.ResourceURL,
 			param.HTTPMethod,
+			param.ContentType,
 		)
 		if err != nil {
 			// TODO: implements on future

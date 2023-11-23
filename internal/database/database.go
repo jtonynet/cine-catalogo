@@ -38,8 +38,10 @@ func Init(cfg config.Database) error {
 	l.Info("database: connection is openned")
 
 	DB.AutoMigrate(&models.Address{})
-	DB.AutoMigrate(&models.Movie{})
 	DB.AutoMigrate(&models.Cinema{})
+
+	DB.AutoMigrate(&models.Movie{})
+	DB.AutoMigrate(&models.Poster{})
 
 	l.Info("database: tables created")
 

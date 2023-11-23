@@ -44,12 +44,11 @@ func CreateMovies(ctx *gin.Context) {
 	movies := []models.Movie{}
 	for _, request := range requestList {
 		movie, err := models.NewMovie(
-			uuid.New(),
+			request.UUID,
 			request.Name,
 			request.Description,
 			request.AgeRating,
 			*request.Subtitled,
-			request.Poster,
 		)
 		if err != nil {
 			// TODO: Implements in future
@@ -86,28 +85,34 @@ func CreateMovies(ctx *gin.Context) {
 // @Tags Movies
 // @Accept json
 // @Produce json
-// @Param movieId path string true "UUID of the movie"
+// @Param movie_id path string true "UUID of the movie"
 // @Success 200 {object} responses.Movie
-// @Router /movies/{movieId} [get]
+// @Router /movies/{movie_id} [get]
 func RetrieveMovie(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	movieId := ctx.Param("movieId")
+	movieId := ctx.Param("movie_id")
 	if !IsValidUUID(movieId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing movieId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing movie_id", nil)
 		return
 	}
 	movieUUID := uuid.MustParse(movieId)
 
 	movie := models.Movie{UUID: movieUUID}
-	database.DB.Where(&models.Movie{UUID: movieUUID}).First(&movie)
+	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch Movie and Poster", nil)
+		return
+	}
+
+	//fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String()),
 
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:        "update-movie",
-			ResourceURL: fmt.Sprintf("%s/movies/:movieId", versionURL),
+			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
 			HTTPMethod:  http.MethodPatch,
+			ContentType: "application/json",
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
@@ -118,8 +123,9 @@ func RetrieveMovie(ctx *gin.Context) {
 
 	response := responses.NewMovie(
 		movie,
-		templateJSON,
 		cfg.Host,
+		versionURL,
+		templateJSON,
 	)
 
 	responses.SendSuccess(
@@ -145,8 +151,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
 	movies := []models.Movie{}
-
-	if err := database.DB.Find(&movies).Error; err != nil {
+	if err := database.DB.Preload("Posters").Find(&movies).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
@@ -186,7 +191,8 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 				movie.UUID,
 				uuid.New(),
 				baseURL,
-				movie.Poster,
+				versionURL,
+				"movie.Poster",
 			),
 		)
 	}
@@ -205,18 +211,28 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		{
 			Name:        "retrieve-movie-list",
 			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
+			ContentType: "application/json",
 			HTTPMethod:  http.MethodGet,
 		},
 		{
 			Name:          "create-movies",
 			ResourceURL:   fmt.Sprintf("%s/movies", versionURL),
 			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
 			RequestStruct: requests.Movie{},
 		},
 		{
+			Name:          "upload-movie-poster",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:    http.MethodPost,
+			ContentType:   "multipart/form-data",
+			RequestStruct: requests.Poster{},
+		},
+		{
 			Name:        "update-movie",
-			ResourceURL: fmt.Sprintf("%s/movies/:movieId", versionURL),
+			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
 			HTTPMethod:  http.MethodPatch,
+			ContentType: "application/json",
 			//RequestStruct: requests.Movie{},
 		},
 	}

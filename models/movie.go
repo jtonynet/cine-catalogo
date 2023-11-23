@@ -10,7 +10,7 @@ type Movie struct {
 	Description string
 	AgeRating   int64
 	Subtitled   bool
-	Poster      string
+	Posters     []Poster
 }
 
 func NewMovie(
@@ -19,7 +19,6 @@ func NewMovie(
 	Description string,
 	AgeRating int64,
 	Subtitled bool,
-	Poster string,
 ) (Movie, error) {
 	m := Movie{
 		UUID:        UUID,
@@ -27,7 +26,6 @@ func NewMovie(
 		Description: Description,
 		AgeRating:   AgeRating,
 		Subtitled:   Subtitled,
-		Poster:      Poster,
 	}
 
 	return m, nil

@@ -16,6 +16,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
+// @BasePath /v1
+
+// @Summary Create Addresses
+// @Description Create List of Addresses
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Param request body []requests.Address true "Request body"
+// @Success 200 {object} responses.HATEOASListResult
+// @Router /addresses [post]
 func CreateAddresses(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
@@ -35,7 +45,7 @@ func CreateAddresses(ctx *gin.Context) {
 	var addresses []models.Address
 	for _, request := range requestList {
 		address, err := models.NewAddress(
-			uuid.New(),
+			request.UUID,
 			request.Country,
 			request.State,
 			request.Telephone,
@@ -70,13 +80,23 @@ func CreateAddresses(ctx *gin.Context) {
 	)
 }
 
+// @BasePath /v1
+
+// @Summary Retrieve Address
+// @Description Retrieve one Address
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Param address_id path string true "UUID of the address"
+// @Success 200 {object} responses.Address
+// @Router /addresses/{address_id} [get]
 func RetrieveAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	addressId := ctx.Param("addressId")
+	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing addressId", nil)
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
@@ -87,13 +107,15 @@ func RetrieveAddress(ctx *gin.Context) {
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:          "create-addresses-cinemas",
-			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			ResourceURL:   fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
 			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
 			RequestStruct: requests.Cinema{},
 		},
 		{
 			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			ResourceURL: fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
+			ContentType: "application/json",
 			HTTPMethod:  http.MethodGet,
 		},
 	}
@@ -118,6 +140,15 @@ func RetrieveAddress(ctx *gin.Context) {
 	)
 }
 
+// @BasePath /v1
+
+// @Summary Retrieve Address List
+// @Description Retrieve List all Address
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Success 200 {object} responses.HATEOASListResult
+// @Router /addresses [get]
 func RetrieveAddressList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
@@ -167,17 +198,20 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 			Name:          "create-addresses",
 			ResourceURL:   fmt.Sprintf("%s/addresses", versionURL),
 			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
 			RequestStruct: requests.Address{},
 		},
 		{
 			Name:          "create-addresses-cinemas",
 			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
 			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
 			RequestStruct: requests.Cinema{},
 		},
 		{
 			Name:        "retrieve-cinema-list",
 			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
+			ContentType: "application/json",
 			HTTPMethod:  http.MethodGet,
 		},
 	}
