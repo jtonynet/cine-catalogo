@@ -114,6 +114,13 @@ func RetrieveMovie(ctx *gin.Context) {
 			HTTPMethod:  http.MethodPatch,
 			ContentType: "application/json",
 		},
+		{
+			Name:          "upload-movie-poster",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:    http.MethodPost,
+			ContentType:   "multipart/form-data",
+			RequestStruct: requests.Poster{},
+		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
@@ -215,6 +222,12 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 			HTTPMethod:  http.MethodGet,
 		},
 		{
+			Name:        "retrieve-movie",
+			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
+			ContentType: "application/json",
+			HTTPMethod:  http.MethodGet,
+		},
+		{
 			Name:          "create-movies",
 			ResourceURL:   fmt.Sprintf("%s/movies", versionURL),
 			HTTPMethod:    http.MethodPost,
@@ -229,11 +242,11 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 			RequestStruct: requests.Poster{},
 		},
 		{
-			Name:        "update-movie",
-			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
-			HTTPMethod:  http.MethodPatch,
-			ContentType: "application/json",
-			//RequestStruct: requests.Movie{},
+			Name:          "update-movie",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id", versionURL),
+			HTTPMethod:    http.MethodPatch,
+			ContentType:   "application/json",
+			RequestStruct: requests.Movie{},
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)

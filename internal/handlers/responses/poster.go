@@ -23,6 +23,17 @@ type Poster struct {
 	Templates interface{} `json:"_templates,omitempty"`
 }
 
+type HATEOASPosterItemLinks struct {
+	Links *HATEOASPosterLinks `json:"_links,omitempty"`
+}
+
+type HATEOASPosterLinks struct {
+	Self         HATEOASLink `json:"self"`
+	Image        HATEOASLink `json:"image"`
+	UpdatePoster HATEOASLink `json:"update-poster"`
+	DeletePoster HATEOASLink `json:"delete-poster"`
+}
+
 func NewPoster(
 	model models.Poster,
 	movieUUID uuid.UUID,
@@ -45,17 +56,6 @@ func NewPoster(
 	}
 
 	return poster
-}
-
-type HATEOASPosterItemLinks struct {
-	Links *HATEOASPosterLinks `json:"_links,omitempty"`
-}
-
-type HATEOASPosterLinks struct {
-	Self         HATEOASLink `json:"self"`
-	Image        HATEOASLink `json:"image"`
-	UpdatePoster HATEOASLink `json:"update-poster"`
-	DeletePoster HATEOASLink `json:"delete-poster"`
 }
 
 func NewPosterLinks(

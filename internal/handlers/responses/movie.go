@@ -19,7 +19,7 @@ type Movie struct {
 	baseMovie
 
 	Templates interface{} `json:"_templates,omitempty"`
-	HATEOASEmbeddedPosterItem
+	HATEOASMovieEmbeddedPosterItem
 }
 
 type MovieListItem struct {
@@ -52,6 +52,14 @@ type MovieListItemResult struct {
 	Links HATEOASMovieItemLinks `json:"_links"`
 }
 
+type HATEOASMovieEmbeddedPosterItem struct {
+	Embedded *HATEOASMoviePosterItem `json:"_embedded,omitempty"`
+}
+
+type HATEOASMoviePosterItem struct {
+	Poster Poster `json:"poster,omitempty"`
+}
+
 func NewMovie(
 	model models.Movie,
 	baseURL,
@@ -71,7 +79,7 @@ func NewMovie(
 	}
 
 	if len(model.Posters) > 0 {
-		movie.Embedded = &HATEOASPosterItem{
+		movie.Embedded = &HATEOASMoviePosterItem{
 			Poster: NewPoster(model.Posters[0], model.UUID, baseURL, versionURL, nil),
 		}
 	}
@@ -109,14 +117,6 @@ func NewMovieListItem(
 	}
 
 	return movie
-}
-
-type HATEOASEmbeddedPosterItem struct {
-	Embedded *HATEOASPosterItem `json:"_embedded,omitempty"`
-}
-
-type HATEOASPosterItem struct {
-	Poster Poster `json:"poster,omitempty"`
 }
 
 type MovieListResult struct {
