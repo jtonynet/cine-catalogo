@@ -176,6 +176,15 @@ erDiagram
         boolean subtitled
         string poster
     }
+    posters {
+        int    id
+        UUID   uuid
+        int    movie_id
+        string name            
+        string contentType     
+        string alternative_text 
+        string path            
+    }
     sessions {
         int id
         UUID uuid
@@ -219,6 +228,7 @@ erDiagram
     }
 
     movies ||--o{ sessions : has
+    movies ||--|| posters : has
     sessions ||--|| cinemas : occurs
     cinemas ||--|{ seats : has
     sessions ||--|{ tickets : has
