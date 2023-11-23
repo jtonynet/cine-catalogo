@@ -36,7 +36,7 @@ services:
 
   hal:
     build:
-      context: ./hal
+      context: ./tools/hal
       dockerfile: Dockerfile
     container_name: hal
     hostname: hal

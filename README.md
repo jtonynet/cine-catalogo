@@ -239,7 +239,7 @@ erDiagram
 With the 'cine-catalogo' image running, type:
 
 ```bash
-$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web
+$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
 ```
 
 <br/>

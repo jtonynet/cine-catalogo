@@ -25,7 +25,7 @@ import (
 // @Param movie_id path string true "Movie UUID"
 // @Accept mpfd
 // @Param request formData requests.Poster true "Request formData"
-// @Param file formData file true "Poster Alternative Text"
+// @Param file formData file true "binary poster data"
 // @Produce json
 // @Success 200 {object} responses.Poster
 func UploadMoviePoster(ctx *gin.Context) {

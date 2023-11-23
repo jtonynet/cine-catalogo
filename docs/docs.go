@@ -280,7 +280,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "file",
-                        "description": "Poster Alternative Text",
+                        "description": "binary poster data",
                         "name": "file",
                         "in": "formData",
                         "required": true

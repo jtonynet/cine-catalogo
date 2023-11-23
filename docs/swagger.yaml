@@ -358,7 +358,7 @@ paths:
         name: uuid
         required: true
         type: string
-      - description: Poster Alternative Text
+      - description: binary poster data
         in: formData
         name: file
         required: true
