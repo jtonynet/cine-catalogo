@@ -97,7 +97,7 @@ definitions:
         type: array
       posters:
         items:
-          $ref: '#/definitions/responses.HATEOASPosterLinks'
+          $ref: '#/definitions/responses.Poster'
         type: array
     type: object
   responses.HATEOASMovieItemLinks:
@@ -116,7 +116,7 @@ definitions:
       self:
         $ref: '#/definitions/responses.HATEOASLink'
     type: object
-  responses.HATEOASPosterItem:
+  responses.HATEOASMoviePosterItem:
     properties:
       poster:
         $ref: '#/definitions/responses.Poster'
@@ -135,7 +135,7 @@ definitions:
   responses.Movie:
     properties:
       _embedded:
-        $ref: '#/definitions/responses.HATEOASPosterItem'
+        $ref: '#/definitions/responses.HATEOASMoviePosterItem'
       _templates: {}
       age_rating:
         type: integer
@@ -173,7 +173,8 @@ definitions:
     type: object
   responses.Poster:
     properties:
-      _templates: {}
+      _links:
+        $ref: '#/definitions/responses.HATEOASPosterLinks'
       alternativeText:
         type: string
       contentType:

@@ -10,28 +10,27 @@ import (
 var MoviePosterContentType = "image/png"
 
 type basePoster struct {
-	UUID            uuid.UUID `gorm:"type:uuid;unique;not null"`
-	Name            string
-	ContentType     string
-	AlternativeText string
-	Path            string
+	UUID            uuid.UUID `json:"uuid"`
+	MovieUUID       uuid.UUID `json:"movieUUID,omitempty"`
+	Name            string    `json:"name"`
+	ContentType     string    `json:"contentType"`
+	AlternativeText string    `json:"alternativeText"`
+	Path            string    `json:"path"`
 }
 
 type Poster struct {
 	basePoster
 
-	Templates interface{} `json:"_templates,omitempty"`
-}
+	Links HATEOASPosterLinks `json:"_links,omitempty"`
 
-type HATEOASPosterItemLinks struct {
-	Links *HATEOASPosterLinks `json:"_links,omitempty"`
+	//Templates              interface{}         `json:"_templates,omitempty"`
 }
 
 type HATEOASPosterLinks struct {
-	Self         HATEOASLink `json:"self"`
-	Image        HATEOASLink `json:"image"`
-	UpdatePoster HATEOASLink `json:"update-poster"`
-	DeletePoster HATEOASLink `json:"delete-poster"`
+	Self              HATEOASLink `json:"self"`
+	Image             HATEOASLink `json:"image"`
+	UpdateMoviePoster HATEOASLink `json:"update-movie-poster"`
+	DeleteMoviePoster HATEOASLink `json:"delete-movie-poster"`
 }
 
 func NewPoster(
@@ -42,17 +41,18 @@ func NewPoster(
 	templates interface{},
 ) Poster {
 	poster := Poster{
-		basePoster{
+		basePoster: basePoster{
 			UUID:            model.UUID,
+			MovieUUID:       movieUUID,
 			Name:            model.Name,
 			ContentType:     model.ContentType,
 			AlternativeText: model.AlternativeText,
 			Path:            model.Path,
 		},
 
-		NewPosterLinks(movieUUID, model.UUID, baseURL, versionURL, model.Path),
+		Links: NewPosterLinks(movieUUID, model.UUID, baseURL, versionURL, model.Path),
 
-		//templates,
+		//Templates: templates,
 	}
 
 	return poster
@@ -64,11 +64,11 @@ func NewPosterLinks(
 	baseURL,
 	versionURL,
 	posterPath string,
-) *HATEOASPosterLinks {
-	return &HATEOASPosterLinks{
-		Self:         HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", baseURL, movieUUID)},
-		UpdatePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
-		DeletePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
-		Image:        HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, posterPath)},
+) HATEOASPosterLinks {
+	return HATEOASPosterLinks{
+		Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", baseURL, movieUUID)},
+		UpdateMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
+		DeleteMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
+		Image:             HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, posterPath)},
 	}
 }

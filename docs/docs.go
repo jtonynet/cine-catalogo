@@ -439,7 +439,7 @@ const docTemplate = `{
                 "posters": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/responses.HATEOASPosterLinks"
+                        "$ref": "#/definitions/responses.Poster"
                     }
                 }
             }
@@ -469,7 +469,7 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.HATEOASPosterItem": {
+        "responses.HATEOASMoviePosterItem": {
             "type": "object",
             "properties": {
                 "poster": {
@@ -498,7 +498,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_embedded": {
-                    "$ref": "#/definitions/responses.HATEOASPosterItem"
+                    "$ref": "#/definitions/responses.HATEOASMoviePosterItem"
                 },
                 "_templates": {},
                 "age_rating": {
@@ -556,7 +556,9 @@ const docTemplate = `{
         "responses.Poster": {
             "type": "object",
             "properties": {
-                "_templates": {},
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASPosterLinks"
+                },
                 "alternativeText": {
                     "type": "string"
                 },

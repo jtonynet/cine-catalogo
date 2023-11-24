@@ -105,8 +105,6 @@ func RetrieveMovie(ctx *gin.Context) {
 		return
 	}
 
-	//fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String()),
-
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:        "update-movie",
@@ -120,6 +118,26 @@ func RetrieveMovie(ctx *gin.Context) {
 			HTTPMethod:    http.MethodPost,
 			ContentType:   "multipart/form-data",
 			RequestStruct: requests.Poster{},
+		},
+		{
+			Name:          "upload-movie-poster",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:    http.MethodPost,
+			ContentType:   "multipart/form-data",
+			RequestStruct: requests.Poster{},
+		},
+		{
+			Name:          "update-movie-poster",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:    http.MethodPatch,
+			ContentType:   "multipart/form-data",
+			RequestStruct: requests.Poster{},
+		},
+		{
+			Name:        "delete-movie-poster",
+			ResourceURL: fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:  http.MethodDelete,
+			ContentType: "application/json",
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
@@ -140,7 +158,7 @@ func RetrieveMovie(ctx *gin.Context) {
 		http.StatusOK,
 		"retrieve-address",
 		response,
-		nil,
+		responses.HALHeaders,
 	)
 }
 
@@ -151,7 +169,7 @@ func RetrieveMovie(ctx *gin.Context) {
 // @Tags Movies
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.MovieListResult0
 // @Router /movies [get]
 func RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
@@ -180,7 +198,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 
 func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.MovieListResult, error) {
 	movieListResponse := []responses.MovieListItem{}
-	posterListResponse := []responses.HATEOASPosterLinks{}
+	posterListResponse := []responses.Poster{}
 
 	for _, movie := range movies {
 		movieListResponse = append(
@@ -192,16 +210,18 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 			),
 		)
 
-		posterListResponse = append(
-			posterListResponse,
-			*responses.NewPosterLinks(
-				movie.UUID,
-				uuid.New(),
-				baseURL,
-				versionURL,
-				"movie.Poster",
-			),
-		)
+		if len(movie.Posters) > 0 {
+			posterListResponse = append(
+				posterListResponse,
+				responses.NewPoster(
+					movie.Posters[0],
+					movie.UUID,
+					baseURL,
+					versionURL,
+					nil,
+				),
+			)
+		}
 	}
 
 	movieAndPosterList := responses.HATEOASMovieAndPostersList{
@@ -216,21 +236,16 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 
 	templateParams := []hateoas.TemplateParams{
 		{
-			Name:        "retrieve-movie-list",
-			ResourceURL: fmt.Sprintf("%s/movies", versionURL),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
-		},
-		{
-			Name:        "retrieve-movie",
-			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
-		},
-		{
 			Name:          "create-movies",
 			ResourceURL:   fmt.Sprintf("%s/movies", versionURL),
 			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
+			RequestStruct: requests.Movie{},
+		},
+		{
+			Name:          "update-movie",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id", versionURL),
+			HTTPMethod:    http.MethodPatch,
 			ContentType:   "application/json",
 			RequestStruct: requests.Movie{},
 		},
@@ -242,11 +257,17 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 			RequestStruct: requests.Poster{},
 		},
 		{
-			Name:          "update-movie",
-			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id", versionURL),
+			Name:          "update-movie-poster",
+			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
 			HTTPMethod:    http.MethodPatch,
-			ContentType:   "application/json",
-			RequestStruct: requests.Movie{},
+			ContentType:   "multipart/form-data",
+			RequestStruct: requests.Poster{},
+		},
+		{
+			Name:        "delete-movie-poster",
+			ResourceURL: fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
+			HTTPMethod:  http.MethodDelete,
+			ContentType: "application/json",
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
