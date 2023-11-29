@@ -105,42 +105,7 @@ func RetrieveMovie(ctx *gin.Context) {
 		return
 	}
 
-	templateParams := []hateoas.TemplateParams{
-		{
-			Name:        "update-movie",
-			ResourceURL: fmt.Sprintf("%s/movies/:movie_id", versionURL),
-			HTTPMethod:  http.MethodPatch,
-			ContentType: "application/json",
-		},
-		{
-			Name:          "upload-movie-poster",
-			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
-			HTTPMethod:    http.MethodPost,
-			ContentType:   "multipart/form-data",
-			RequestStruct: requests.Poster{},
-		},
-		{
-			Name:          "upload-movie-poster",
-			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
-			HTTPMethod:    http.MethodPost,
-			ContentType:   "multipart/form-data",
-			RequestStruct: requests.Poster{},
-		},
-		{
-			Name:          "update-movie-poster",
-			ResourceURL:   fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
-			HTTPMethod:    http.MethodPatch,
-			ContentType:   "multipart/form-data",
-			RequestStruct: requests.Poster{},
-		},
-		{
-			Name:        "delete-movie-poster",
-			ResourceURL: fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
-			HTTPMethod:  http.MethodDelete,
-			ContentType: "application/json",
-		},
-	}
-	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	templateJSON, err := getMoviesTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -234,6 +199,24 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		CreateMovies: responses.HATEOASLink{HREF: fmt.Sprintf("%s/movies", versionURL)},
 	}
 
+	templateJSON, err := getMoviesTemplates(versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return nil, err
+	}
+
+	result := responses.MovieListResult{
+		Embedded:  movieAndPosterList,
+		Links:     movieListLinks,
+		Templates: templateJSON,
+	}
+
+	return &result, nil
+}
+
+func getMoviesTemplates(
+	versionURL string,
+) (interface{}, error) {
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:          "create-movies",
@@ -276,11 +259,5 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		return nil, err
 	}
 
-	result := responses.MovieListResult{
-		Embedded:  movieAndPosterList,
-		Links:     movieListLinks,
-		Templates: templateJSON,
-	}
-
-	return &result, nil
+	return templateJSON, nil
 }

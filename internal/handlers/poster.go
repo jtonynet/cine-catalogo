@@ -38,12 +38,23 @@ func UploadMoviePoster(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
-	movieUUID := uuid.MustParse(ctx.Param("movie_id"))
+	movieId := ctx.Param("movie_id")
+	if !IsValidUUID(movieId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing movie_id", nil)
+		return
+	}
+	movieUUID := uuid.MustParse(movieId)
 
 	var movie models.Movie
-	if err := database.DB.Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
 		// TODO: Implements in future
 		fmt.Println("dont found movie")
+		return
+	}
+
+	if len(movie.Posters) > 0 {
+		// TODO: Implements in future
+		fmt.Printf("movie %s has been poster %s", movie.UUID.String(), movie.Posters[0].UUID.String())
 		return
 	}
 

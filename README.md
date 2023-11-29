@@ -12,11 +12,8 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu-color.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/)
+[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
 
-<!--
-[<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
--->
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
 
@@ -41,19 +38,19 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <a id="index"></a>
 ## :arrow_heading_up: index
 
-- [CineCatalog Microsservice](#cine-catalogo)<br/>
-  :arrow_heading_up: [index](#arrow_heading_up-index)<br/>
-  :green_book: [About](#about)<br/>
-  :computer: [Run the project](#run)<br/>
-  :traffic_light: [HATEOAS HAL](#HATEOAS)<br/>
-  :umbrella: [Event Storming](#event-storming)<br/>
-  :bar_chart: [Diagrams](#diagrams)<br/>
-  :newspaper: [API Documentation](#api-docs)<br/>
-  :toolbox: [Tools](#tools)<br/>
-  :clap: [Best Practices](#best-practices)<br/>
-  :brain: [ADR - Architecture Decision Records](#adr)<br/>
-  :1234: [Versions](#versions)<br/>
-  :robot: [Use of AI](#ia)<br>
+[CineCatalog Microsservice](#cine-catalogo)<br/>
+  1. :arrow_heading_up: [index](#arrow_heading_up-index)
+  2. :green_book: [About](#about)
+  3. :computer: [Run the project](#run)
+  4. :traffic_light: [HATEOAS HAL](#HATEOAS)
+  5. :umbrella: [Event Storming](#event-storming)
+  6. :bar_chart: [Diagrams](#diagrams)
+  7. :newspaper: [API Documentation](#api-docs)
+  8. :toolbox: [Tools](#tools)
+  9. :clap: [Best Practices](#best-practices)
+  10. :brain: [ADR - Architecture Decision Records](#adr)
+  11. :1234: [Versions](#versions)
+  12. :robot: [Use of AI](#ia)
 
 <br/>
 
@@ -413,4 +410,6 @@ Multiple files
   https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
 
   https://github.com/swaggo/swag/blob/master/example/basic/api/api.go
+
+  sandro.nascimento@cbf.com.br
 -->
