@@ -411,5 +411,4 @@ Multiple files
 
   https://github.com/swaggo/swag/blob/master/example/basic/api/api.go
 
-  sandro.nascimento@cbf.com.br
 -->
