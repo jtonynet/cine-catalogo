@@ -100,7 +100,7 @@ definitions:
           $ref: '#/definitions/responses.Poster'
         type: array
     type: object
-  responses.HATEOASMovieItemLinks:
+  responses.HATEOASMovieLinks:
     properties:
       self:
         $ref: '#/definitions/responses.HATEOASLink'
@@ -116,32 +116,38 @@ definitions:
       self:
         $ref: '#/definitions/responses.HATEOASLink'
     type: object
-  responses.HATEOASMoviePosterItem:
+  responses.HATEOASMoviePosterList:
     properties:
-      poster:
-        $ref: '#/definitions/responses.Poster'
+      posters:
+        items:
+          $ref: '#/definitions/responses.Poster'
+        type: array
     type: object
   responses.HATEOASPosterLinks:
     properties:
-      delete-poster:
-        $ref: '#/definitions/responses.HATEOASLink'
       image:
+        $ref: '#/definitions/responses.HATEOASLink'
+      movie:
         $ref: '#/definitions/responses.HATEOASLink'
       self:
         $ref: '#/definitions/responses.HATEOASLink'
-      update-poster:
+      update-movie-poster:
         $ref: '#/definitions/responses.HATEOASLink'
     type: object
   responses.Movie:
     properties:
       _embedded:
-        $ref: '#/definitions/responses.HATEOASMoviePosterItem'
+        $ref: '#/definitions/responses.HATEOASMoviePosterList'
+      _links:
+        $ref: '#/definitions/responses.HATEOASMovieLinks'
       _templates: {}
       age_rating:
         type: integer
       description:
         type: string
       name:
+        type: string
+      posterLink:
         type: string
       subtitled:
         type: boolean
@@ -151,12 +157,14 @@ definitions:
   responses.MovieListItem:
     properties:
       _links:
-        $ref: '#/definitions/responses.HATEOASMovieItemLinks'
+        $ref: '#/definitions/responses.HATEOASMovieLinks'
       age_rating:
         type: integer
       description:
         type: string
       name:
+        type: string
+      posterLink:
         type: string
       subtitled:
         type: boolean
@@ -372,6 +380,43 @@ paths:
           schema:
             $ref: '#/definitions/responses.Poster'
       summary: Upload Movie Poster
+      tags:
+      - Movies
+  /movies/{movie_id}/posters/{poster_id}:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Update Movie Poster
+      parameters:
+      - description: Movie UUID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      - description: Poster UUID
+        in: path
+        name: poster_id
+        required: true
+        type: string
+      - in: formData
+        name: alternativeText
+        type: string
+      - in: formData
+        name: name
+        type: string
+      - description: binary poster data
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Poster'
+      summary: Update Movie Poster
       tags:
       - Movies
 swagger: "2.0"

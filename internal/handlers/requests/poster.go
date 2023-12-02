@@ -10,3 +10,11 @@ type Poster struct {
 	// INFO: swaggerignore is a workaroud to fix swaggo bug. Swaggo dont recognize *multipart.FileHeader
 	File *multipart.FileHeader `form:"file" format:"binary" binding:"required" swaggerignore:"true" hateoas:"placeholder=binary poster data,required=true,value=good poster,type=file"`
 }
+
+type UpdatePoster struct {
+	Name            string `form:"name" hateoas:"placeholder=the name of poster,required=true,value=Jaws,type=text"`
+	AlternativeText string `form:"alternativeText" hateoas:"placeholder=the alternative text of poster,required=true,value=good poster,type=text"`
+
+	// INFO: swaggerignore is a workaroud to fix swaggo bug. Swaggo dont recognize *multipart.FileHeader
+	File *multipart.FileHeader `form:"file" format:"binary" swaggerignore:"true" hateoas:"placeholder=binary poster data,required=true,value=good poster,type=file"`
+}

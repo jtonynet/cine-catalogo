@@ -35,6 +35,7 @@ func CreateMovies(ctx *gin.Context) {
 		var singleRequest requests.Movie
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
 			// TODO: Implements in future
+			fmt.Printf("1: %v", err)
 			return
 		}
 
@@ -43,15 +44,17 @@ func CreateMovies(ctx *gin.Context) {
 
 	movies := []models.Movie{}
 	for _, request := range requestList {
+
 		movie, err := models.NewMovie(
 			request.UUID,
 			request.Name,
 			request.Description,
-			request.AgeRating,
+			*request.AgeRating,
 			*request.Subtitled,
 		)
 		if err != nil {
 			// TODO: Implements in future
+			fmt.Printf("2: %v", err)
 			return
 		}
 
@@ -60,12 +63,14 @@ func CreateMovies(ctx *gin.Context) {
 
 	if err := database.DB.Create(&movies).Error; err != nil {
 		// TODO: Implements in future
+		fmt.Printf("3: %v", err)
 		return
 	}
 
 	result, err := getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
+		fmt.Printf("4: %v", err)
 		return
 	}
 
@@ -134,7 +139,7 @@ func RetrieveMovie(ctx *gin.Context) {
 // @Tags Movies
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.MovieListResult0
+// @Success 200 {object} responses.MovieListResult
 // @Router /movies [get]
 func RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
@@ -166,13 +171,15 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 	posterListResponse := []responses.Poster{}
 
 	for _, movie := range movies {
+		m := responses.NewMovieListItem(
+			movie,
+			baseURL,
+			versionURL,
+		)
+
 		movieListResponse = append(
 			movieListResponse,
-			responses.NewMovieListItem(
-				movie,
-				baseURL,
-				versionURL,
-			),
+			m,
 		)
 
 		if len(movie.Posters) > 0 {
@@ -181,6 +188,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 				responses.NewPoster(
 					movie.Posters[0],
 					movie.UUID,
+					m.Links.Self.HREF,
 					baseURL,
 					versionURL,
 					nil,
@@ -245,12 +253,6 @@ func getMoviesTemplates(
 			HTTPMethod:    http.MethodPatch,
 			ContentType:   "multipart/form-data",
 			RequestStruct: requests.Poster{},
-		},
-		{
-			Name:        "delete-movie-poster",
-			ResourceURL: fmt.Sprintf("%s/movies/:movie_id/posters", versionURL),
-			HTTPMethod:  http.MethodDelete,
-			ContentType: "application/json",
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)

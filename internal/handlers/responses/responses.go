@@ -9,6 +9,11 @@ type header struct {
 	value string
 }
 
+type error struct {
+	message string
+	code    int
+}
+
 var (
 	JSONDefaultHeaders = []header{{key: "Content-type", value: "application/json"}}
 	HALHeaders         = []header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}

@@ -9,7 +9,7 @@ import (
 
 type baseMovie struct {
 	UUID        uuid.UUID `json:"uuid"`
-	PosterUUID  uuid.UUID `json:"posterUUID"`
+	PosterLink  string    `json:"posterLink,omitempty"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	AgeRating   int64     `json:"age_rating"`
@@ -33,6 +33,7 @@ type MovieListItem struct {
 
 type HATEOASMovieLinks struct {
 	Self              HATEOASLink `json:"self"`
+	Poster            HATEOASLink `json:"poster"`
 	UpdateMovie       HATEOASLink `json:"update-movie"`
 	UploadMoviePoster HATEOASLink `json:"upload-movie-poster"`
 }
@@ -47,6 +48,7 @@ func NewMovie(
 	versionURL string,
 	templates interface{},
 ) Movie {
+	movieLink := fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())
 	movie := Movie{
 		baseMovie: baseMovie{
 			UUID:        model.UUID,
@@ -57,7 +59,7 @@ func NewMovie(
 		},
 
 		Links: HATEOASMovieLinks{
-			Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())},
+			Self:              HATEOASLink{HREF: movieLink},
 			UpdateMovie:       HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())},
 			UploadMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String())},
 		},
@@ -66,9 +68,11 @@ func NewMovie(
 	}
 
 	if len(model.Posters) > 0 {
+		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL, nil)
 		movie.Embedded = HATEOASMoviePosterList{
-			Posters: []Poster{NewPoster(model.Posters[0], model.UUID, baseURL, versionURL, nil)},
+			Posters: []Poster{p},
 		}
+		movie.Links.Poster = p.Links.Self
 	}
 
 	return movie
@@ -79,6 +83,7 @@ func NewMovieListItem(
 	baseURL,
 	versionURL string,
 ) MovieListItem {
+	movieLink := fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())
 	movie := MovieListItem{
 		baseMovie: baseMovie{
 			UUID:        model.UUID,
@@ -89,14 +94,15 @@ func NewMovieListItem(
 		},
 
 		Links: HATEOASMovieLinks{
-			Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())},
+			Self:              HATEOASLink{HREF: movieLink},
 			UpdateMovie:       HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())},
 			UploadMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String())},
 		},
 	}
 
 	if len(model.Posters) > 0 {
-		movie.PosterUUID = model.Posters[0].UUID
+		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL, nil)
+		movie.Links.Poster = p.Links.Self
 	}
 
 	return movie

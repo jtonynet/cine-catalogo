@@ -7,7 +7,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/config"
 )
 
-func InitMovies(cfg config.API) {
+func Init(cfg config.API) {
 	r := gin.Default()
 
 	initializeRoutes(r, cfg)

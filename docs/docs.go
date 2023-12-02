@@ -295,6 +295,62 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/movies/{movie_id}/posters/{poster_id}": {
+            "patch": {
+                "description": "Update Movie Poster",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Update Movie Poster",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Movie UUID",
+                        "name": "movie_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Poster UUID",
+                        "name": "poster_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "alternativeText",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "file",
+                        "description": "binary poster data",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Poster"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -444,7 +500,7 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.HATEOASMovieItemLinks": {
+        "responses.HATEOASMovieLinks": {
             "type": "object",
             "properties": {
                 "self": {
@@ -469,27 +525,30 @@ const docTemplate = `{
                 }
             }
         },
-        "responses.HATEOASMoviePosterItem": {
+        "responses.HATEOASMoviePosterList": {
             "type": "object",
             "properties": {
-                "poster": {
-                    "$ref": "#/definitions/responses.Poster"
+                "posters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/responses.Poster"
+                    }
                 }
             }
         },
         "responses.HATEOASPosterLinks": {
             "type": "object",
             "properties": {
-                "delete-poster": {
+                "image": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
-                "image": {
+                "movie": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
                 "self": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
-                "update-poster": {
+                "update-movie-poster": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }
@@ -498,7 +557,10 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_embedded": {
-                    "$ref": "#/definitions/responses.HATEOASMoviePosterItem"
+                    "$ref": "#/definitions/responses.HATEOASMoviePosterList"
+                },
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASMovieLinks"
                 },
                 "_templates": {},
                 "age_rating": {
@@ -508,6 +570,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "posterLink": {
                     "type": "string"
                 },
                 "subtitled": {
@@ -522,7 +587,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "_links": {
-                    "$ref": "#/definitions/responses.HATEOASMovieItemLinks"
+                    "$ref": "#/definitions/responses.HATEOASMovieLinks"
                 },
                 "age_rating": {
                     "type": "integer"
@@ -531,6 +596,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "posterLink": {
                     "type": "string"
                 },
                 "subtitled": {
