@@ -5,10 +5,10 @@ definitions:
         example: BR
         type: string
       description:
-        example: Bem localizado
+        example: Giant Mall
         type: string
       name:
-        example: Botafogo Praia Center
+        example: Barrashopping
         type: string
       postalCode:
         example: "21940980"
@@ -34,12 +34,16 @@ definitions:
   requests.Cinema:
     properties:
       capacity:
+        example: 120
         type: integer
       description:
+        example: Good holographic Imax 5D room
         type: string
       name:
+        example: Imax Majestic Room
         type: string
       uuid:
+        example: 292cb98c-62ab-49ef-8e23-dc793a86061d
         type: string
     required:
     - capacity
@@ -108,6 +112,19 @@ definitions:
       state:
         type: string
       telephone:
+        type: string
+      uuid:
+        type: string
+    type: object
+  responses.Cinema:
+    properties:
+      _links: {}
+      _templates: {}
+      capacity:
+        type: integer
+      description:
+        type: string
+      name:
         type: string
       uuid:
         type: string
@@ -324,7 +341,26 @@ paths:
             $ref: '#/definitions/responses.HATEOASListResult'
       summary: Create Addresses Cinemas
       tags:
-      - Addresses
+      - Addresses Cinemas
+  /cinemas/{cinema_id}:
+    get:
+      description: Retrieve one Cinema
+      parameters:
+      - description: Cinema UUID
+        in: path
+        name: cinema_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Cinema'
+      summary: Retrieve Cinema
+      tags:
+      - Cinemas
   /movies:
     get:
       consumes:

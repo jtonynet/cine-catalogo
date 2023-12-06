@@ -20,7 +20,7 @@ import (
 
 // @Summary Create Addresses Cinemas
 // @Description Create List of Cinemas
-// @Tags Addresses
+// @Tags Addresses Cinemas
 // @Accept json
 // @Produce json
 // @Router /addresses/{address_id}/cinemas [post]
@@ -92,6 +92,13 @@ func CreateCinemas(ctx *gin.Context) {
 	)
 }
 
+// @Summary Retrieve Cinema
+// @Description Retrieve one Cinema
+// @Tags Cinemas
+// @Produce json
+// @Router /cinemas/{cinema_id} [get]
+// @Param cinema_id path string true "Cinema UUID"
+// @Success 200 {object} responses.Cinema
 func RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")

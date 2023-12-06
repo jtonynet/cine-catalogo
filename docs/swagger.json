@@ -104,7 +104,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Addresses"
+                    "Addresses Cinemas"
                 ],
                 "summary": "Create Addresses Cinemas",
                 "parameters": [
@@ -133,6 +133,35 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/responses.HATEOASListResult"
+                        }
+                    }
+                }
+            }
+        },
+        "/cinemas/{cinema_id}": {
+            "get": {
+                "description": "Retrieve one Cinema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cinemas"
+                ],
+                "summary": "Retrieve Cinema",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cinema UUID",
+                        "name": "cinema_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Cinema"
                         }
                     }
                 }
@@ -442,11 +471,11 @@
                 },
                 "description": {
                     "type": "string",
-                    "example": "Bem localizado"
+                    "example": "Giant Mall"
                 },
                 "name": {
                     "type": "string",
-                    "example": "Botafogo Praia Center"
+                    "example": "Barrashopping"
                 },
                 "postalCode": {
                     "type": "string",
@@ -476,16 +505,20 @@
             ],
             "properties": {
                 "capacity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 120
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Good holographic Imax 5D room"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Imax Majestic Room"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "292cb98c-62ab-49ef-8e23-dc793a86061d"
                 }
             }
         },
@@ -572,6 +605,25 @@
                     "type": "string"
                 },
                 "telephone": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "responses.Cinema": {
+            "type": "object",
+            "properties": {
+                "_links": {},
+                "_templates": {},
+                "capacity": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "uuid": {
