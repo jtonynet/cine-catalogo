@@ -8,4 +8,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["go", "run", "cmd/apiMovie/main.go", "-b", "0.0.0.0"]
+CMD ["go", "run", "cmd/api/main.go", "-b", "0.0.0.0"]
