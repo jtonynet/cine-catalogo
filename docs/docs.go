@@ -874,6 +874,9 @@ const docTemplate = `{
         "responses.HATEOASCinemasLinks": {
             "type": "object",
             "properties": {
+                "address": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
                 "delete-cinema": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },

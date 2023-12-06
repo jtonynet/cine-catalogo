@@ -118,12 +118,21 @@ func RetrieveCinema(ctx *gin.Context) {
 
 	templateParams := []hateoas.TemplateParams{
 		{
-			Name:        "retrieve-cinema",
-			ResourceURL: fmt.Sprintf("%s/cinemas/%s", versionURL, cinemaId),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
+			Name:          "update-cinema",
+			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
+			ContentType:   "application/json",
+			HTTPMethod:    http.MethodPatch,
+			RequestStruct: requests.UpdateCinema{},
+		},
+		{
+			Name:          "delete-cinema",
+			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
+			ContentType:   "application/json",
+			HTTPMethod:    http.MethodDelete,
+			RequestStruct: requests.UpdateCinema{},
 		},
 	}
+
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
 		// TODO: Implements in future
@@ -340,10 +349,18 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 
 	templateParams := []hateoas.TemplateParams{
 		{
-			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
+			Name:          "update-cinema",
+			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
+			ContentType:   "application/json",
+			HTTPMethod:    http.MethodPatch,
+			RequestStruct: requests.UpdateCinema{},
+		},
+		{
+			Name:          "delete-cinema",
+			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
+			ContentType:   "application/json",
+			HTTPMethod:    http.MethodDelete,
+			RequestStruct: requests.UpdateCinema{},
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
