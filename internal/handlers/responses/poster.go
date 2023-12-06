@@ -66,9 +66,9 @@ func NewPosterLinks(
 	posterPath string,
 ) HATEOASPosterLinks {
 	return HATEOASPosterLinks{
-		Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
+		Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, posterUUID)},
 		Movie:             HATEOASLink{HREF: movieLink},
-		UpdateMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", baseURL, movieUUID, posterUUID)},
+		UpdateMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, posterUUID)},
 		Image:             HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, posterPath)},
 	}
 }
