@@ -112,7 +112,7 @@ With the 'cine-catalogo' image running, type:
 $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
 ```
 
-Below is a screenshot of the latest documentation, which can be [accessed here](http://localhost:8080/swagger/index.html) with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
+Below is a screenshot of the latest documentation, which can be accessed here on http://localhost:8080/swagger/index.html with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
 <img src="./assets/images/screen_captures/swagger_01.png"/>
 
 <br/>
