@@ -201,7 +201,7 @@ func RetrieveAddress(ctx *gin.Context) {
 
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		responses.SendError(ctx, http.StatusNotFound, "address not found", nil)
 		return
 	}
 
@@ -270,6 +270,43 @@ func RetrieveAddressList(ctx *gin.Context) {
 		"retrieve-address-list",
 		result,
 		responses.HALHeaders,
+	)
+}
+
+// @Summary Delete Address
+// @Description Delete Address
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Router /addresses/{address_id} [delete]
+// @Param address_id path string true "Address UUID"
+// @Success 204
+func DeleteAddress(ctx *gin.Context) {
+
+	addressId := ctx.Param("address_id")
+	if !IsValidUUID(addressId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		return
+	}
+	addressUUID := uuid.MustParse(addressId)
+
+	address := models.Address{UUID: addressUUID}
+	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+		responses.SendError(ctx, http.StatusNotFound, "address not found", nil)
+		return
+	}
+
+	if result := database.DB.Delete(&address); result.Error != nil {
+		responses.SendError(ctx, http.StatusInternalServerError, "failed to delete address", nil)
+		return
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusNoContent,
+		"delete-address",
+		nil,
+		nil,
 	)
 }
 

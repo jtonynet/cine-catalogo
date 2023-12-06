@@ -44,6 +44,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.HEAD("/addresses", handlers.Head)
 
 	v1.PATCH("/addresses/:address_id", handlers.UpdateAddress)
+	v1.DELETE("/addresses/:address_id", handlers.DeleteAddress)
 	v1.OPTIONS("/addresses/:address_id", handlers.Option)
 	v1.HEAD("/addresses/:address_id", handlers.Head)
 
@@ -56,6 +57,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	// Cinemas
 	v1.GET("/cinemas/:cinema_id", handlers.RetrieveCinema)
 	v1.PATCH("/cinemas/:cinema_id", handlers.UpdateCinema)
+	v1.DELETE("/cinemas/:cinema_id", handlers.DeleteCinema)
 	v1.OPTIONS("/cinemas/:cinema_id", handlers.Option)
 	v1.HEAD("/cinemas/:cinema_id", handlers.Head)
 

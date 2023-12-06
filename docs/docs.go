@@ -104,6 +104,33 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "description": "Delete Address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Delete Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address UUID",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
             "patch": {
                 "description": "Update Address",
                 "consumes": [
@@ -240,6 +267,33 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/responses.Cinema"
                         }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Cinema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cinemas"
+                ],
+                "summary": "Delete Cinema",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cinema UUID",
+                        "name": "cinema_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     }
                 }
             },
@@ -779,7 +833,9 @@ const docTemplate = `{
         "responses.Cinema": {
             "type": "object",
             "properties": {
-                "_links": {},
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASCinemasLinks"
+                },
                 "_templates": {},
                 "capacity": {
                     "type": "integer"
@@ -801,6 +857,9 @@ const docTemplate = `{
                 "create-addresses-cinemas": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
+                "delete-address": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
                 "retrieve-cinema-list": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
@@ -808,6 +867,20 @@ const docTemplate = `{
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
                 "update-address": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                }
+            }
+        },
+        "responses.HATEOASCinemasLinks": {
+            "type": "object",
+            "properties": {
+                "delete-cinema": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "self": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "update-cinema": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }

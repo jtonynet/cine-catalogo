@@ -112,7 +112,7 @@ func RetrieveCinema(ctx *gin.Context) {
 
 	cinema := models.Cinema{UUID: cinemaUUID}
 	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
-		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		responses.SendError(ctx, http.StatusNotFound, "cinema not found", nil)
 		return
 	}
 
@@ -133,7 +133,7 @@ func RetrieveCinema(ctx *gin.Context) {
 	response := responses.NewCinema(
 		cinema,
 		versionURL,
-		responses.WithCinemaTemplates(templateJSON),
+		templateJSON,
 	)
 
 	responses.SendSuccess(
@@ -141,6 +141,43 @@ func RetrieveCinema(ctx *gin.Context) {
 		http.StatusOK,
 		"retrieve-cinema",
 		response,
+		nil,
+	)
+}
+
+// @Summary Delete Cinema
+// @Description Delete Cinema
+// @Tags Cinemas
+// @Accept json
+// @Produce json
+// @Router /cinemas/{cinema_id} [delete]
+// @Param cinema_id path string true "Cinema UUID"
+// @Success 204
+func DeleteCinema(ctx *gin.Context) {
+
+	cinemaId := ctx.Param("cinema_id")
+	if !IsValidUUID(cinemaId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
+		return
+	}
+	cinemaUUID := uuid.MustParse(cinemaId)
+
+	cinema := models.Cinema{UUID: cinemaUUID}
+	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+		responses.SendError(ctx, http.StatusNotFound, "cinema not found", nil)
+		return
+	}
+
+	if result := database.DB.Delete(&cinema); result.Error != nil {
+		responses.SendError(ctx, http.StatusInternalServerError, "failed to delete cinema", nil)
+		return
+	}
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusNoContent,
+		"delete-cinema",
+		nil,
 		nil,
 	)
 }
@@ -214,7 +251,7 @@ func UpdateCinema(ctx *gin.Context) {
 	response := responses.NewCinema(
 		cinema,
 		versionURL,
-		responses.WithCinemaTemplates(templateJSON),
+		templateJSON,
 	)
 
 	responses.SendSuccess(
@@ -276,12 +313,12 @@ func getCinemaListResult(cinemas []models.Cinema, versionURL, addressId string) 
 
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
-			*responses.NewCinema(cinema, versionURL),
+			responses.NewCinema(cinema, versionURL, nil),
 		)
 	}
 
 	cinemaList := responses.HATEOASCinemaList{
-		Cinemas: &cinemaListResponse,
+		Cinemas: cinemaListResponse,
 	}
 
 	cinemaListLinks := responses.HATEOASCinemaListLinks{

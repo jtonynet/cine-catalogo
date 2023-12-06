@@ -7,57 +7,55 @@ import (
 	"github.com/jtonynet/cine-catalogo/models"
 )
 
-type Cinema struct {
+type baseCinema struct {
 	UUID        uuid.UUID `json:"uuid"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Capacity    int64     `json:"capacity"`
-
-	HATEOASListItemResult
 }
 
-type HATEOASCinemasItemLinks struct {
-	Self HATEOASLink `json:"self"`
+type Cinema struct {
+	baseCinema
+
+	Links HATEOASCinemasLinks `json:"_links,omitempty"`
+
+	Templates interface{} `json:"_templates,omitempty"`
+}
+
+type HATEOASCinemasLinks struct {
+	Self         HATEOASLink `json:"self"`
+	UpdateCinema HATEOASLink `json:"update-cinema"`
+	DeleteCinema HATEOASLink `json:"delete-cinema"`
+}
+
+func NewCinema(
+	model models.Cinema,
+	baseURL string,
+	templates interface{},
+) Cinema {
+	cinema := Cinema{
+		baseCinema: baseCinema{
+			UUID:        model.UUID,
+			Name:        model.Name,
+			Description: model.Description,
+			Capacity:    model.Capacity,
+		},
+
+		Links: HATEOASCinemasLinks{
+			Self:         HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
+			UpdateCinema: HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
+			DeleteCinema: HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
+		},
+
+		Templates: templates,
+	}
+
+	return cinema
 }
 
 type HATEOASCinemaListLinks struct {
 	Self HATEOASLink `json:"self"`
 }
 type HATEOASCinemaList struct {
-	Cinemas *[]Cinema `json:"cinemas"`
-}
-
-type CinemaOption func(*Cinema)
-
-func NewCinema(
-	model models.Cinema,
-	baseURL string,
-	options ...CinemaOption,
-) *Cinema {
-	cinema := &Cinema{
-		UUID:        model.UUID,
-		Name:        model.Name,
-		Description: model.Description,
-		Capacity:    model.Capacity,
-
-		HATEOASListItemResult: HATEOASListItemResult{
-			Links: HATEOASCinemasItemLinks{
-				Self: HATEOASLink{
-					HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String()),
-				},
-			},
-		},
-	}
-
-	for _, opt := range options {
-		opt(cinema)
-	}
-
-	return cinema
-}
-
-func WithCinemaTemplates(templates interface{}) CinemaOption {
-	return func(cinema *Cinema) {
-		cinema.Templates = templates
-	}
+	Cinemas []Cinema `json:"cinemas,omitempty"`
 }

@@ -30,6 +30,7 @@ type HATEOASAddressLinks struct {
 	CreateAddressesCinemas HATEOASLink `json:"create-addresses-cinemas"`
 	RetrieveCinemaList     HATEOASLink `json:"retrieve-cinema-list"`
 	UpdateAddress          HATEOASLink `json:"update-address"`
+	DeleteAddress          HATEOASLink `json:"delete-address"`
 }
 
 func NewAddress(
@@ -53,6 +54,7 @@ func NewAddress(
 			CreateAddressesCinemas: HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, model.UUID.String())},
 			RetrieveCinemaList:     HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", baseURL, model.UUID.String())},
 			UpdateAddress:          HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s", baseURL, model.UUID.String())},
+			DeleteAddress:          HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s", baseURL, model.UUID.String())},
 		},
 
 		Templates: templates,
