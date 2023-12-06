@@ -47,12 +47,12 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   1. :arrow_heading_up: [index](#arrow_heading_up-index)
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
-  4. :traffic_light: [HATEOAS HAL](#HATEOAS)
-  5. :umbrella: [Event Storming](#event-storming)
-  6. :bar_chart: [Diagrams](#diagrams)
-  7. :newspaper: [API Documentation](#api-docs)
+  4. :newspaper: [API Documentation](#api-docs)
+  5. :traffic_light: [HATEOAS HAL](#HATEOAS)
+  6. :umbrella: [Event Storming](#event-storming)
+  7. :bar_chart: [Diagrams](#diagrams)
   8. :toolbox: [Tools](#tools)
-  9. :clap: [Best Practices](#best-practices)
+  9.  :clap: [Best Practices](#best-practices)
   10. :brain: [ADR - Architecture Decision Records](#adr)
   11. :1234: [Versions](#versions)
   12. :robot: [Use of AI](#ia)
@@ -95,6 +95,25 @@ $ docker compose up
 > :window: Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
 > Git attribute settings that might affect the line ending character are not working as expected. To run the project on Windows, you will need to make changes to the './tests/gatling/entrypoint.sh' file. Convert the file from 'LF' to 'CRLF' in your preferred text editor.
 -->
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+<a id="api-docs"></a>
+## 📰  API Documentation
+
+####  <img src="./assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Generate Swagger docs:
+
+With the 'cine-catalogo' image running, type:
+
+```bash
+$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
+```
+
+Below is a screenshot of the latest documentation, which can be [accessed here](http://localhost:8080/swagger/index.html) with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
+<img src="./assets/images/screen_captures/swagger_01.png"/>
 
 <br/>
 
@@ -247,25 +266,7 @@ erDiagram
 [:arrow_heading_up: back to top](#index)
 
 ---
-<a id="api-docs"></a>
-## 📰  API Documentation
 
-####  <img src="./assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Generate Swagger docs:
-
-With the 'cine-catalogo' image running, type:
-
-```bash
-$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
-```
-
-Below is a screenshot of the latest documentation, which can be [accessed here](http://localhost:8080/swagger/index.html) with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
-<img src="./assets/images/screen_captures/swagger_01.png"/>
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
----
 <a id="tools"></a>
 ## 🧰 Tools
 
