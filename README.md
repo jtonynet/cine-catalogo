@@ -317,6 +317,7 @@ erDiagram
 - [RESTful](https://restfulapi.net/)
 - [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
 - [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
+- [Prometheus](https://prometheus.io/docs/guides/go-application/)
 
 <!-- 
 - [Load testing](https://en.wikipedia.org/wiki/Load_testing)

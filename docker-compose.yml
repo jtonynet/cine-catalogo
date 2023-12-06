@@ -1,7 +1,17 @@
 version: '3.7'
 name: cine
-services:
 
+networks:
+  database:
+    internal: true
+  cache:
+    internal: true
+  api:
+    internal: true
+  monit:
+  proxy:
+
+services:
   postgres-catalogo:
     image: postgres:16.0-alpine
     container_name: postgres-catalogo
@@ -15,7 +25,7 @@ services:
     volumes:
       - ./docker_data/postgres-data:/var/lib/postgresql/data  
     networks:
-      - ticket-network
+      - database
 
   catalogo-api:
     build: 
@@ -32,9 +42,11 @@ services:
       - ./:/usr/src/app/
     tty: true
     networks:
-      - ticket-network
+      - api
+      - database
+      - proxy # Reverse Proxy NGNX in future
 
-  hal:
+  hal-catalogo:
     build:
       context: ./tools/hal
       dockerfile: Dockerfile
@@ -45,8 +57,25 @@ services:
     ports:
       - 4200:4200
     networks:
-      - ticket-network
- 
-networks:
-  ticket-network:
-    driver: bridge
+      - proxy # TODO: Same monit network? I dont Know
+
+  prometheus-ticket:
+    image: prom/prometheus:latest
+    container_name: ticket-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./docker_data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./docker_data/prometheus/prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - 9090:9090
+    networks:
+      - monit
+      - api
+    depends_on:
+      - catalogo-api
