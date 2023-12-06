@@ -64,7 +64,7 @@ services:
     container_name: ticket-prometheus
     restart: unless-stopped
     volumes:
-      - ./docker_data/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./tools/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./docker_data/prometheus/prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
