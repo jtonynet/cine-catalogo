@@ -111,7 +111,10 @@ func RetrieveCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema)
+	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		return
+	}
 
 	templateParams := []hateoas.TemplateParams{
 		{
@@ -142,6 +145,94 @@ func RetrieveCinema(ctx *gin.Context) {
 	)
 }
 
+// @Summary Update Cinema
+// @Description Update Cinema
+// @Tags Cinemas
+// @Accept json
+// @Produce json
+// @Router /cinemas/{cinema_id} [patch]
+// @Param cinema_id path string true "Cinema UUID"
+// @Param request body requests.UpdateCinema true "Request body"
+// @Success 200 {object} responses.Cinema
+func UpdateCinema(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
+	cinemaId := ctx.Param("cinema_id")
+	if !IsValidUUID(cinemaId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
+		return
+	}
+	cinemaUUID := uuid.MustParse(cinemaId)
+
+	cinema := models.Cinema{UUID: cinemaUUID}
+	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		return
+	}
+
+	var updateRequest requests.UpdateCinema
+	if err := ctx.ShouldBind(&updateRequest); err != nil {
+		// TODO: Implements in future
+		fmt.Printf("updateRequest ShouldBindJSON %v", err)
+		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)
+		return
+	}
+
+	if updateRequest.Name != "" {
+		cinema.Name = updateRequest.Name
+	}
+
+	if updateRequest.Description != "" {
+		cinema.Description = updateRequest.Description
+	}
+
+	if updateRequest.Capacity > 0 {
+		cinema.Capacity = updateRequest.Capacity
+	}
+
+	if err := database.DB.Save(&cinema).Error; err != nil {
+		// TODO: Implements in future
+		fmt.Printf("database.DB.Save %v", err)
+		return
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:        "retrieve-cinema",
+			ResourceURL: fmt.Sprintf("%s/cinemas/%s", versionURL, cinemaId),
+			ContentType: "application/json",
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	response := responses.NewCinema(
+		cinema,
+		versionURL,
+		responses.WithCinemaTemplates(templateJSON),
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-cinema",
+		response,
+		nil,
+	)
+}
+
+// @Summary Retrieve Cinema List
+// @Description Retrieve List all Cinemas from one Address
+// @Tags Addresses Cinemas
+// @Produce json
+// @Success 200 {object} responses.MovieListResult
+// @Router /addresses/{address_id}/cinemas [get]
+// @Param address_id path string true "Address UUID"
 func RetrieveCinemaList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")

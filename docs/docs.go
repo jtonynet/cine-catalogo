@@ -106,6 +106,33 @@ const docTemplate = `{
             }
         },
         "/addresses/{address_id}/cinemas": {
+            "get": {
+                "description": "Retrieve List all Cinemas from one Address",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses Cinemas"
+                ],
+                "summary": "Retrieve Cinema List",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address UUID",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.MovieListResult"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create List of Cinemas",
                 "consumes": [
@@ -166,6 +193,45 @@ const docTemplate = `{
                         "name": "cinema_id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Cinema"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update Cinema",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Cinemas"
+                ],
+                "summary": "Update Cinema",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Cinema UUID",
+                        "name": "cinema_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UpdateCinema"
+                        }
                     }
                 ],
                 "responses": {
@@ -567,6 +633,23 @@ const docTemplate = `{
                 "uuid": {
                     "type": "string",
                     "example": "206dad85-cbcd-4b71-8fda-efd6ca87ebc7"
+                }
+            }
+        },
+        "requests.UpdateCinema": {
+            "type": "object",
+            "properties": {
+                "capacity": {
+                    "type": "integer",
+                    "example": 160
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Majestic Very Good holographic Imax 5D room"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "5D Imax Majestic Room"
                 }
             }
         },

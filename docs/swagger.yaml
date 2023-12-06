@@ -79,6 +79,18 @@ definitions:
     - subtitled
     - uuid
     type: object
+  requests.UpdateCinema:
+    properties:
+      capacity:
+        example: 160
+        type: integer
+      description:
+        example: Majestic Very Good holographic Imax 5D room
+        type: string
+      name:
+        example: 5D Imax Majestic Room
+        type: string
+    type: object
   requests.UpdateMovie:
     properties:
       age_rating:
@@ -314,6 +326,24 @@ paths:
       tags:
       - Addresses
   /addresses/{address_id}/cinemas:
+    get:
+      description: Retrieve List all Cinemas from one Address
+      parameters:
+      - description: Address UUID
+        in: path
+        name: address_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.MovieListResult'
+      summary: Retrieve Cinema List
+      tags:
+      - Addresses Cinemas
     post:
       consumes:
       - application/json
@@ -359,6 +389,32 @@ paths:
           schema:
             $ref: '#/definitions/responses.Cinema'
       summary: Retrieve Cinema
+      tags:
+      - Cinemas
+    patch:
+      consumes:
+      - application/json
+      description: Update Cinema
+      parameters:
+      - description: Cinema UUID
+        in: path
+        name: cinema_id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateCinema'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Cinema'
+      summary: Update Cinema
       tags:
       - Cinemas
   /movies:

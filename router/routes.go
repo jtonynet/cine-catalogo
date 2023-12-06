@@ -51,6 +51,9 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 
 	// Cinemas
 	v1.GET("/cinemas/:cinema_id", handlers.RetrieveCinema)
+	v1.PATCH("/cinemas/:cinema_id", handlers.UpdateCinema)
+	v1.OPTIONS("/cinemas/:cinema_id", handlers.Option)
+	v1.HEAD("/cinemas/:cinema_id", handlers.Head)
 
 	// Movies
 	v1.GET("/movies", handlers.RetrieveMovieList)

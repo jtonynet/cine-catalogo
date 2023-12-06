@@ -84,8 +84,6 @@ func CreateMovies(ctx *gin.Context) {
 	)
 }
 
-// @BasePath /v1
-
 // @Summary Retrieve Movie
 // @Description Retrieve one Movie
 // @Tags Movies
@@ -214,8 +212,6 @@ func UpdateMovie(ctx *gin.Context) {
 		responses.HALHeaders,
 	)
 }
-
-// @BasePath /v1
 
 // @Summary Retrieve Movie List
 // @Description Retrieve List all Movies
