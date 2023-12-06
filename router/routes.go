@@ -65,6 +65,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.HEAD("/movies/:movie_id", handlers.Head)
 
 	// Movies Posters
+	v1.GET("/movies/:movie_id/posters/:poster_id", handlers.RetrieveMoviePoster)
 	v1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
 	v1.OPTIONS("/movies/:movie_id/posters", handlers.Option)
 	v1.HEAD("/movies/:movie_id/posters", handlers.Head)

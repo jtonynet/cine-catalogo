@@ -450,8 +450,33 @@ paths:
             $ref: '#/definitions/responses.Poster'
       summary: Upload Movie Poster
       tags:
-      - Movies
+      - Movies Posters
   /movies/{movie_id}/posters/{poster_id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve Movie Poster
+      parameters:
+      - description: Movie UUID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      - description: Poster UUID
+        in: path
+        name: poster_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Poster'
+      summary: Retrieve Movie Poster
+      tags:
+      - Movies Posters
     patch:
       consumes:
       - multipart/form-data
@@ -489,5 +514,5 @@ paths:
             $ref: '#/definitions/responses.Poster'
       summary: Update Movie Poster
       tags:
-      - Movies
+      - Movies Posters
 swagger: "2.0"

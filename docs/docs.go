@@ -288,7 +288,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Movies"
+                    "Movies Posters"
                 ],
                 "summary": "Upload Movie Poster",
                 "parameters": [
@@ -339,6 +339,43 @@ const docTemplate = `{
             }
         },
         "/movies/{movie_id}/posters/{poster_id}": {
+            "get": {
+                "description": "Retrieve Movie Poster",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies Posters"
+                ],
+                "summary": "Retrieve Movie Poster",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Movie UUID",
+                        "name": "movie_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Poster UUID",
+                        "name": "poster_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Poster"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update Movie Poster",
                 "consumes": [
@@ -348,7 +385,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Movies"
+                    "Movies Posters"
                 ],
                 "summary": "Update Movie Poster",
                 "parameters": [
