@@ -38,13 +38,17 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	// Addresses
 	v1.GET("/addresses", handlers.RetrieveAddressList)
 	v1.GET("/addresses/:address_id", handlers.RetrieveAddress)
-	v1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
 
 	v1.POST("/addresses", handlers.CreateAddresses)
 	v1.OPTIONS("/addresses", handlers.Option)
 	v1.HEAD("/addresses", handlers.Head)
 
+	v1.PATCH("/addresses/:address_id", handlers.UpdateAddress)
+	v1.OPTIONS("/addresses/:address_id", handlers.Option)
+	v1.HEAD("/addresses/:address_id", handlers.Head)
+
 	// Addresses Cinemas
+	v1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
 	v1.POST("addresses/:address_id/cinemas", handlers.CreateCinemas)
 	v1.OPTIONS("/addresses/:address_id/cinemas", handlers.Option)
 	v1.HEAD("/addresses/:address_id/cinemas", handlers.Head)

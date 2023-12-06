@@ -22,7 +22,7 @@ type Poster struct {
 
 	Links HATEOASPosterLinks `json:"_links,omitempty"`
 
-	//Templates              interface{}         `json:"_templates,omitempty"`
+	Templates interface{} `json:"_templates,omitempty"`
 }
 
 type HATEOASPosterLinks struct {
@@ -51,7 +51,7 @@ func NewPoster(
 
 		Links: NewPosterLinks(movieUUID, model.UUID, movieLink, baseURL, versionURL, model.Path),
 
-		//Templates: templates,
+		Templates: templates,
 	}
 
 	return poster

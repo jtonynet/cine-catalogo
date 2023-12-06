@@ -80,17 +80,16 @@ func CreateAddresses(ctx *gin.Context) {
 	)
 }
 
-// @BasePath /v1
-
-// @Summary Retrieve Address
-// @Description Retrieve one Address
+// @Summary Update Address
+// @Description Update Address
 // @Tags Addresses
 // @Accept json
 // @Produce json
-// @Param address_id path string true "UUID of the address"
+// @Router /addresses/{address_id} [patch]
+// @Param address_id path string true "Address UUID"
+// @Param request body requests.UpdateAddress true "Request body"
 // @Success 200 {object} responses.Address
-// @Router /addresses/{address_id} [get]
-func RetrieveAddress(ctx *gin.Context) {
+func UpdateAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
@@ -102,7 +101,48 @@ func RetrieveAddress(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
-	database.DB.Where(&models.Address{UUID: addressUUID}).First(&address)
+	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		return
+	}
+
+	var updateRequest requests.UpdateAddress
+	if err := ctx.ShouldBind(&updateRequest); err != nil {
+		// TODO: Implements in future
+		fmt.Printf("updateRequest ShouldBindJSON %v", err)
+		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)
+		return
+	}
+
+	if updateRequest.Name != "" {
+		address.Name = updateRequest.Name
+	}
+
+	if updateRequest.Country != "" {
+		address.Country = updateRequest.Country
+	}
+
+	if updateRequest.State != "" {
+		address.State = updateRequest.State
+	}
+
+	if updateRequest.Telephone != "" {
+		address.Telephone = updateRequest.Telephone
+	}
+
+	if updateRequest.Description != "" {
+		address.Description = updateRequest.Description
+	}
+
+	if updateRequest.PostalCode != "" {
+		address.PostalCode = updateRequest.PostalCode
+	}
+
+	if err := database.DB.Save(&address).Error; err != nil {
+		// TODO: Implements in future
+		fmt.Printf("database.DB.Save %v", err)
+		return
+	}
 
 	templateParams := []hateoas.TemplateParams{
 		{
@@ -128,7 +168,7 @@ func RetrieveAddress(ctx *gin.Context) {
 	response := responses.NewAddress(
 		address,
 		versionURL,
-		responses.WithAddressTemplates(templateJSON),
+		templateJSON,
 	)
 
 	responses.SendSuccess(
@@ -140,7 +180,66 @@ func RetrieveAddress(ctx *gin.Context) {
 	)
 }
 
-// @BasePath /v1
+// @Summary Retrieve Address
+// @Description Retrieve one Address
+// @Tags Addresses
+// @Accept json
+// @Produce json
+// @Param address_id path string true "UUID of the address"
+// @Success 200 {object} responses.Address
+// @Router /addresses/{address_id} [get]
+func RetrieveAddress(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
+	addressId := ctx.Param("address_id")
+	if !IsValidUUID(addressId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		return
+	}
+	addressUUID := uuid.MustParse(addressId)
+
+	address := models.Address{UUID: addressUUID}
+	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		return
+	}
+
+	templateParams := []hateoas.TemplateParams{
+		{
+			Name:          "create-addresses-cinemas",
+			ResourceURL:   fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
+			HTTPMethod:    http.MethodPost,
+			ContentType:   "application/json",
+			RequestStruct: requests.Cinema{},
+		},
+		{
+			Name:        "retrieve-cinema-list",
+			ResourceURL: fmt.Sprintf("%s/addresses/:address_id/cinemas", versionURL),
+			ContentType: "application/json",
+			HTTPMethod:  http.MethodGet,
+		},
+	}
+	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	response := responses.NewAddress(
+		address,
+		versionURL,
+		templateJSON,
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"retrieve-address",
+		response,
+		nil,
+	)
+}
 
 // @Summary Retrieve Address List
 // @Description Retrieve List all Address
@@ -180,18 +279,18 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 	for _, address := range addresses {
 		addressListResponse = append(
 			addressListResponse,
-			*responses.NewAddress(address, versionURL),
+			responses.NewAddress(address, versionURL, nil),
 		)
 	}
 
 	addressList := responses.HATEOASAddressList{
-		Addresses: &addressListResponse,
+		Addresses: addressListResponse,
 	}
 
 	addressListLinks := responses.HATEOASAddressListLinks{
 		Self:                   responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
 		CreateAddresses:        responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
-		CreateAddressesCinemas: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL)},
+		CreateAddressesCinemas: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, "")},
 	}
 
 	templateParams := []hateoas.TemplateParams{
@@ -201,6 +300,13 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 			HTTPMethod:    http.MethodPost,
 			ContentType:   "application/json",
 			RequestStruct: requests.Address{},
+		},
+		{
+			Name:          "update-address",
+			ResourceURL:   fmt.Sprintf("%s/addresses/:addressId", versionURL),
+			HTTPMethod:    http.MethodPatch,
+			ContentType:   "application/json",
+			RequestStruct: requests.UpdateAddress{},
 		},
 		{
 			Name:          "create-addresses-cinemas",

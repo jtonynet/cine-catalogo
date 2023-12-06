@@ -103,6 +103,45 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Update Address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Update Address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Address UUID",
+                        "name": "address_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UpdateAddress"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Address"
+                        }
+                    }
+                }
             }
         },
         "/addresses/{address_id}/cinemas": {
@@ -636,6 +675,35 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.UpdateAddress": {
+            "type": "object",
+            "properties": {
+                "country": {
+                    "type": "string",
+                    "example": "BR"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Giant Mall"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Barrashopping"
+                },
+                "postalCode": {
+                    "type": "string",
+                    "example": "21940980"
+                },
+                "state": {
+                    "type": "string",
+                    "example": "RJ"
+                },
+                "telephone": {
+                    "type": "string",
+                    "example": "9999-9999"
+                }
+            }
+        },
         "requests.UpdateCinema": {
             "type": "object",
             "properties": {
@@ -681,7 +749,9 @@ const docTemplate = `{
         "responses.Address": {
             "type": "object",
             "properties": {
-                "_links": {},
+                "_links": {
+                    "$ref": "#/definitions/responses.HATEOASAddressLinks"
+                },
                 "_templates": {},
                 "country": {
                     "type": "string"
@@ -722,6 +792,23 @@ const docTemplate = `{
                 },
                 "uuid": {
                     "type": "string"
+                }
+            }
+        },
+        "responses.HATEOASAddressLinks": {
+            "type": "object",
+            "properties": {
+                "create-addresses-cinemas": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "retrieve-cinema-list": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "self": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
+                "update-address": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }
         },
@@ -894,6 +981,7 @@ const docTemplate = `{
                 "_links": {
                     "$ref": "#/definitions/responses.HATEOASPosterLinks"
                 },
+                "_templates": {},
                 "alternativeText": {
                     "type": "string"
                 },
