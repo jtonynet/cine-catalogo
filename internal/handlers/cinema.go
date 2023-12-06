@@ -116,24 +116,7 @@ func RetrieveCinema(ctx *gin.Context) {
 		return
 	}
 
-	templateParams := []hateoas.TemplateParams{
-		{
-			Name:          "update-cinema",
-			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
-			ContentType:   "application/json",
-			HTTPMethod:    http.MethodPatch,
-			RequestStruct: requests.UpdateCinema{},
-		},
-		{
-			Name:          "delete-cinema",
-			ResourceURL:   fmt.Sprintf("%s/cinemas/:address_id", versionURL),
-			ContentType:   "application/json",
-			HTTPMethod:    http.MethodDelete,
-			RequestStruct: requests.UpdateCinema{},
-		},
-	}
-
-	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	templateJSON, err := getCinemasTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -246,15 +229,7 @@ func UpdateCinema(ctx *gin.Context) {
 		return
 	}
 
-	templateParams := []hateoas.TemplateParams{
-		{
-			Name:        "retrieve-cinema",
-			ResourceURL: fmt.Sprintf("%s/cinemas/%s", versionURL, cinemaId),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
-		},
-	}
-	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
+	templateJSON, err := getCinemasTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -347,6 +322,24 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, address.UUID)},
 	}
 
+	templateJSON, err := getCinemasTemplates(versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return nil, err
+	}
+
+	result := &responses.HATEOASListResult{
+		Embedded:  cinemaList,
+		Links:     cinemaListLinks,
+		Templates: templateJSON,
+	}
+
+	return result, nil
+}
+
+func getCinemasTemplates(
+	versionURL string,
+) (interface{}, error) {
 	templateParams := []hateoas.TemplateParams{
 		{
 			Name:          "update-cinema",
@@ -369,11 +362,5 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 		return nil, err
 	}
 
-	result := &responses.HATEOASListResult{
-		Embedded:  cinemaList,
-		Links:     cinemaListLinks,
-		Templates: templateJSON,
-	}
-
-	return result, nil
+	return templateJSON, nil
 }
