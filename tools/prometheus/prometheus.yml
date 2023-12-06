@@ -9,8 +9,8 @@ scrape_configs:
   static_configs:
   - targets:
     - prometheus-ticket:9090
-- job_name: app-forum-api
-  metrics_path: /actuator/prometheus
+- job_name: catalogo-api
+  metrics_path: /metrics
   static_configs:
   - targets:
     - catalogo-api:8080

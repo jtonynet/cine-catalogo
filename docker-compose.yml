@@ -79,3 +79,16 @@ services:
       - api
     depends_on:
       - catalogo-api
+
+  grafana-ticket:
+    image: grafana/grafana
+    container_name: grafana-ticket
+    volumes:
+      - ./docker_data/grafana:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - monit
+    depends_on:
+      - prometheus-ticket

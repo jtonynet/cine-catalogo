@@ -89,12 +89,12 @@ Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker 
 $ docker compose up
 ```
 
-<!-- 
+<!--
 > :writing_hand: **Note**:
 >
-> :window: Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
+> Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
 > Git attribute settings that might affect the line ending character are not working as expected. To run the project on Windows, you will need to make changes to the './tests/gatling/entrypoint.sh' file. Convert the file from 'LF' to 'CRLF' in your preferred text editor.
--->
+--> 
 
 <br/>
 
