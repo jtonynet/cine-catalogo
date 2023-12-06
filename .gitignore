@@ -16,5 +16,8 @@
 # Coverage
 *.out
 
+# Docker Data
+docker_data/
+
 # env
 .env
