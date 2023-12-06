@@ -89,12 +89,14 @@ Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker 
 $ docker compose up
 ```
 
-<!--
+
 > :writing_hand: **Note**:
 >
-> Troubleshooting with [Windows](https://stackoverflow.com/questions/53165471/building-docker-images-on-windows-entrypoint-script-no-such-file-or-directory)
-> Git attribute settings that might affect the line ending character are not working as expected. To run the project on Windows, you will need to make changes to the './tests/gatling/entrypoint.sh' file. Convert the file from 'LF' to 'CRLF' in your preferred text editor.
---> 
+> __Troubleshooting with [Docker Volumes](https://betterstack.com/community/questions/what-is-the-best-way-to-manage-permissions-for-docker-shared-volumes/)__
+> For the purpose of setting up the local environment, one might encounter issues with permissions in the docker_data folder, which stores the volumes of the components needed to run the environment. The docker-compose creates this folder but does not grant it the necessary permissions to manage these volumes. The approach we are currently using to handle this is to run the following command in case you encounter an error on the first attempt of __docker compose up__:
+>```bash
+>sudo chmod -R o+rx docker_data/
+>``` 
 
 <br/>
 
