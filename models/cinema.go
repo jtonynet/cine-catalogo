@@ -7,6 +7,7 @@ https://gorm.io/docs/belongs_to.html#Override-Foreign-Key
 */
 type Cinema struct {
 	BaseModel
+
 	UUID        uuid.UUID `gorm:"type:uuid;unique;not null"`
 	AddressID   uint
 	Address     Address

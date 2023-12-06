@@ -64,7 +64,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 ---
 
 <a id="about"></a>
-## :green_book: About:
+## 📗 About:
 
 This project aims to address the needs of cataloging cinema halls, movies, and sessions on a cinema ticket e-commerce website. It is part of a broader study of the mentioned e-commerce called [CineTicket](https://github.com/jtonynet/cine-ticket-study-microsservices). However, its responsibility as microservices is to register, maintain, and provide session and seat data.
 
@@ -79,7 +79,7 @@ The objective of this system is to maintain a [high level of maturity](https://m
 ---
 
 <a id="run"></a>
-## :computer: Run the project
+## 💻 Run the project
 
 Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker compose up' command (according to your 'docker compose' version) in the project's root directory:
 ```bash
@@ -100,7 +100,7 @@ $ docker compose up
 ---
 
 <a id="HATEOAS"></a>
-### :traffic_light: HATEOAS HAL
+### 🚥 HATEOAS HAL
 
 The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
 
@@ -113,7 +113,7 @@ The API is being developed following RESTful guidelines at `maturity level 4` fo
 ---
 
 <a id="event-storming"></a>
-## :umbrella: Event Storming Diagram:
+## ☔ Event Storming Diagram:
 
 In November 2023, we conducted event modeling for this project and other parts of CineTicket (Thanx for the help, [marciovmartins](https://github.com/marciovmartins)). We held an extensive remote Event Storming session with the goal of mapping events, commands, aggregates, and their relationships.
 
@@ -132,7 +132,7 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 
 
 <a id="diagrams"></a>
-## :bar_chart: System Diagrams:
+## 📊 System Diagrams:
 
 **Flow Diagram:**
 
@@ -245,7 +245,7 @@ erDiagram
 
 ---
 <a id="api-docs"></a>
-## :newspaper: API Documentation
+## 📰  API Documentation
 
 ####  <img src="./assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Generate Swagger docs:
 
@@ -261,7 +261,7 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 
 ---
 <a id="tools"></a>
-## :toolbox: Tools
+## 🧰 Tools
 
 - Language:
   - [Go v1.21.1](https://go.dev/)
@@ -298,7 +298,7 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 ---
 
 <a id="best-practices"></a>
-## :clap: Best Practices
+## 👏 Best Practices
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 - [keep a changelog](https://keepachangelog.com/en/1.0.0/)
@@ -323,7 +323,7 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 ---
 
 <a id="adr"></a>
-## :brain: ADR - Architecture Decision Records:
+## 🧠 ADR - Architecture Decision Records:
 
 - [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
 - [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
@@ -335,7 +335,7 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 ---
 
 <a id="versions"></a>
-## :1234: Versions:
+## 🔢 Versions:
 
 Version tags are being created manually as studies progress with notable improvements in the project. Each feature is developed on a separate branch, and when completed, a tag is generated and merged into the master branch.
 
@@ -348,7 +348,7 @@ For more information, please refer to the [Version History](./CHANGELOG.md)
 ---
 
 <a id="ia"></a>
-### :robot: Use of AI:
+### 🤖 Use of AI:
 
 The header figures on this page were created with the help of artificial intelligence and a minimum of retouching and construction in Gimp [<img src="./assets/images/icons/gimp.svg" width="30" height="30 " title="Gimp" alt="Gimp Logo" />](https://www.gimp.org/)
 

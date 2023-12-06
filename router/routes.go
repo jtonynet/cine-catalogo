@@ -44,20 +44,33 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.OPTIONS("/addresses", handlers.Option)
 	v1.HEAD("/addresses", handlers.Head)
 
+	// Addresses Cinemas
 	v1.POST("addresses/:address_id/cinemas", handlers.CreateCinemas)
 	v1.OPTIONS("/addresses/:address_id/cinemas", handlers.Option)
 	v1.HEAD("/addresses/:address_id/cinemas", handlers.Head)
 
 	// Cinemas
 	v1.GET("/cinemas/:cinema_id", handlers.RetrieveCinema)
-	v1.POST("/movies", handlers.CreateMovies)
 
 	// Movies
-	v1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
-	v1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
+	v1.GET("/movies", handlers.RetrieveMovieList)
+	v1.GET("/movies/:movie_id", handlers.RetrieveMovie)
+
+	v1.POST("/movies", handlers.CreateMovies)
 	v1.OPTIONS("/movies", handlers.Option)
 	v1.HEAD("/movies", handlers.Head)
 
-	v1.GET("/movies", handlers.RetrieveMovieList)
-	v1.GET("/movies/:movie_id", handlers.RetrieveMovie)
+	v1.PATCH("/movies/:movie_id", handlers.UpdateMovie)
+	v1.OPTIONS("/movies/:movie_id", handlers.Option)
+	v1.HEAD("/movies/:movie_id", handlers.Head)
+
+	// Movies Posters
+	v1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
+	v1.OPTIONS("/movies/:movie_id/posters", handlers.Option)
+	v1.HEAD("/movies/:movie_id/posters", handlers.Head)
+
+	v1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
+	v1.OPTIONS("/movies/:movie_id/posters/:poster_id", handlers.Option)
+	v1.HEAD("/movies/:movie_id/posters/:poster_id", handlers.Head)
+
 }

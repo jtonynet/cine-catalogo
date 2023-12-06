@@ -237,6 +237,45 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Update Movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Update Movie",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Movie UUID",
+                        "name": "movie_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body for update",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UpdateMovie"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.Movie"
+                        }
+                    }
+                }
             }
         },
         "/movies/{movie_id}/posters": {
@@ -262,18 +301,21 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "example": "good poster of spyder gopher",
                         "name": "alternativeText",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
+                        "example": "Spyder-Gopher",
                         "name": "name",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
+                        "example": "2175d4e2-4d9c-411d-a986-08dc8f4e6a51",
                         "name": "uuid",
                         "in": "formData",
                         "required": true
@@ -326,11 +368,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "example": "good poster of spyder gopher AGAIN",
                         "name": "alternativeText",
                         "in": "formData"
                     },
                     {
                         "type": "string",
+                        "example": "Spyder-Gopher",
                         "name": "name",
                         "in": "formData"
                     },
@@ -367,25 +411,32 @@ const docTemplate = `{
             ],
             "properties": {
                 "country": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "BR"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Bem localizado"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Botafogo Praia Center"
                 },
                 "postalCode": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "21940980"
                 },
                 "state": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "RJ"
                 },
                 "telephone": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "9999-9999"
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2e61ddac-c3cc-46e9-ba88-0e86a790c924"
                 }
             }
         },
@@ -418,24 +469,59 @@ const docTemplate = `{
                 "age_rating",
                 "description",
                 "name",
+                "published",
                 "subtitled",
                 "uuid"
             ],
             "properties": {
                 "age_rating": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 12
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "The best hero of all time"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Spyder-Gopher"
+                },
+                "published": {
+                    "type": "boolean",
+                    "example": true
                 },
                 "subtitled": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "uuid": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "206dad85-cbcd-4b71-8fda-efd6ca87ebc7"
+                }
+            }
+        },
+        "requests.UpdateMovie": {
+            "type": "object",
+            "properties": {
+                "age_rating": {
+                    "type": "integer",
+                    "example": 12
+                },
+                "description": {
+                    "type": "string",
+                    "example": "The best hero of all time AGAIN"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Spyder-Gopher"
+                },
+                "published": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "subtitled": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -503,6 +589,9 @@ const docTemplate = `{
         "responses.HATEOASMovieLinks": {
             "type": "object",
             "properties": {
+                "poster": {
+                    "$ref": "#/definitions/responses.HATEOASLink"
+                },
                 "self": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
@@ -575,6 +664,9 @@ const docTemplate = `{
                 "posterLink": {
                     "type": "string"
                 },
+                "published": {
+                    "type": "boolean"
+                },
                 "subtitled": {
                     "type": "boolean"
                 },
@@ -600,6 +692,9 @@ const docTemplate = `{
                 },
                 "posterLink": {
                     "type": "string"
+                },
+                "published": {
+                    "type": "boolean"
                 },
                 "subtitled": {
                     "type": "boolean"

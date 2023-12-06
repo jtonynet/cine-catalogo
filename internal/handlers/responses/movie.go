@@ -13,6 +13,7 @@ type baseMovie struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	AgeRating   int64     `json:"age_rating"`
+	Published   bool      `json:"published"`
 	Subtitled   bool      `json:"subtitled"`
 }
 
@@ -55,6 +56,7 @@ func NewMovie(
 			Name:        model.Name,
 			Description: model.Description,
 			AgeRating:   model.AgeRating,
+			Published:   model.Published,
 			Subtitled:   model.Subtitled,
 		},
 
@@ -90,6 +92,7 @@ func NewMovieListItem(
 			Name:        model.Name,
 			Description: model.Description,
 			AgeRating:   model.AgeRating,
+			Published:   model.Published,
 			Subtitled:   model.Subtitled,
 		},
 

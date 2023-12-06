@@ -9,6 +9,7 @@ type Movie struct {
 	Name        string
 	Description string
 	AgeRating   int64
+	Published   bool
 	Subtitled   bool
 	Posters     []Poster
 }
@@ -18,6 +19,7 @@ func NewMovie(
 	Name string,
 	Description string,
 	AgeRating int64,
+	Published,
 	Subtitled bool,
 ) (Movie, error) {
 	m := Movie{
@@ -25,6 +27,7 @@ func NewMovie(
 		Name:        Name,
 		Description: Description,
 		AgeRating:   AgeRating,
+		Published:   Published,
 		Subtitled:   Subtitled,
 	}
 

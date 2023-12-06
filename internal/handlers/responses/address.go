@@ -26,8 +26,9 @@ type HATEOASAddressItemLinks struct {
 }
 
 type HATEOASAddressListLinks struct {
-	Self            HATEOASLink `json:"self"`
-	CreateAddresses HATEOASLink `json:"create-addresses"`
+	Self                   HATEOASLink `json:"self"`
+	CreateAddresses        HATEOASLink `json:"create-addresses"`
+	CreateAddressesCinemas HATEOASLink `json:"create-addresses-cinemas"`
 }
 type HATEOASAddressList struct {
 	Addresses *[]Address `json:"addresses"`

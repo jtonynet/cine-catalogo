@@ -2,18 +2,25 @@ definitions:
   requests.Address:
     properties:
       country:
+        example: BR
         type: string
       description:
+        example: Bem localizado
         type: string
       name:
+        example: Botafogo Praia Center
         type: string
       postalCode:
+        example: "21940980"
         type: string
       state:
+        example: RJ
         type: string
       telephone:
+        example: 9999-9999
         type: string
       uuid:
+        example: 2e61ddac-c3cc-46e9-ba88-0e86a790c924
         type: string
     required:
     - country
@@ -43,21 +50,48 @@ definitions:
   requests.Movie:
     properties:
       age_rating:
+        example: 12
         type: integer
       description:
+        example: The best hero of all time
         type: string
       name:
+        example: Spyder-Gopher
         type: string
+      published:
+        example: true
+        type: boolean
       subtitled:
+        example: true
         type: boolean
       uuid:
+        example: 206dad85-cbcd-4b71-8fda-efd6ca87ebc7
         type: string
     required:
     - age_rating
     - description
     - name
+    - published
     - subtitled
     - uuid
+    type: object
+  requests.UpdateMovie:
+    properties:
+      age_rating:
+        example: 12
+        type: integer
+      description:
+        example: The best hero of all time AGAIN
+        type: string
+      name:
+        example: Spyder-Gopher
+        type: string
+      published:
+        example: true
+        type: boolean
+      subtitled:
+        example: true
+        type: boolean
     type: object
   responses.Address:
     properties:
@@ -102,6 +136,8 @@ definitions:
     type: object
   responses.HATEOASMovieLinks:
     properties:
+      poster:
+        $ref: '#/definitions/responses.HATEOASLink'
       self:
         $ref: '#/definitions/responses.HATEOASLink'
       update-movie:
@@ -149,6 +185,8 @@ definitions:
         type: string
       posterLink:
         type: string
+      published:
+        type: boolean
       subtitled:
         type: boolean
       uuid:
@@ -166,6 +204,8 @@ definitions:
         type: string
       posterLink:
         type: string
+      published:
+        type: boolean
       subtitled:
         type: boolean
       uuid:
@@ -344,6 +384,32 @@ paths:
       summary: Retrieve Movie
       tags:
       - Movies
+    patch:
+      consumes:
+      - application/json
+      description: Update Movie
+      parameters:
+      - description: Movie UUID
+        in: path
+        name: movie_id
+        required: true
+        type: string
+      - description: Request body for update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateMovie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Movie'
+      summary: Update Movie
+      tags:
+      - Movies
   /movies/{movie_id}/posters:
     post:
       consumes:
@@ -355,15 +421,18 @@ paths:
         name: movie_id
         required: true
         type: string
-      - in: formData
+      - example: good poster of spyder gopher
+        in: formData
         name: alternativeText
         required: true
         type: string
-      - in: formData
+      - example: Spyder-Gopher
+        in: formData
         name: name
         required: true
         type: string
-      - in: formData
+      - example: 2175d4e2-4d9c-411d-a986-08dc8f4e6a51
+        in: formData
         name: uuid
         required: true
         type: string
@@ -398,10 +467,12 @@ paths:
         name: poster_id
         required: true
         type: string
-      - in: formData
+      - example: good poster of spyder gopher AGAIN
+        in: formData
         name: alternativeText
         type: string
-      - in: formData
+      - example: Spyder-Gopher
+        in: formData
         name: name
         type: string
       - description: binary poster data

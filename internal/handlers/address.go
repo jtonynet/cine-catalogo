@@ -189,8 +189,9 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 	}
 
 	addressListLinks := responses.HATEOASAddressListLinks{
-		Self:            responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
-		CreateAddresses: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
+		Self:                   responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
+		CreateAddresses:        responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses", versionURL)},
+		CreateAddressesCinemas: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL)},
 	}
 
 	templateParams := []hateoas.TemplateParams{
@@ -207,12 +208,6 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 			HTTPMethod:    http.MethodPost,
 			ContentType:   "application/json",
 			RequestStruct: requests.Cinema{},
-		},
-		{
-			Name:        "retrieve-cinema-list",
-			ResourceURL: fmt.Sprintf("%s/addresses/:addressId/cinemas", versionURL),
-			ContentType: "application/json",
-			HTTPMethod:  http.MethodGet,
 		},
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)

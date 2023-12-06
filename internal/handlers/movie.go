@@ -50,6 +50,7 @@ func CreateMovies(ctx *gin.Context) {
 			request.Name,
 			request.Description,
 			*request.AgeRating,
+			*request.Published,
 			*request.Subtitled,
 		)
 		if err != nil {
@@ -126,7 +127,89 @@ func RetrieveMovie(ctx *gin.Context) {
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-address",
+		"retrieve-movie",
+		response,
+		responses.HALHeaders,
+	)
+}
+
+// @Summary Update Movie
+// @Description Update Movie
+// @Tags Movies
+// @Router /movies/{movie_id} [patch]
+// @Param movie_id path string true "Movie UUID"
+// @Accept json
+// @Param request body requests.UpdateMovie true "Request body for update"
+// @Produce json
+// @Success 200 {object} responses.Movie
+func UpdateMovie(ctx *gin.Context) {
+	cfg := ctx.MustGet("cfg").(config.API)
+	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+
+	movieId := ctx.Param("movie_id")
+	if !IsValidUUID(movieId) {
+		responses.SendError(ctx, http.StatusForbidden, "malformed or missing movie_id", nil)
+		return
+	}
+	movieUUID := uuid.MustParse(movieId)
+
+	movie := models.Movie{UUID: movieUUID}
+	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+		responses.SendError(ctx, http.StatusForbidden, "dont fetch Movie and Poster", nil)
+		return
+	}
+
+	var updateRequest requests.UpdateMovie
+	if err := ctx.ShouldBind(&updateRequest); err != nil {
+		// TODO: Implements in future
+		fmt.Printf("updateRequest ShouldBindJSON %v", err)
+		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)
+		return
+	}
+
+	if updateRequest.Name != "" {
+		movie.Name = updateRequest.Name
+	}
+
+	if updateRequest.Description != "" {
+		movie.Description = updateRequest.Description
+	}
+
+	if updateRequest.AgeRating != nil {
+		movie.AgeRating = *updateRequest.AgeRating
+	}
+
+	if updateRequest.Published != nil {
+		movie.Published = *updateRequest.Published
+	}
+
+	if updateRequest.Subtitled != nil {
+		movie.Subtitled = *updateRequest.Subtitled
+	}
+
+	if err := database.DB.Save(&movie).Error; err != nil {
+		// TODO: Implements in future
+		fmt.Printf("database.DB.Save %v", err)
+		return
+	}
+
+	templateJSON, err := getMoviesTemplates(versionURL)
+	if err != nil {
+		// TODO: Implements in future
+		return
+	}
+
+	response := responses.NewMovie(
+		movie,
+		cfg.Host,
+		versionURL,
+		templateJSON,
+	)
+
+	responses.SendSuccess(
+		ctx,
+		http.StatusOK,
+		"update-movie",
 		response,
 		responses.HALHeaders,
 	)
