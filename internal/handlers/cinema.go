@@ -77,7 +77,7 @@ func CreateCinemas(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getCinemaListResult(cinemas, versionURL, addressId)
+	result, err := getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -111,7 +111,7 @@ func RetrieveCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
 		responses.SendError(ctx, http.StatusNotFound, "cinema not found", nil)
 		return
 	}
@@ -130,8 +130,11 @@ func RetrieveCinema(ctx *gin.Context) {
 		return
 	}
 
+	addressResponse := responses.NewAddress(cinema.Address, versionURL, nil)
+
 	response := responses.NewCinema(
 		cinema,
+		addressResponse.Links.Self.HREF,
 		versionURL,
 		templateJSON,
 	)
@@ -203,7 +206,7 @@ func UpdateCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
 		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
 		return
 	}
@@ -248,8 +251,11 @@ func UpdateCinema(ctx *gin.Context) {
 		return
 	}
 
+	addressResponse := responses.NewAddress(cinema.Address, versionURL, nil)
+
 	response := responses.NewCinema(
 		cinema,
+		addressResponse.Links.Self.HREF,
 		versionURL,
 		templateJSON,
 	)
@@ -293,7 +299,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getCinemaListResult(cinemas, versionURL, addressId)
+	result, err := getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -308,12 +314,19 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	)
 }
 
-func getCinemaListResult(cinemas []models.Cinema, versionURL, addressId string) (*responses.HATEOASListResult, error) {
+func getCinemaListResult(cinemas []models.Cinema, address models.Address, versionURL string) (*responses.HATEOASListResult, error) {
 	var cinemaListResponse []responses.Cinema
+
+	addressResponse := responses.NewAddress(address, versionURL, nil)
 
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
-			responses.NewCinema(cinema, versionURL, nil),
+			responses.NewCinema(
+				cinema,
+				addressResponse.Links.Self.HREF,
+				versionURL,
+				nil,
+			),
 		)
 	}
 
@@ -322,7 +335,7 @@ func getCinemaListResult(cinemas []models.Cinema, versionURL, addressId string) 
 	}
 
 	cinemaListLinks := responses.HATEOASCinemaListLinks{
-		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, addressId)},
+		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, address.UUID)},
 	}
 
 	templateParams := []hateoas.TemplateParams{

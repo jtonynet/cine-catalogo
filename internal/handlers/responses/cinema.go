@@ -26,10 +26,12 @@ type HATEOASCinemasLinks struct {
 	Self         HATEOASLink `json:"self"`
 	UpdateCinema HATEOASLink `json:"update-cinema"`
 	DeleteCinema HATEOASLink `json:"delete-cinema"`
+	Address      HATEOASLink `json:"address"`
 }
 
 func NewCinema(
 	model models.Cinema,
+	addressLink,
 	baseURL string,
 	templates interface{},
 ) Cinema {
@@ -45,6 +47,7 @@ func NewCinema(
 			Self:         HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
 			UpdateCinema: HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
 			DeleteCinema: HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
+			Address:      HATEOASLink{HREF: addressLink},
 		},
 
 		Templates: templates,

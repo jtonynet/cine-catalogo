@@ -64,9 +64,8 @@ func NewAddress(
 }
 
 type HATEOASAddressListLinks struct {
-	Self                   HATEOASLink `json:"self"`
-	CreateAddresses        HATEOASLink `json:"create-addresses"`
-	CreateAddressesCinemas HATEOASLink `json:"create-addresses-cinemas"`
+	Self            HATEOASLink `json:"self"`
+	CreateAddresses HATEOASLink `json:"create-addresses"`
 }
 type HATEOASAddressList struct {
 	Addresses []Address `json:"addresses"`

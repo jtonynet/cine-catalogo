@@ -72,6 +72,9 @@ This is a Golang version of the mentioned service. Swagger Docs, Flow Diagrams, 
 
 The objective of this system is to maintain a [high level of maturity](https://martinfowler.com/articles/richardsonMaturityModel.html) with a consistent RESTful API, along with the possibility of caching and a robust logging system.
 
+
+In the current branch, you will find the "happy path" for creating addresses, cinema rooms, movies, and posters. Log handling, observability, and testing will be developed in future branches.
+
 <br/>
 
 [:arrow_heading_up: back to top](#index)
@@ -254,6 +257,9 @@ With the 'cine-catalogo' image running, type:
 ```bash
 $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
 ```
+
+Below is a screenshot of the latest documentation, which can be [accessed here](http://localhost:8080/swagger/index.html) with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
+<img src="./assets/images/screen_captures/swagger_01.png"/>
 
 <br/>
 
