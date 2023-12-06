@@ -98,7 +98,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 	}
 
 	resultMovie := responses.NewMovie(
-		poster.Movie,
+		movie,
 		cfg.Host,
 		versionURL,
 		nil,
@@ -313,5 +313,6 @@ func getPosterByMovieAndPosterUUID(posterUUID, movieUUID uuid.UUID) (models.Post
 		fmt.Printf("existingPoster %v", err)
 		return existingPoster, err
 	}
+
 	return existingPoster, nil
 }
