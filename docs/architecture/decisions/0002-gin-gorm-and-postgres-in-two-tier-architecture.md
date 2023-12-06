@@ -1,4 +1,5 @@
-# 2. Gin, Gorm and Postgres in two tier architecture 
+# 2. Gin, Gorm and Postgres in Two tier architecture 
+
 
 Date: 2023-11-07
 

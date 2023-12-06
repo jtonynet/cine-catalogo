@@ -1,0 +1,52 @@
+version: '3.7'
+name: cine
+services:
+
+  postgres-catalogo:
+    image: postgres:16.0-alpine
+    container_name: postgres-catalogo
+    hostname: postgres-catalogo
+    environment:
+      POSTGRES_USER: api_user
+      POSTGRES_PASSWORD: api_pass
+      POSTGRES_DB: cine_catalog_db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./docker_data/postgres-data:/var/lib/postgresql/data  
+    networks:
+      - ticket-network
+
+  catalogo-api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    depends_on:
+      - postgres-catalogo
+    container_name: catalogo-api
+    hostname: catalogo-api
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - ./:/usr/src/app/
+    tty: true
+    networks:
+      - ticket-network
+
+  hal:
+    build:
+      context: ./tools/hal
+      dockerfile: Dockerfile
+    container_name: hal
+    hostname: hal
+    volumes:
+      - ./hal:/usr/src/app
+    ports:
+      - 4200:4200
+    networks:
+      - ticket-network
+ 
+networks:
+  ticket-network:
+    driver: bridge
