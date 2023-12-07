@@ -97,7 +97,7 @@ $ docker compose up
 > __Troubleshooting with [Docker Volumes](https://betterstack.com/community/questions/what-is-the-best-way-to-manage-permissions-for-docker-shared-volumes/)__
 > For the purpose of setting up the local environment, one might encounter issues with permissions in the docker_data folder, which stores the volumes of the components needed to run the environment. The docker-compose creates this folder but does not grant it the necessary permissions to manage these volumes. The approach we are currently using to handle this is to run the following command in case you encounter an error on the first attempt of __docker compose up__:
 >```bash
->sudo chmod -R o+rx docker_data/
+>sudo chmod -R 777 docker_data/
 >``` 
 
 <br/>
