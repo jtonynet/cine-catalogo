@@ -7,7 +7,6 @@ import (
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/internal/handlers"
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	docs "github.com/jtonynet/cine-catalogo/docs"
 	swaggerFiles "github.com/swaggo/files"
@@ -29,7 +28,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	docs.SwaggerInfo.BasePath = basePath
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	r.GET("/metrics", gin.WrapH(handlers.PrometheusExposeMetrics()))
 
 	v1 := r.Group(basePath)
 

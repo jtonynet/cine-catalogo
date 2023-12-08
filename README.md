@@ -163,8 +163,25 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 ## 🕵️ Observability:
 
 Local URLs:
-- Grafana - http://localhost:3000/ (user/pwd: admin - admin)
+- Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
 - Prometheus - http://localhost:9090/
+
+<img src="assets/images/screen_captures/grafana_basic.png">
+
+The volume data is not shared in this repository. To use the 'catalogo' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
+
+The JSON file is located in [scripts/grafana](./scripts/grafana)
+
+<!-- 
+add new labels on metrics
+  https://stackoverflow.com/questions/47628532/how-can-we-add-extra-label-to-prometheus-metrics
+
+  https://pet2cattle.com/2023/03/prometheus-add-label-to-metric
+  #  relabel_configs:
+  #    - source_labels: [__job__]
+  #      target_label: newLabel
+  #      replacement: "newLabelValue"
+-->
 
 [:arrow_heading_up: back to top](#index)
 
@@ -295,6 +312,7 @@ erDiagram
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
   - [GORM](https://gorm.io/index.html)
+  - [GORM Prometheus](https://github.com/go-gorm/prometheus/blob/master/postgres.go)
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
@@ -444,13 +462,5 @@ Multiple files
 
   https://github.com/Dwolla/hal-forms#form-transcoding
 
-  https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
-
-  https://github.com/swaggo/swag/blob/master/example/basic/api/api.go
-
-
-
-EXPORT GRAFANA DASHBOARDS
-  https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/
 
 -->

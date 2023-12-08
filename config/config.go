@@ -20,6 +20,11 @@ type Database struct {
 	User string `mapstructure:"DATABASE_USER"`
 	Pass string `mapstructure:"DATABASE_PASSWORD"`
 	DB   string `mapstructure:"DATABASE_DB"`
+
+	MetricDBName          string `mapstructure:"DATABASE_METRICS_NAME"`
+	MetricRefreshInterval uint32 `mapstructure:"DATABASE_METRICS_INTERVAL_IN_SEC"`
+	MetricStartServer     bool   `mapstructure:"DATABASE_METRICS_START_SERVER"`
+	MetricServerPort      uint32 `mapstructure:"DATABASE_METRICS_SERVER_PORT"`
 }
 
 type Config struct {

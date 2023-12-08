@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/plugin/prometheus"
 
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
@@ -34,6 +35,16 @@ func Init(cfg config.Database) error {
 		l.Errorf("database: error on connection %v", err.Error())
 		return err
 	}
+
+	DB.Use(prometheus.New(prometheus.Config{
+		DBName:          cfg.MetricDBName,          // `DBName` as metrics label
+		RefreshInterval: cfg.MetricRefreshInterval, // refresh metrics interval (default 15 seconds)
+		StartServer:     cfg.MetricStartServer,     // start http server to expose metrics
+		HTTPServerPort:  cfg.MetricServerPort,      // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
+		MetricsCollector: []prometheus.MetricsCollector{
+			&prometheus.Postgres{VariableNames: []string{"Threads_running"}},
+		},
+	}))
 
 	l.Info("database: connection is openned")
 
