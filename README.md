@@ -170,7 +170,7 @@ Local URLs:
 
 The volume data is not shared in this repository. To use the 'catalogo' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
 
-The JSON file is located in [scripts/grafana](./scripts/grafana)
+The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
 <!-- 
 add new labels on metrics
