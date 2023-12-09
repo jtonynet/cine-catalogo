@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 type Address struct {

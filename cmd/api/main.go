@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/internal/database"
-	"github.com/jtonynet/cine-catalogo/router"
+	"github.com/jtonynet/cine-catalogo/internal/router"
 )
 
 func main() {

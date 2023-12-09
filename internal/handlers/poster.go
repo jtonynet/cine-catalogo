@@ -14,7 +14,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/database"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 // @BasePath /v1

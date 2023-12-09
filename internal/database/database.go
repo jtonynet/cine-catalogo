@@ -11,7 +11,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/decorators"
 	"github.com/jtonynet/cine-catalogo/internal/interfaces"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 var (
