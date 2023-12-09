@@ -101,7 +101,6 @@ func UploadMoviePoster(ctx *gin.Context) {
 		movie,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	result := responses.NewPoster(
@@ -110,7 +109,6 @@ func UploadMoviePoster(ctx *gin.Context) {
 		resultMovie.Links.Self.HREF,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	responses.SendSuccess(
@@ -194,7 +192,6 @@ func UpdateMoviePoster(ctx *gin.Context) {
 		existingPoster.Movie,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	result := responses.NewPoster(
@@ -203,7 +200,6 @@ func UpdateMoviePoster(ctx *gin.Context) {
 		resultMovie.Links.Self.HREF,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	responses.SendSuccess(
@@ -250,7 +246,6 @@ func RetrieveMoviePoster(ctx *gin.Context) {
 		existingPoster.Movie,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	result := responses.NewPoster(
@@ -259,7 +254,6 @@ func RetrieveMoviePoster(ctx *gin.Context) {
 		resultMovie.Links.Self.HREF,
 		cfg.Host,
 		versionURL,
-		nil,
 	)
 
 	responses.SendSuccess(

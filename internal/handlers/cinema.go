@@ -122,13 +122,13 @@ func RetrieveCinema(ctx *gin.Context) {
 		return
 	}
 
-	addressResponse := responses.NewAddress(cinema.Address, versionURL, nil)
+	addressResponse := responses.NewAddress(cinema.Address, versionURL)
 
 	response := responses.NewCinema(
 		cinema,
 		addressResponse.Links.Self.HREF,
 		versionURL,
-		templateJSON,
+		responses.WithCinemaTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -235,13 +235,13 @@ func UpdateCinema(ctx *gin.Context) {
 		return
 	}
 
-	addressResponse := responses.NewAddress(cinema.Address, versionURL, nil)
+	addressResponse := responses.NewAddress(cinema.Address, versionURL)
 
 	response := responses.NewCinema(
 		cinema,
 		addressResponse.Links.Self.HREF,
 		versionURL,
-		templateJSON,
+		responses.WithCinemaTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -301,7 +301,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 func getCinemaListResult(cinemas []models.Cinema, address models.Address, versionURL string) (*responses.HATEOASListResult, error) {
 	var cinemaListResponse []responses.Cinema
 
-	addressResponse := responses.NewAddress(address, versionURL, nil)
+	addressResponse := responses.NewAddress(address, versionURL)
 
 	for _, cinema := range cinemas {
 		cinemaListResponse = append(cinemaListResponse,
@@ -309,7 +309,6 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 				cinema,
 				addressResponse.Links.Self.HREF,
 				versionURL,
-				nil,
 			),
 		)
 	}

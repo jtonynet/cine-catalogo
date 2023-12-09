@@ -9,16 +9,12 @@ import (
 
 var MoviePosterContentType = "image/png"
 
-type basePoster struct {
+type Poster struct {
 	UUID            uuid.UUID `json:"uuid"`
 	Name            string    `json:"name"`
 	ContentType     string    `json:"contentType"`
 	AlternativeText string    `json:"alternativeText"`
 	Path            string    `json:"path"`
-}
-
-type Poster struct {
-	basePoster
 
 	Links HATEOASPosterLinks `json:"_links,omitempty"`
 
@@ -32,43 +28,41 @@ type HATEOASPosterLinks struct {
 	UpdateMoviePoster HATEOASLink `json:"update-movie-poster"`
 }
 
+type PosterOption func(*Poster)
+
 func NewPoster(
 	model models.Poster,
 	movieUUID uuid.UUID,
 	movieLink,
 	baseURL,
 	versionURL string,
-	templates interface{},
+	options ...PosterOption,
 ) Poster {
 	poster := Poster{
-		basePoster: basePoster{
-			UUID:            model.UUID,
-			Name:            model.Name,
-			ContentType:     model.ContentType,
-			AlternativeText: model.AlternativeText,
-			Path:            model.Path,
+
+		UUID:            model.UUID,
+		Name:            model.Name,
+		ContentType:     model.ContentType,
+		AlternativeText: model.AlternativeText,
+		Path:            model.Path,
+
+		Links: HATEOASPosterLinks{
+			Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, model.UUID)},
+			Movie:             HATEOASLink{HREF: movieLink},
+			UpdateMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, model.UUID)},
+			Image:             HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, model.Path)},
 		},
+	}
 
-		Links: NewPosterLinks(movieUUID, model.UUID, movieLink, baseURL, versionURL, model.Path),
-
-		Templates: templates,
+	for _, opt := range options {
+		opt(&poster)
 	}
 
 	return poster
 }
 
-func NewPosterLinks(
-	movieUUID,
-	posterUUID uuid.UUID,
-	movieLink,
-	baseURL,
-	versionURL,
-	posterPath string,
-) HATEOASPosterLinks {
-	return HATEOASPosterLinks{
-		Self:              HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, posterUUID)},
-		Movie:             HATEOASLink{HREF: movieLink},
-		UpdateMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters/%s", versionURL, movieUUID, posterUUID)},
-		Image:             HATEOASLink{HREF: fmt.Sprintf("%s/%s", baseURL, posterPath)},
+func WithPosterTemplates(templates interface{}) PosterOption {
+	return func(p *Poster) {
+		p.Templates = templates
 	}
 }

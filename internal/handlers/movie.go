@@ -24,7 +24,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param request body []requests.Movie true "Request body"
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [post]
 func CreateMovies(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
@@ -119,7 +119,7 @@ func RetrieveMovie(ctx *gin.Context) {
 		movie,
 		cfg.Host,
 		versionURL,
-		templateJSON,
+		responses.WithMovieTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -201,7 +201,7 @@ func UpdateMovie(ctx *gin.Context) {
 		movie,
 		cfg.Host,
 		versionURL,
-		templateJSON,
+		responses.WithMovieTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -218,7 +218,7 @@ func UpdateMovie(ctx *gin.Context) {
 // @Tags Movies
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [get]
 func RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
@@ -245,7 +245,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	)
 }
 
-func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.MovieListResult, error) {
+func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.MovieListItem{}
 	posterListResponse := []responses.Poster{}
 
@@ -270,7 +270,6 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 					m.Links.Self.HREF,
 					baseURL,
 					versionURL,
-					nil,
 				),
 			)
 		}
@@ -292,7 +291,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		return nil, err
 	}
 
-	result := responses.MovieListResult{
+	result := responses.HATEOASListResult{
 		Embedded:  movieAndPosterList,
 		Links:     movieListLinks,
 		Templates: templateJSON,

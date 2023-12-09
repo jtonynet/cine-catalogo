@@ -168,7 +168,7 @@ func UpdateAddress(ctx *gin.Context) {
 	response := responses.NewAddress(
 		address,
 		versionURL,
-		templateJSON,
+		responses.WithAddressTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -229,7 +229,7 @@ func RetrieveAddress(ctx *gin.Context) {
 	response := responses.NewAddress(
 		address,
 		versionURL,
-		templateJSON,
+		responses.WithAddressTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -325,7 +325,7 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 	for _, address := range addresses {
 		addressListResponse = append(
 			addressListResponse,
-			responses.NewAddress(address, versionURL, nil),
+			responses.NewAddress(address, versionURL),
 		)
 	}
 
