@@ -8,6 +8,8 @@ import (
 	"gorm.io/plugin/prometheus"
 
 	"github.com/jtonynet/cine-catalogo/config"
+	"github.com/jtonynet/cine-catalogo/internal/decorators"
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
 	"github.com/jtonynet/cine-catalogo/models"
 )
@@ -15,11 +17,13 @@ import (
 var (
 	DB  *gorm.DB
 	err error
-	log *logger.Logger
+	log interfaces.Logger
 )
 
 func Init(cfg config.Database) error {
-	log = logger.NewLogger("database")
+
+	l := logger.NewLogger("database")
+	log = decorators.NewLoggerWithMetrics(l)
 
 	log.Info("database: trying open connection")
 
