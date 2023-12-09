@@ -319,7 +319,7 @@ erDiagram
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
-  - [uuid](github.com/google/uuid)
+  - [uuid](https://github.com/google/uuid)
   - [go2hall](https://github.com/pmoule/go2hall)
   - [promhttp](https://github.com/prometheus/client_golang)
 
