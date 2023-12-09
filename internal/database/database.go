@@ -15,13 +15,13 @@ import (
 var (
 	DB  *gorm.DB
 	err error
-	l   *logger.Logger
+	log *logger.Logger
 )
 
 func Init(cfg config.Database) error {
-	l = logger.NewLogger("database")
+	log = logger.NewLogger("database")
 
-	l.Info("database: trying open connection")
+	log.Info("database: trying open connection")
 
 	strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%v sslmode=disable",
 		cfg.Host,
@@ -32,7 +32,7 @@ func Init(cfg config.Database) error {
 
 	DB, err = gorm.Open(postgres.Open(strConn))
 	if err != nil {
-		l.Errorf("database: error on connection %v", err.Error())
+		log.Errorf("database: error on connection %v", err.Error())
 		return err
 	}
 
@@ -46,7 +46,7 @@ func Init(cfg config.Database) error {
 		},
 	}))
 
-	l.Info("database: connection is openned")
+	log.Info("database: connection is openned")
 
 	DB.AutoMigrate(&models.Address{})
 	DB.AutoMigrate(&models.Cinema{})
@@ -54,14 +54,14 @@ func Init(cfg config.Database) error {
 	DB.AutoMigrate(&models.Movie{})
 	DB.AutoMigrate(&models.Poster{})
 
-	l.Info("database: tables created")
+	log.Info("database: tables created")
 
 	return nil
 }
 
 func IsConnected() error {
 	if err := DB.Raw("SELECT 1").Error; err != nil {
-		l.Errorf("database: error trying check readiness %v", err.Error())
+		log.Errorf("database: error trying check readiness %v", err.Error())
 		return err
 	}
 	return nil

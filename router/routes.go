@@ -28,7 +28,9 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	docs.SwaggerInfo.BasePath = basePath
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.GET("/metrics", gin.WrapH(handlers.PrometheusExposeMetrics()))
+	handlers.Init()
+
+	r.GET("/metrics", gin.WrapH(handlers.ExposeMetrics()))
 
 	v1 := r.Group(basePath)
 

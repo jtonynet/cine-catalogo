@@ -21,19 +21,21 @@ var (
 	)
 )
 
-func calculateUptime() {
+func metricsLoop() {
 	go func() {
 		for {
 			duration := time.Since(startTime).Seconds()
 			processUptime.WithLabelValues().Set(duration)
+
 			time.Sleep(1 * time.Second)
 		}
 	}()
 }
 
-func PrometheusExposeMetrics() http.Handler {
+func ExposeMetrics() http.Handler {
+	log.Info("handlers: register prometheus metrics route")
 
-	calculateUptime()
+	metricsLoop()
 
 	return promhttp.Handler()
 }

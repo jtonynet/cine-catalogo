@@ -168,11 +168,14 @@ Local URLs:
 
 <img src="assets/images/screen_captures/grafana_basic.png">
 
-The volume data is not shared in this repository. To use the 'catalogo' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
+The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
 <!-- 
+Counter Increase in Grafana
+  https://community.grafana.com/t/solved-display-counter-increase-in-grafana/90283
+
 add new labels on metrics
   https://stackoverflow.com/questions/47628532/how-can-we-add-extra-label-to-prometheus-metrics
 

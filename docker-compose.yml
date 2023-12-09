@@ -34,6 +34,7 @@ services:
       target: api
     depends_on:
       - postgres-catalogo
+      - prometheus-ticket
     container_name: catalogo-api
     hostname: catalogo-api
     ports: 
@@ -77,8 +78,8 @@ services:
     networks:
       - monit
       - api
-    depends_on:
-      - catalogo-api
+    # depends_on:
+    #   - catalogo-api
 
   grafana-ticket:
     image: grafana/grafana
