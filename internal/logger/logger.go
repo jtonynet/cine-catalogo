@@ -1,60 +1,100 @@
 package logger
 
 import (
-	"io"
-	"log"
-	"os"
+	"fmt"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
 )
 
+// Logger encapsulates the zap logger.
 type Logger struct {
-	debug   *log.Logger
-	info    *log.Logger
-	warning *log.Logger
-	error   *log.Logger
-	writer  io.Writer
+	zapLogger *zap.Logger
 }
 
-func NewLogger(p string) *Logger {
-	writer := io.Writer(os.Stdout)
-	logger := log.New(writer, p, log.Ldate|log.Ltime)
+type LogField struct {
+	key   string
+	value interface{}
+}
+
+func NewLogger() (*Logger, error) {
+	config := zap.NewProductionConfig()
+	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
+	config.OutputPaths = []string{"stdout"}
+	config.DisableCaller = true
+
+	zapLogger, err := config.Build()
+	if err != nil {
+		return nil, fmt.Errorf("error creating logger: %v", err)
+	}
 
 	return &Logger{
-		debug:   log.New(writer, ">> DEBUG ", logger.Flags()),
-		info:    log.New(writer, ">> INFO ", logger.Flags()),
-		warning: log.New(writer, ">> WARNING ", logger.Flags()),
-		error:   log.New(writer, ">> ERROR ", logger.Flags()),
-		writer:  writer,
+		zapLogger: zapLogger,
+	}, nil
+}
+
+// Debug logs a debug message.
+func (l *Logger) Debug(msg string, fields ...zap.Field) {
+	l.zapLogger.Debug(msg, fields...)
+}
+
+// Info logs an info message.
+func (l *Logger) Info(msg string, fields ...zap.Field) {
+	l.zapLogger.Info(msg, fields...)
+}
+
+// Warning logs a warning message.
+func (l *Logger) Warning(msg string, fields ...zap.Field) {
+	l.zapLogger.Warn(msg, fields...)
+}
+
+// Error logs an error message.
+func (l *Logger) Error(msg string, fields ...zap.Field) {
+	l.zapLogger.Error(msg, fields...)
+}
+
+// Sync flushes any buffered log entries.
+func (l *Logger) Sync() error {
+	return l.zapLogger.Sync()
+}
+
+// WithField returns a new Logger with an additional field.
+func (l *Logger) WithField(key string, value interface{}) interfaces.Logger {
+	return &Logger{
+		zapLogger: l.zapLogger.With(zap.Any(key, value)),
 	}
 }
 
-func (l *Logger) Debug(v ...interface{}) {
-	l.debug.Println(v...)
+// WithFields returns a new Logger with additional fields.
+func (l *Logger) WithFields(fields ...zap.Field) interfaces.Logger {
+	return &Logger{
+		zapLogger: l.zapLogger.With(fields...),
+	}
 }
 
-func (l *Logger) Info(v ...interface{}) {
-	l.info.Println(v...)
+// WithError returns a new Logger with an additional error field.
+func (l *Logger) WithError(err error) interfaces.Logger {
+	return &Logger{
+		zapLogger: l.zapLogger.With(zap.Error(err)),
+	}
 }
 
-func (l *Logger) Warning(v ...interface{}) {
-	l.warning.Println(v...)
+// To implement io.Writer interface for the Writer field.
+func (l *Logger) Write(p []byte) (n int, err error) {
+	l.zapLogger.Info(string(p))
+	return len(p), nil
 }
 
-func (l *Logger) Error(v ...interface{}) {
-	l.error.Println(v...)
+func (zf *LogField) apply(logger Logger) {
+	logger.WithField(zf.key, zf.value)
 }
 
-func (l *Logger) Debugf(format string, v ...interface{}) {
-	l.debug.Printf(format, v...)
-}
-
-func (l *Logger) Infof(format string, v ...interface{}) {
-	l.info.Printf(format, v...)
-}
-
-func (l *Logger) Warningf(format string, v ...interface{}) {
-	l.warning.Printf(format, v...)
-}
-
-func (l *Logger) Errorf(format string, v ...interface{}) {
-	l.error.Printf(format, v...)
+func NewZapLogField(key string, value interface{}) *LogField {
+	return &LogField{
+		key:   key,
+		value: value,
+	}
 }

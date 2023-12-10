@@ -11,6 +11,6 @@ var (
 )
 
 func Init() {
-	l := logger.NewLogger("handlers")
+	l, _ := logger.NewLogger()
 	log = decorators.NewLoggerWithMetrics(l)
 }
