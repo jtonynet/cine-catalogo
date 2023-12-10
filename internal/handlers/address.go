@@ -249,6 +249,7 @@ func RetrieveAddress(ctx *gin.Context) {
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses [get]
 func RetrieveAddressList(ctx *gin.Context) {
+
 	log.Info("handlers: call retrieve-address-list GET route")
 
 	log.Warning("handlers: call retrieve-address-list GET route")

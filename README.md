@@ -322,6 +322,7 @@ erDiagram
   - [uuid](https://github.com/google/uuid)
   - [go2hall](https://github.com/pmoule/go2hall)
   - [promhttp](https://github.com/prometheus/client_golang)
+  - [Zap log](https://github.com/uber-go/zap)
 
 - Infra & Technologies
   - [Docker v24.0.6](https://www.docker.com/)
@@ -465,5 +466,21 @@ Multiple files
 
   https://github.com/Dwolla/hal-forms#form-transcoding
 
+
+LOGGER ZAP WRAPPED
+	fields := []interfaces.LogField{
+		logger.LogFieldFactory("teste", 1),
+		logger.LogFieldFactory("outro teste", 2),
+		logger.LogFieldFactory("Mais um novo teste", 3),
+	}
+
+	log.Info("handlers: call retrieve-address-list GET route", fields...)
+
+	_, file, line, _ := runtime.Caller(1)
+	fields := []interfaces.LogField{
+		logger.LogFieldFactory("caller file", file),
+		logger.LogFieldFactory("caller line", line),
+	}
+	log.Info("handlers: call retrieve-address-list GET route", fields...)
 
 -->

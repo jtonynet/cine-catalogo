@@ -1,20 +1,19 @@
 package interfaces
 
-import "go.uber.org/zap"
-
 type Logger interface {
-	Debug(msg string, fields ...zap.Field)
-	Info(msg string, fields ...zap.Field)
-	Warning(msg string, fields ...zap.Field)
-	Error(msg string, fields ...zap.Field)
+	Debug(msg string, fields ...LogField)
+	Info(msg string, fields ...LogField)
+	Warning(msg string, fields ...LogField)
+	Error(msg string, fields ...LogField)
 
 	Sync() error
 	WithField(key string, value interface{}) Logger
-	WithFields(fields ...zap.Field) Logger
+	WithFields(fields ...LogField) Logger
 	WithError(err error) Logger
 	Write(p []byte) (n int, err error)
 }
 
 type LogField interface {
-	apply(field interface{})
+	GetKey() string
+	GetValue() interface{}
 }
