@@ -483,4 +483,6 @@ LOGGER ZAP WRAPPED
 	}
 	log.Info("handlers: call retrieve-address-list GET route", fields...)
 
+  log.WithError(err).Error("database: error on connection")
+
 -->

@@ -16,7 +16,6 @@ import (
 
 var (
 	DB  *gorm.DB
-	err error
 	log interfaces.Logger
 )
 
@@ -39,7 +38,6 @@ func Init(cfg config.Database) error {
 
 	DB, err = gorm.Open(postgres.Open(strConn))
 	if err != nil {
-		//log.Errorf("database: error on connection %v", err.Error())
 		log.WithError(err).Error("database: error on connection")
 		return err
 	}
@@ -69,7 +67,6 @@ func Init(cfg config.Database) error {
 
 func IsConnected() error {
 	if err := DB.Raw("SELECT 1").Error; err != nil {
-		//log.Errorf("database: error trying check readiness %v", err.Error())
 		log.WithError(err).Error("database: error trying check readiness")
 		return err
 	}

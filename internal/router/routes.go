@@ -17,8 +17,7 @@ import (
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#identifying_allowed_request_methods
 
 func initializeRoutes(r *gin.Engine, cfg config.API) {
-	r.Static("/web", cfg.StaticsDir)
-
+	handlers.Init()
 	basePath := "/v1"
 
 	ginSwagger.WrapHandler(swaggerFiles.Handler,
@@ -28,9 +27,9 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	docs.SwaggerInfo.BasePath = basePath
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	handlers.Init()
-
 	r.GET("/metrics", gin.WrapH(handlers.ExposeMetrics()))
+
+	r.Static("/web", cfg.StaticsDir)
 
 	v1 := r.Group(basePath)
 
