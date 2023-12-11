@@ -27,27 +27,23 @@ func NewLoggerWithMetrics(next interfaces.Logger) interfaces.Logger {
 }
 
 func (l *LoggerDecorated) Debug(msg string, fields ...interfaces.LogField) {
-	l.next.Debug(msg, fields...)
-
 	logEventsTotal.WithLabelValues("debug").Inc()
+	l.next.Debug(msg, fields...)
 }
 
 func (l *LoggerDecorated) Info(msg string, fields ...interfaces.LogField) {
-	l.next.Info(msg, fields...)
-
 	logEventsTotal.WithLabelValues("info").Inc()
+	l.next.Info(msg, fields...)
 }
 
 func (l *LoggerDecorated) Warning(msg string, fields ...interfaces.LogField) {
-	l.next.Warning(msg, fields...)
-
 	logEventsTotal.WithLabelValues("warning").Inc()
+	l.next.Warning(msg, fields...)
 }
 
 func (l *LoggerDecorated) Error(msg string, fields ...interfaces.LogField) {
-	l.next.Error(msg, fields...)
-
 	logEventsTotal.WithLabelValues("error").Inc()
+	l.next.Error(msg, fields...)
 }
 
 func (l *LoggerDecorated) Sync() error {
@@ -55,15 +51,18 @@ func (l *LoggerDecorated) Sync() error {
 }
 
 func (l *LoggerDecorated) WithField(key string, value interface{}) interfaces.Logger {
-	return l.next.WithField(key, value)
+	decoratedLogger := &LoggerDecorated{next: l.next.WithField(key, value)}
+	return decoratedLogger
 }
 
 func (l *LoggerDecorated) WithFields(fields ...interfaces.LogField) interfaces.Logger {
-	return l.next.WithFields(fields...)
+	decoratedLogger := &LoggerDecorated{next: l.next.WithFields(fields...)}
+	return decoratedLogger
 }
 
 func (l *LoggerDecorated) WithError(err error) interfaces.Logger {
-	return l.next.WithError(err)
+	decoratedLogger := &LoggerDecorated{next: l.next.WithError(err)}
+	return decoratedLogger
 }
 
 func (l *LoggerDecorated) Write(p []byte) (n int, err error) {

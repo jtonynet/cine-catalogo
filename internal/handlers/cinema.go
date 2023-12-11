@@ -30,25 +30,41 @@ import (
 func CreateCinemas(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "create-cinemas"
 
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+
+		log.WithField("origin", handler).
+			Error("error invalid address_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
 
 	var address models.Address
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		// TODO: Implements in future
+
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch address")
+
+		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return
 	}
 
 	var requestList []requests.Cinema
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
+
 		var singleRequest requests.Cinema
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
-			// TODO: Implements in future
+
+			log.WithError(err).
+				WithField("origin", handler).
+				Error("error on binding requests.Cinema")
+
+			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
 		}
 
@@ -57,6 +73,7 @@ func CreateCinemas(ctx *gin.Context) {
 
 	var cinemas []models.Cinema
 	for _, request := range requestList {
+		//TODO ADD UUID COLLISION MANAGEMENT
 		cinema, err := models.NewCinema(
 			request.UUID,
 			address.ID,
@@ -65,7 +82,11 @@ func CreateCinemas(ctx *gin.Context) {
 			request.Capacity,
 		)
 		if err != nil {
-			// TODO: Implements in future
+			log.WithError(err).
+				WithField("origin", handler).
+				Error("error on models.NewCinema")
+
+			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
 		}
 
@@ -73,20 +94,28 @@ func CreateCinemas(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Create(&cinemas).Error; err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB create cinemas")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	result, err := getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on getCinemaListResult")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"create-cinemas",
+		handler,
 		result,
 		responses.HALHeaders,
 	)
@@ -102,23 +131,36 @@ func CreateCinemas(ctx *gin.Context) {
 func RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "retrieve-cinema"
 
 	cinemaId := ctx.Param("cinema_id")
 	if !IsValidUUID(cinemaId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
+
+		log.WithField("origin", handler).
+			Error("error invalid cinema_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
 	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
-		responses.SendError(ctx, http.StatusNotFound, "cinema not found", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch cinema")
+
+		responses.SendError(ctx, http.StatusNotFound, "Cinema Not Found", nil)
 		return
 	}
 
 	templateJSON, err := getCinemasTemplates(versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on hateoas template to cinema")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
@@ -134,7 +176,7 @@ func RetrieveCinema(ctx *gin.Context) {
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-cinema",
+		handler,
 		response,
 		nil,
 	)
@@ -149,29 +191,41 @@ func RetrieveCinema(ctx *gin.Context) {
 // @Param cinema_id path string true "Cinema UUID"
 // @Success 204
 func DeleteCinema(ctx *gin.Context) {
+	handler := "delete-cinema"
 
 	cinemaId := ctx.Param("cinema_id")
 	if !IsValidUUID(cinemaId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
+		log.WithField("handler", handler).
+			Error("error invalid cinema_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
 	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
-		responses.SendError(ctx, http.StatusNotFound, "cinema not found", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch cinema")
+
+		responses.SendError(ctx, http.StatusNotFound, "Cinema Not Found", nil)
 		return
 	}
 
 	if result := database.DB.Delete(&cinema); result.Error != nil {
-		responses.SendError(ctx, http.StatusInternalServerError, "failed to delete cinema", nil)
+		log.WithError(result.Error).
+			WithField("origin", handler).
+			Error("error on DB delete cinema")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Failed on delete address", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusNoContent,
-		"delete-cinema",
+		handler,
 		nil,
 		nil,
 	)
@@ -189,25 +243,35 @@ func DeleteCinema(ctx *gin.Context) {
 func UpdateCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "retrieve-cinema"
 
 	cinemaId := ctx.Param("cinema_id")
 	if !IsValidUUID(cinemaId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing cinema_id", nil)
+		log.WithField("origin", handler).
+			Error("error invalid cinema_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing cinema_id", nil)
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
 	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
-		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch cinema")
+
+		responses.SendError(ctx, http.StatusForbidden, "Failed to fetch cinema", nil)
 		return
 	}
 
 	var updateRequest requests.UpdateCinema
 	if err := ctx.ShouldBind(&updateRequest); err != nil {
-		// TODO: Implements in future
-		fmt.Printf("updateRequest ShouldBindJSON %v", err)
-		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on binding requests.UpdateCinema")
+
+		responses.SendError(ctx, http.StatusBadRequest, "Malformed request body", nil)
 		return
 	}
 
@@ -224,14 +288,21 @@ func UpdateCinema(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Save(&cinema).Error; err != nil {
-		// TODO: Implements in future
-		fmt.Printf("database.DB.Save %v", err)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB update cinema")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	templateJSON, err := getCinemasTemplates(versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on hateoas template to cinema")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
@@ -247,7 +318,7 @@ func UpdateCinema(ctx *gin.Context) {
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-cinema",
+		handler,
 		response,
 		nil,
 	)
@@ -263,36 +334,52 @@ func UpdateCinema(ctx *gin.Context) {
 func RetrieveCinemaList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "retrieve-cinema-list"
 
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		log.WithField("origin", handler).
+			Error("error invalid address_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		fmt.Println("Cannot obtains address %v", err)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch address")
+
+		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return
 	}
 
 	cinemas := []models.Cinema{}
 	if err := database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB fetch cinemas")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	result, err := getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on getCinemaListResult")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-cinema-list",
+		handler,
 		result,
 		responses.HALHeaders,
 	)
@@ -357,7 +444,6 @@ func getCinemasTemplates(
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
-		// TODO: Implements in future
 		return nil, err
 	}
 

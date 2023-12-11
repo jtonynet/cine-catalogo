@@ -20,6 +20,7 @@ var (
 )
 
 func Init(cfg config.Database) error {
+	key := "database-init"
 
 	l, err := logger.NewLogger()
 	if err != nil {
@@ -52,7 +53,8 @@ func Init(cfg config.Database) error {
 		},
 	}))
 
-	log.Info("database: connection is openned")
+	log.WithField("origin", key).
+		Info("connection is openned")
 
 	DB.AutoMigrate(&models.Address{})
 	DB.AutoMigrate(&models.Cinema{})
@@ -60,14 +62,19 @@ func Init(cfg config.Database) error {
 	DB.AutoMigrate(&models.Movie{})
 	DB.AutoMigrate(&models.Poster{})
 
-	log.Info("database: tables created")
+	log.WithField("origin", key).
+		Info("tables created")
 
 	return nil
 }
 
 func IsConnected() error {
+	key := "database-is-connected"
+
 	if err := DB.Raw("SELECT 1").Error; err != nil {
-		log.WithError(err).Error("database: error trying check readiness")
+		log.WithError(err).
+			WithField("origin", key).
+			Error("error trying check readiness")
 		return err
 	}
 	return nil
