@@ -321,6 +321,9 @@ erDiagram
 
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
+  - [go prometheus]("github.com/prometheus/client_golang)
+  - [ginprom](https://github.com/Depado/ginprom)
+  - [go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
   - [GORM](https://gorm.io/index.html)
   - [GORM Prometheus](https://github.com/go-gorm/prometheus/blob/master/postgres.go)
   - [Viper](https://github.com/spf13/viper)
@@ -328,7 +331,6 @@ erDiagram
   - [gjson](https://github.com/tidwall/gjson)
   - [uuid](https://github.com/google/uuid)
   - [go2hall](https://github.com/pmoule/go2hall)
-  - [promhttp](https://github.com/prometheus/client_golang)
   - [Zap log](https://github.com/uber-go/zap)
 
 - Infra & Technologies
