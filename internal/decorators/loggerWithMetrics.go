@@ -27,8 +27,8 @@ func NewLoggerWithMetrics(next interfaces.Logger) interfaces.Logger {
 }
 
 func (l *LoggerDecorated) Debug(msg string, fields ...interfaces.LogField) {
-	logEventsTotal.WithLabelValues("debug").Inc()
 	l.next.Debug(msg, fields...)
+	logEventsTotal.WithLabelValues("debug").Inc()
 }
 
 func (l *LoggerDecorated) Info(msg string, fields ...interfaces.LogField) {

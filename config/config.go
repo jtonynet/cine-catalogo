@@ -10,6 +10,7 @@ type API struct {
 	Host       string `mapstructure:"API_HOST"`
 	StaticsDir string `mapstructure:"API_STATICS_DIR"`
 	PostersDir string `mapstructure:"API_POSTERS_DIR"`
+	LogLevel   string `mapstructure:"API_LOG_LEVEL"`
 }
 
 type Database struct {

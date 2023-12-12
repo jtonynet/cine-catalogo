@@ -13,6 +13,8 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
+	"github.com/jtonynet/cine-catalogo/internal/logger"
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
@@ -39,7 +41,7 @@ func CreateAddresses(ctx *gin.Context) {
 
 			log.WithError(err).
 				WithField("origin", handler).
-				Error("error on binding requests.Address")
+				Warning("error on binding requests.Address")
 
 			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
@@ -63,7 +65,7 @@ func CreateAddresses(ctx *gin.Context) {
 		if err != nil {
 			log.WithError(err).
 				WithField("origin", handler).
-				Error("error on models.NewAddress")
+				Warning("error on models.NewAddress")
 
 			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
@@ -75,7 +77,7 @@ func CreateAddresses(ctx *gin.Context) {
 	if err := database.DB.Create(&addresses).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on DB create addresses")
+			Warning("error on DB create addresses")
 
 		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
@@ -85,7 +87,7 @@ func CreateAddresses(ctx *gin.Context) {
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on getAddresListResult")
+			Warning("error on getAddresListResult")
 
 		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
@@ -116,7 +118,7 @@ func UpdateAddress(ctx *gin.Context) {
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
 		log.WithField("origin", handler).
-			Error("error invalid address_id")
+			Warning("error invalid address_id")
 
 		responses.SendError(ctx, http.StatusBadRequest, "Malformed or missing address_id", nil)
 		return
@@ -127,7 +129,7 @@ func UpdateAddress(ctx *gin.Context) {
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on DB fetch address")
+			Warning("error on DB fetch address")
 
 		responses.SendError(ctx, http.StatusForbidden, "Failed to fetch address", nil)
 		return
@@ -137,7 +139,7 @@ func UpdateAddress(ctx *gin.Context) {
 	if err := ctx.ShouldBind(&updateRequest); err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on binding requests.UpdateAddress")
+			Warning("error on binding requests.UpdateAddress")
 
 		responses.SendError(ctx, http.StatusBadRequest, "Malformed request body", nil)
 		return
@@ -230,10 +232,16 @@ func RetrieveAddress(ctx *gin.Context) {
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-address"
 
+	logFields := []interfaces.LogField{
+		logger.LogFieldFactory("origin", handler),
+		logger.LogFieldFactory("route", ctx.FullPath()),
+	}
+
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		log.WithField("origin", handler).
-			Error("error invalid address_id")
+		log.WithFields(logFields...).
+			WithField("address_id", addressId).
+			Warning("error invalid address_id")
 
 		responses.SendError(ctx, http.StatusBadRequest, "Malformed or missing address_id", nil)
 		return
@@ -243,8 +251,8 @@ func RetrieveAddress(ctx *gin.Context) {
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
-			WithField("origin", handler).
-			Error("error on DB fetch address")
+			WithFields(logFields...).
+			Warning("error on DB fetch address")
 
 		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return
@@ -307,7 +315,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 	if err := database.DB.Find(&addresses).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on DB fetch addresses")
+			Warning("error on DB fetch addresses")
 
 		responses.SendError(ctx, http.StatusForbidden, "Failed to fetch addresses", nil)
 		return
@@ -346,7 +354,7 @@ func DeleteAddress(ctx *gin.Context) {
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
 		log.WithField("handler", handler).
-			Error("error invalid address_id")
+			Warning("error invalid address_id")
 
 		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
@@ -357,7 +365,7 @@ func DeleteAddress(ctx *gin.Context) {
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
-			Error("error on DB fetch address")
+			Warning("error on DB fetch address")
 
 		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return

@@ -29,13 +29,13 @@ import (
 func CreateMovies(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "create-movies"
 
 	var requestList []requests.Movie
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 		var singleRequest requests.Movie
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
 			// TODO: Implements in future
-			fmt.Printf("1: %v", err)
 			return
 		}
 
@@ -55,7 +55,6 @@ func CreateMovies(ctx *gin.Context) {
 		)
 		if err != nil {
 			// TODO: Implements in future
-			fmt.Printf("2: %v", err)
 			return
 		}
 
@@ -64,21 +63,19 @@ func CreateMovies(ctx *gin.Context) {
 
 	if err := database.DB.Create(&movies).Error; err != nil {
 		// TODO: Implements in future
-		fmt.Printf("3: %v", err)
 		return
 	}
 
 	result, err := getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
-		fmt.Printf("4: %v", err)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"create-movies",
+		handler,
 		result,
 		responses.HALHeaders,
 	)

@@ -485,4 +485,11 @@ LOGGER ZAP WRAPPED
 
   log.WithError(err).Error("database: error on connection")
 
+  https://stackoverflow.com/questions/7745885/log4j-logging-hierarchy-order
+
+
+Postgres Exporter
+  https://github.com/prometheus-community/postgres_exporter
+
+  
 -->
