@@ -168,9 +168,16 @@ Local URLs:
 
 <img src="assets/images/screen_captures/grafana_basic.png">
 
+<br/>
+
+<img src="assets/images/screen_captures/grafana_red.png">
+
+
 The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
+
+
 
 <!-- 
 Counter Increase in Grafana

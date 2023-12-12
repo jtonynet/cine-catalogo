@@ -139,7 +139,8 @@ func RetrieveCinema(ctx *gin.Context) {
 		log.WithField("origin", handler).
 			Error("error invalid cinema_id")
 
-		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
+		//responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
+		responses.SendError(ctx, http.StatusInternalServerError, "Malformed or missing address_id", nil)
 		return
 	}
 	cinemaUUID := uuid.MustParse(cinemaId)

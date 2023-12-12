@@ -1,12 +1,14 @@
 package handlers
 
 import (
-	"net/http"
 	"time"
 
+	"github.com/Depado/ginprom"
+	"github.com/gin-gonic/gin"
+	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 var (
@@ -32,10 +34,18 @@ func metricsLoop() {
 	}()
 }
 
-func ExposeMetrics() http.Handler {
-	log.Info("handlers: register prometheus metrics route")
-
+func ExposeMetrics(r *gin.Engine, cfg config.API) {
 	metricsLoop()
 
-	return promhttp.Handler()
+	// Use OpenTelemetry middleware
+	r.Use(otelgin.Middleware(cfg.Name))
+
+	// Adding router metrics with ginprom for all requests routes, find
+	// another lib with more uses or better way to get this metrics
+	// https://github.com/Depado/ginprom/tree/master
+	p := ginprom.New(
+		ginprom.Engine(r),
+		ginprom.Path("/metrics"),
+	)
+	r.Use(p.Instrument())
 }
