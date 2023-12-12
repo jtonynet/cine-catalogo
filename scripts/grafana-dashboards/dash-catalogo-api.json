@@ -701,7 +701,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses\"}[1m]))",
+          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses\"}[1m])) * 1000",
           "instant": false,
           "legendFormat": "/v1/addresses",
           "range": true,
@@ -713,7 +713,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses/:address_id\"}[1m]))",
+          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses/:address_id\"}[1m])) * 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "/v1/addresses/:address_id",
@@ -726,7 +726,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses/:address_id/cinemas\"}[1m]))",
+          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/addresses/:address_id/cinemas\"}[1m])) * 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "/v1/addresses/:address_id/cinemas",
@@ -739,7 +739,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/cinemas/:cinema_id\"}[1m]))",
+          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/cinemas/:cinema_id\"}[1m])) * 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "/v1/cinemas/:cinema_id",
@@ -752,7 +752,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/movies\"}[1m]))",
+          "expr": "sum(increase(gin_gonic_request_duration_sum{application=\"$application\", path=\"/v1/movies\"}[1m])) * 1000",
           "hide": false,
           "instant": false,
           "legendFormat": "/v1/movies",
@@ -1207,6 +1207,6 @@
   "timezone": "",
   "title": "dash-catalogo-api",
   "uid": "ed2b5e95-6752-4701-8c9a-6116df59624c",
-  "version": 18,
+  "version": 19,
   "weekStart": ""
 }

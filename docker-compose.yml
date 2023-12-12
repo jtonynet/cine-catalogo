@@ -92,3 +92,15 @@ services:
       - monit
     depends_on:
       - prometheus-ticket
+
+  # client-catalogo-api:
+  #   build:
+  #     context: ./tools/client/
+  #     dockerfile: Dockerfile
+  #   image: client-catalogo-api
+  #   container_name: client-catalogo-api
+  #   restart: unless-stopped
+  #   networks:
+  #     - proxy
+  #   depends_on:
+  #     - grafana-ticket
