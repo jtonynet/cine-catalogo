@@ -14,6 +14,7 @@ import (
 
 func initializeRoutes(r *gin.Engine, cfg config.API) {
 	handlers.Init()
+
 	basePath := "/v1"
 	docs.SwaggerInfo.BasePath = basePath
 

@@ -43,7 +43,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <a id="index"></a>
 ## :arrow_heading_up: index
 
-[CineCatalog Microsservice](#cine-catalogo)<br/>
+[CineCatalogo Microsservice](#cine-catalogo)<br/>
   1. :arrow_heading_up: [index](#arrow_heading_up-index)
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
@@ -172,26 +172,13 @@ Local URLs:
 
 <img src="assets/images/screen_captures/grafana_red.png">
 
+<br/>
+
+<img src="assets/images/screen_captures/grafana_use.png">
 
 The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
-
-
-
-<!-- 
-Counter Increase in Grafana
-  https://community.grafana.com/t/solved-display-counter-increase-in-grafana/90283
-
-add new labels on metrics
-  https://stackoverflow.com/questions/47628532/how-can-we-add-extra-label-to-prometheus-metrics
-
-  https://pet2cattle.com/2023/03/prometheus-add-label-to-metric
-  #  relabel_configs:
-  #    - source_labels: [__job__]
-  #      target_label: newLabel
-  #      replacement: "newLabelValue"
--->
 
 [:arrow_heading_up: back to top](#index)
 
@@ -321,7 +308,7 @@ erDiagram
 
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
-  - [go prometheus]("github.com/prometheus/client_golang)
+  - [gopsutil]("github.com/shirou/gopsutil)
   - [ginprom](https://github.com/Depado/ginprom)
   - [go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
   - [GORM](https://gorm.io/index.html)
@@ -362,7 +349,7 @@ erDiagram
 ## 👏 Best Practices
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- [keep a changelog](https://keepachangelog.com/en/1.0.0/)
+- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Event Storming](https://en.wikipedia.org/wiki/Event_storming)
 - [Miro Diagrams](https://miro.com/)
@@ -371,7 +358,9 @@ erDiagram
 - [RESTful](https://restfulapi.net/)
 - [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
 - [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
-- [Prometheus](https://prometheus.io/docs/guides/go-application/)
+- [Observability](https://en.wikipedia.org/wiki/Observability_(software)) with:
+  - [Prometheus](https://prometheus.io/docs/guides/go-application/)
+  - [Grafana](https://grafana.com/)
 
 <!-- 
 - [Load testing](https://en.wikipedia.org/wiki/Load_testing)
@@ -389,6 +378,7 @@ erDiagram
 
 - [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
 - [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
+- [0003: Prometheus Libs To Instrumentation](./docs/architecture/decisions/0003-prometheus-libs-to-instrumentation.md)
 
 <br/>
 
@@ -497,7 +487,7 @@ LOGGER ZAP WRAPPED
   https://stackoverflow.com/questions/7745885/log4j-logging-hierarchy-order
 
 
-Postgres Exporter
+Prometheus Postgres Exporter
   https://github.com/prometheus-community/postgres_exporter
 
   
