@@ -55,6 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - We start the project [Project](https://github.com/users/jtonynet/projects/2) with initial commit. Base docs: Rich Readme, ADR [0002: Gin, Gorm and Postegres in three tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postgres-in-three-tier-architecture.md), [Miro Event Storming](https://miro.com/app/board/uXjVNRofMoA=/) and [Mermaid Diagrams](https://github.com/jtonynet/cine-catalogo/tree/main#diagrams)
 
 
-[0.1.0]: https://github.com/jtonynet/cine-catalogo/compare/v0.0.0...v0.1.0
+[0.1.0]: https://github.com/jtonynet/cine-catalogo/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/jtonynet/cine-catalogo/compare/v0.0.0...v0.0.1
 [0.0.0]: https://github.com/jtonynet/cine-catalogo/releases/tag/v0.0.0
