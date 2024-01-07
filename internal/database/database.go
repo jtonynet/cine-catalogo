@@ -5,22 +5,30 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/plugin/prometheus"
 
 	"github.com/jtonynet/cine-catalogo/config"
+	"github.com/jtonynet/cine-catalogo/internal/decorators"
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 var (
 	DB  *gorm.DB
-	err error
-	l   *logger.Logger
+	log interfaces.Logger
 )
 
 func Init(cfg config.Database) error {
-	l = logger.NewLogger("database")
+	key := "database-init"
 
-	l.Info("database: trying open connection")
+	l, err := logger.NewLogger()
+	if err != nil {
+		fmt.Printf("log database failure %v", err)
+	}
+	log = decorators.NewLoggerWithMetrics(l)
+
+	log.Info("database: trying open connection")
 
 	strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%v sslmode=disable",
 		cfg.Host,
@@ -31,11 +39,22 @@ func Init(cfg config.Database) error {
 
 	DB, err = gorm.Open(postgres.Open(strConn))
 	if err != nil {
-		l.Errorf("database: error on connection %v", err.Error())
+		log.WithError(err).Error("database: error on connection")
 		return err
 	}
 
-	l.Info("database: connection is openned")
+	DB.Use(prometheus.New(prometheus.Config{
+		DBName:          cfg.MetricDBName,          // `DBName` as metrics label
+		RefreshInterval: cfg.MetricRefreshInterval, // refresh metrics interval (default 15 seconds)
+		StartServer:     cfg.MetricStartServer,     // start http server to expose metrics
+		HTTPServerPort:  cfg.MetricServerPort,      // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
+		MetricsCollector: []prometheus.MetricsCollector{
+			&prometheus.Postgres{VariableNames: []string{"Threads_running"}},
+		},
+	}))
+
+	log.WithField("origin", key).
+		Info("connection is openned")
 
 	DB.AutoMigrate(&models.Address{})
 	DB.AutoMigrate(&models.Cinema{})
@@ -43,14 +62,19 @@ func Init(cfg config.Database) error {
 	DB.AutoMigrate(&models.Movie{})
 	DB.AutoMigrate(&models.Poster{})
 
-	l.Info("database: tables created")
+	log.WithField("origin", key).
+		Info("tables created")
 
 	return nil
 }
 
 func IsConnected() error {
+	key := "database-is-connected"
+
 	if err := DB.Raw("SELECT 1").Error; err != nil {
-		l.Errorf("database: error trying check readiness %v", err.Error())
+		log.WithError(err).
+			WithField("origin", key).
+			Error("error trying check readiness")
 		return err
 	}
 	return nil

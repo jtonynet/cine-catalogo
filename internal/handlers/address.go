@@ -13,7 +13,9 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
+	"github.com/jtonynet/cine-catalogo/internal/logger"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 // @BasePath /v1
@@ -29,13 +31,19 @@ import (
 func CreateAddresses(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "create-addresses"
 
 	var requestList []requests.Address
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 
 		var singleRequest requests.Address
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
-			// TODO: Implements in future
+
+			log.WithError(err).
+				WithField("origin", handler).
+				Warning("error on binding requests.Address")
+
+			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
 		}
 
@@ -44,6 +52,7 @@ func CreateAddresses(ctx *gin.Context) {
 
 	var addresses []models.Address
 	for _, request := range requestList {
+		//TODO ADD UUID COLLISION MANAGEMENT
 		address, err := models.NewAddress(
 			request.UUID,
 			request.Country,
@@ -54,7 +63,11 @@ func CreateAddresses(ctx *gin.Context) {
 			request.Name,
 		)
 		if err != nil {
-			// TODO Implements
+			log.WithError(err).
+				WithField("origin", handler).
+				Warning("error on models.NewAddress")
+
+			responses.SendError(ctx, http.StatusBadRequest, "Malformed request body.", nil)
 			return
 		}
 
@@ -62,19 +75,27 @@ func CreateAddresses(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Create(&addresses).Error; err != nil {
-		responses.SendError(ctx, http.StatusBadRequest, err.Error(), nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on DB create addresses")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	result, err := getAddresListResult(addresses, versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on getAddresListResult")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx, http.StatusOK,
-		"create-addresses",
+		handler,
 		result,
 		responses.HALHeaders,
 	)
@@ -92,25 +113,35 @@ func CreateAddresses(ctx *gin.Context) {
 func UpdateAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "update-address"
 
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		log.WithField("origin", handler).
+			Warning("error invalid address_id")
+
+		responses.SendError(ctx, http.StatusBadRequest, "Malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		responses.SendError(ctx, http.StatusForbidden, "dont fetch cinema", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on DB fetch address")
+
+		responses.SendError(ctx, http.StatusForbidden, "Failed to fetch address", nil)
 		return
 	}
 
 	var updateRequest requests.UpdateAddress
 	if err := ctx.ShouldBind(&updateRequest); err != nil {
-		// TODO: Implements in future
-		fmt.Printf("updateRequest ShouldBindJSON %v", err)
-		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on binding requests.UpdateAddress")
+
+		responses.SendError(ctx, http.StatusBadRequest, "Malformed request body", nil)
 		return
 	}
 
@@ -139,8 +170,11 @@ func UpdateAddress(ctx *gin.Context) {
 	}
 
 	if err := database.DB.Save(&address).Error; err != nil {
-		// TODO: Implements in future
-		fmt.Printf("database.DB.Save %v", err)
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on DB update address")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
@@ -159,22 +193,27 @@ func UpdateAddress(ctx *gin.Context) {
 			HTTPMethod:  http.MethodGet,
 		},
 	}
+
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on hateoas template to address")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	response := responses.NewAddress(
 		address,
 		versionURL,
-		templateJSON,
+		responses.WithAddressTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-address",
+		handler,
 		response,
 		nil,
 	)
@@ -191,17 +230,31 @@ func UpdateAddress(ctx *gin.Context) {
 func RetrieveAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "retrieve-address"
+
+	logFields := []interfaces.LogField{
+		logger.LogFieldFactory("origin", handler),
+		logger.LogFieldFactory("route", ctx.FullPath()),
+	}
 
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		log.WithFields(logFields...).
+			WithField("address_id", addressId).
+			Warning("error invalid address_id")
+
+		responses.SendError(ctx, http.StatusBadRequest, "Malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		responses.SendError(ctx, http.StatusNotFound, "address not found", nil)
+		log.WithError(err).
+			WithFields(logFields...).
+			Warning("error on DB fetch address")
+
+		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return
 	}
 
@@ -220,22 +273,27 @@ func RetrieveAddress(ctx *gin.Context) {
 			HTTPMethod:  http.MethodGet,
 		},
 	}
+
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on hateoas template to address")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	response := responses.NewAddress(
 		address,
 		versionURL,
-		templateJSON,
+		responses.WithAddressTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-address",
+		handler,
 		response,
 		nil,
 	)
@@ -251,23 +309,32 @@ func RetrieveAddress(ctx *gin.Context) {
 func RetrieveAddressList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "retrieve-address-list"
 
 	addresses := []models.Address{}
 	if err := database.DB.Find(&addresses).Error; err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on DB fetch addresses")
+
+		responses.SendError(ctx, http.StatusForbidden, "Failed to fetch addresses", nil)
 		return
 	}
 
 	result, err := getAddresListResult(addresses, versionURL)
 	if err != nil {
-		// TODO: Implements in future
+		log.WithError(err).
+			WithField("origin", handler).
+			Error("error on getAddresListResult")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Internal Server Error, please try again later.", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"retrieve-address-list",
+		handler,
 		result,
 		responses.HALHeaders,
 	)
@@ -282,29 +349,41 @@ func RetrieveAddressList(ctx *gin.Context) {
 // @Param address_id path string true "Address UUID"
 // @Success 204
 func DeleteAddress(ctx *gin.Context) {
+	handler := "delete-address"
 
 	addressId := ctx.Param("address_id")
 	if !IsValidUUID(addressId) {
-		responses.SendError(ctx, http.StatusForbidden, "malformed or missing address_id", nil)
+		log.WithField("handler", handler).
+			Warning("error invalid address_id")
+
+		responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		return
 	}
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
 	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
-		responses.SendError(ctx, http.StatusNotFound, "address not found", nil)
+		log.WithError(err).
+			WithField("origin", handler).
+			Warning("error on DB fetch address")
+
+		responses.SendError(ctx, http.StatusNotFound, "Address Not Found", nil)
 		return
 	}
 
 	if result := database.DB.Delete(&address); result.Error != nil {
-		responses.SendError(ctx, http.StatusInternalServerError, "failed to delete address", nil)
+		log.WithError(result.Error).
+			WithField("origin", handler).
+			Error("error on DB delete address")
+
+		responses.SendError(ctx, http.StatusInternalServerError, "Failed on delete address", nil)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusNoContent,
-		"delete-address",
+		handler,
 		nil,
 		nil,
 	)
@@ -316,7 +395,7 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 	for _, address := range addresses {
 		addressListResponse = append(
 			addressListResponse,
-			responses.NewAddress(address, versionURL, nil),
+			responses.NewAddress(address, versionURL),
 		)
 	}
 
@@ -360,7 +439,6 @@ func getAddresListResult(addresses []models.Address, versionURL string) (*respon
 	}
 	templateJSON, err := hateoas.TemplateFactory(versionURL, templateParams)
 	if err != nil {
-		// TODO: Implements in future
 		return nil, err
 	}
 

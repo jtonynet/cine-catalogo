@@ -4,18 +4,14 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
-type baseCinema struct {
+type Cinema struct {
 	UUID        uuid.UUID `json:"uuid"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Capacity    int64     `json:"capacity"`
-}
-
-type Cinema struct {
-	baseCinema
 
 	Links HATEOASCinemasLinks `json:"_links,omitempty"`
 
@@ -29,19 +25,20 @@ type HATEOASCinemasLinks struct {
 	Address      HATEOASLink `json:"address"`
 }
 
+type CinemaOption func(*Cinema)
+
 func NewCinema(
 	model models.Cinema,
 	addressLink,
 	baseURL string,
-	templates interface{},
+	options ...CinemaOption,
 ) Cinema {
 	cinema := Cinema{
-		baseCinema: baseCinema{
-			UUID:        model.UUID,
-			Name:        model.Name,
-			Description: model.Description,
-			Capacity:    model.Capacity,
-		},
+
+		UUID:        model.UUID,
+		Name:        model.Name,
+		Description: model.Description,
+		Capacity:    model.Capacity,
 
 		Links: HATEOASCinemasLinks{
 			Self:         HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
@@ -49,11 +46,19 @@ func NewCinema(
 			DeleteCinema: HATEOASLink{HREF: fmt.Sprintf("%s/cinemas/%s", baseURL, model.UUID.String())},
 			Address:      HATEOASLink{HREF: addressLink},
 		},
+	}
 
-		Templates: templates,
+	for _, opt := range options {
+		opt(&cinema)
 	}
 
 	return cinema
+}
+
+func WithCinemaTemplates(templates interface{}) CinemaOption {
+	return func(cinema *Cinema) {
+		cinema.Templates = templates
+	}
 }
 
 type HATEOASCinemaListLinks struct {

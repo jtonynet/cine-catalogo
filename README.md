@@ -12,10 +12,10 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) 
+[<img src="./assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) 
 
 <!--
-[<img src="./assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
+[<img src="./assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
 -->
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
@@ -43,19 +43,21 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <a id="index"></a>
 ## :arrow_heading_up: index
 
-[CineCatalog Microsservice](#cine-catalogo)<br/>
+[CineCatalogo Microsservice](#cine-catalogo)<br/>
   1. :arrow_heading_up: [index](#arrow_heading_up-index)
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
   4. :newspaper: [API Documentation](#api-docs)
   5. :traffic_light: [HATEOAS HAL](#HATEOAS)
   6. :umbrella: [Event Storming](#event-storming)
-  7. :bar_chart: [Diagrams](#diagrams)
-  8. :toolbox: [Tools](#tools)
-  9.  :clap: [Best Practices](#best-practices)
-  10. :brain: [ADR - Architecture Decision Records](#adr)
-  11. :1234: [Versions](#versions)
-  12. :robot: [Use of AI](#ia)
+  7. :detective: [Observability](#observability)
+  8. :bar_chart: [Diagrams](#diagrams)
+  9. :toolbox: [Tools](#tools)
+  10. :clap: [Best Practices](#best-practices)
+  11. :brain: [ADR - Architecture Decision Records](#adr)
+  12. :1234: [Versions](#versions)
+  13. :robot: [Use of AI](#ia)
+
 
 <br/>
 
@@ -89,15 +91,14 @@ Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker 
 $ docker compose up
 ```
 
+
 > :writing_hand: **Note**:
 >
 > __Troubleshooting with [Docker Volumes](https://betterstack.com/community/questions/what-is-the-best-way-to-manage-permissions-for-docker-shared-volumes/)__
-> For the purpose of setting up the local environment, one might encounter issues with permissions in the docker_data folder, which stores the volumes of the components needed to run the environment. The docker-compose creates this folder but does not grant it the necessary permissions to manage these volumes. The approach we are currently using to handle this is to run the following command in case you encounter an error on the first attempt of __docker compose up__:
+> For the purpose of setting up the local environment, one might encounter issues with permissions in the docker_data folder, which stores the volumes of the components needed to run the environment. The docker-compose creates this folder but does not grant it the necessary permissions to manage these volumes. The approach we are currently using to handle this is to run the following command in case you encounter an error on the first attempt of `docker compose up`:
 >```bash
->sudo chmod -R o+rx docker_data/
+>sudo chmod -R 777 docker_data/
 >``` 
-
-
 
 <br/>
 
@@ -107,16 +108,20 @@ $ docker compose up
 <a id="api-docs"></a>
 ## 📰  API Documentation
 
-####  <img src="./assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Generate Swagger docs:
+####  <img src="./assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Swagger docs:
 
+
+Below is a screenshot of the latest documentation, which can be accessed here on http://localhost:8080/swagger/index.html with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
+<img src="./assets/images/screen_captures/swagger_01.png"/>
+
+<br/>
+
+__Generate Docs:__
 With the 'cine-catalogo' image running, type:
 
 ```bash
 $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
 ```
-
-Below is a screenshot of the latest documentation, which can be accessed here on http://localhost:8080/swagger/index.html with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
-<img src="./assets/images/screen_captures/swagger_01.png"/>
 
 <br/>
 
@@ -150,6 +155,30 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 <img src="./assets/images/screen_captures/event_storm_catalog_contexts.png"/>
 
 <br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+<a id="observability"></a>
+## 🕵️ Observability:
+
+Local URLs:
+- Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
+- Prometheus - http://localhost:9090/
+
+<img src="assets/images/screen_captures/grafana_basic.png">
+
+<br/>
+
+<img src="assets/images/screen_captures/grafana_red.png">
+
+<br/>
+
+<img src="assets/images/screen_captures/grafana_use.png">
+
+The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
+
+The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
 [:arrow_heading_up: back to top](#index)
 
@@ -279,20 +308,29 @@ erDiagram
 
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
+  - [gopsutil]("github.com/shirou/gopsutil)
+  - [client-prometheus](https://github.com/prometheus/client_golang)
+  - [go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
   - [GORM](https://gorm.io/index.html)
+  - [GORM Prometheus](https://github.com/go-gorm/prometheus)
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
-  - [uuid](github.com/google/uuid)
+  - [uuid](https://github.com/google/uuid)
   - [go2hall](https://github.com/pmoule/go2hall)
+  - [Zap log](https://github.com/uber-go/zap)
 
 - Infra & Technologies
   - [Docker v24.0.6](https://www.docker.com/)
   - [Docker compose v2.21.0](https://www.docker.com/)
   - [Postgres v16.0](https://www.postgresql.org/)
+  - [Prometheus](https://prometheus.io/docs/guides/go-application)
+  - [Grafana](https://grafana.com/)
+
+<!--
   - [Redis 6.2](https://redis.io/)
   - [Gatling v3.9.5](https://gatling.io/)
-
+-->
 
 - GUIs:
   - [VsCode](https://code.visualstudio.com/)
@@ -311,7 +349,7 @@ erDiagram
 ## 👏 Best Practices
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- [keep a changelog](https://keepachangelog.com/en/1.0.0/)
+- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
 - [Event Storming](https://en.wikipedia.org/wiki/Event_storming)
 - [Miro Diagrams](https://miro.com/)
@@ -320,6 +358,9 @@ erDiagram
 - [RESTful](https://restfulapi.net/)
 - [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
 - [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
+- [Observability](https://en.wikipedia.org/wiki/Observability_(software)) with:
+  - [Prometheus](https://prometheus.io/docs/guides/go-application/)
+  - [Grafana](https://grafana.com/)
 
 <!-- 
 - [Load testing](https://en.wikipedia.org/wiki/Load_testing)
@@ -337,6 +378,7 @@ erDiagram
 
 - [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
 - [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
+- [0003: Prometheus Libs To Instrumentation](./docs/architecture/decisions/0003-prometheus-libs-to-instrumentation.md)
 
 <br/>
 
@@ -423,8 +465,30 @@ Multiple files
 
   https://github.com/Dwolla/hal-forms#form-transcoding
 
-  https://swagger.io/docs/specification/data-models/inheritance-and-polymorphism/
 
-  https://github.com/swaggo/swag/blob/master/example/basic/api/api.go
+LOGGER ZAP WRAPPED
+	fields := []interfaces.LogField{
+		logger.LogFieldFactory("teste", 1),
+		logger.LogFieldFactory("outro teste", 2),
+		logger.LogFieldFactory("Mais um novo teste", 3),
+	}
 
+	log.Info("handlers: call retrieve-address-list GET route", fields...)
+
+	_, file, line, _ := runtime.Caller(1)
+	fields := []interfaces.LogField{
+		logger.LogFieldFactory("caller file", file),
+		logger.LogFieldFactory("caller line", line),
+	}
+	log.Info("handlers: call retrieve-address-list GET route", fields...)
+
+  log.WithError(err).Error("database: error on connection")
+
+  https://stackoverflow.com/questions/7745885/log4j-logging-hierarchy-order
+
+
+Prometheus Postgres Exporter
+  https://github.com/prometheus-community/postgres_exporter
+
+  
 -->

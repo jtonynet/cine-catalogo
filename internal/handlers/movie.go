@@ -13,7 +13,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/hateoas"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 // @BasePath /v1
@@ -24,18 +24,18 @@ import (
 // @Accept json
 // @Produce json
 // @Param request body []requests.Movie true "Request body"
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [post]
 func CreateMovies(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
+	handler := "create-movies"
 
 	var requestList []requests.Movie
 	if err := ctx.ShouldBindBodyWith(&requestList, binding.JSON); err != nil {
 		var singleRequest requests.Movie
 		if err := ctx.ShouldBindBodyWith(&singleRequest, binding.JSON); err != nil {
 			// TODO: Implements in future
-			fmt.Printf("1: %v", err)
 			return
 		}
 
@@ -55,7 +55,6 @@ func CreateMovies(ctx *gin.Context) {
 		)
 		if err != nil {
 			// TODO: Implements in future
-			fmt.Printf("2: %v", err)
 			return
 		}
 
@@ -64,21 +63,19 @@ func CreateMovies(ctx *gin.Context) {
 
 	if err := database.DB.Create(&movies).Error; err != nil {
 		// TODO: Implements in future
-		fmt.Printf("3: %v", err)
 		return
 	}
 
 	result, err := getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
-		fmt.Printf("4: %v", err)
 		return
 	}
 
 	responses.SendSuccess(
 		ctx,
 		http.StatusOK,
-		"create-movies",
+		handler,
 		result,
 		responses.HALHeaders,
 	)
@@ -119,7 +116,7 @@ func RetrieveMovie(ctx *gin.Context) {
 		movie,
 		cfg.Host,
 		versionURL,
-		templateJSON,
+		responses.WithMovieTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -201,7 +198,7 @@ func UpdateMovie(ctx *gin.Context) {
 		movie,
 		cfg.Host,
 		versionURL,
-		templateJSON,
+		responses.WithMovieTemplates(templateJSON),
 	)
 
 	responses.SendSuccess(
@@ -218,7 +215,7 @@ func UpdateMovie(ctx *gin.Context) {
 // @Tags Movies
 // @Accept json
 // @Produce json
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [get]
 func RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
@@ -245,7 +242,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	)
 }
 
-func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.MovieListResult, error) {
+func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.MovieListItem{}
 	posterListResponse := []responses.Poster{}
 
@@ -270,7 +267,6 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 					m.Links.Self.HREF,
 					baseURL,
 					versionURL,
-					nil,
 				),
 			)
 		}
@@ -292,7 +288,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		return nil, err
 	}
 
-	result := responses.MovieListResult{
+	result := responses.HATEOASListResult{
 		Embedded:  movieAndPosterList,
 		Links:     movieListLinks,
 		Templates: templateJSON,

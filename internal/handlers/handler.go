@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"github.com/jtonynet/cine-catalogo/internal/decorators"
+	"github.com/jtonynet/cine-catalogo/internal/interfaces"
 	"github.com/jtonynet/cine-catalogo/internal/logger"
 )
 
 var (
-	log *logger.Logger
+	log interfaces.Logger
 )
 
 func Init() {
-	log = logger.NewLogger("handlers")
+	l, _ := logger.NewLogger()
+	log = decorators.NewLoggerWithMetrics(l)
 }

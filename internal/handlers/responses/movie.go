@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/jtonynet/cine-catalogo/models"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
 type baseMovie struct {
@@ -43,11 +43,13 @@ type HATEOASMoviePosterList struct {
 	Posters []Poster `json:"posters,omitempty"`
 }
 
+type MovieOption func(*Movie)
+
 func NewMovie(
 	model models.Movie,
 	baseURL,
 	versionURL string,
-	templates interface{},
+	options ...MovieOption,
 ) Movie {
 	movieLink := fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())
 	movie := Movie{
@@ -65,19 +67,27 @@ func NewMovie(
 			UpdateMovie:       HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s", versionURL, model.UUID.String())},
 			UploadMoviePoster: HATEOASLink{HREF: fmt.Sprintf("%s/movies/%s/posters", versionURL, model.UUID.String())},
 		},
-
-		Templates: templates,
 	}
 
 	if len(model.Posters) > 0 {
-		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL, nil)
+		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL)
 		movie.Embedded = HATEOASMoviePosterList{
 			Posters: []Poster{p},
 		}
 		movie.Links.Poster = p.Links.Self
 	}
 
+	for _, opt := range options {
+		opt(&movie)
+	}
+
 	return movie
+}
+
+func WithMovieTemplates(templates interface{}) MovieOption {
+	return func(m *Movie) {
+		m.Templates = templates
+	}
 }
 
 func NewMovieListItem(
@@ -104,7 +114,7 @@ func NewMovieListItem(
 	}
 
 	if len(model.Posters) > 0 {
-		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL, nil)
+		p := NewPoster(model.Posters[0], model.UUID, movieLink, baseURL, versionURL)
 		movie.Links.Poster = p.Links.Self
 	}
 
@@ -119,10 +129,4 @@ type HATEOASMovieListLinks struct {
 type HATEOASMovieAndPostersList struct {
 	Movies  *[]MovieListItem `json:"movies"`
 	Posters *[]Poster        `json:"posters"`
-}
-
-type MovieListResult struct {
-	Embedded  HATEOASMovieAndPostersList `json:"_embedded"`
-	Links     HATEOASMovieListLinks      `json:"_links"`
-	Templates interface{}                `json:"_templates"`
 }

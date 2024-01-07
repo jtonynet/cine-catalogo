@@ -5,28 +5,28 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jtonynet/cine-catalogo/config"
+	docs "github.com/jtonynet/cine-catalogo/docs"
 	"github.com/jtonynet/cine-catalogo/internal/handlers"
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
-
-	docs "github.com/jtonynet/cine-catalogo/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// INFO: To manage OPTION and HEAD verbs requests its necessary to implements HATEOAS HAL routes
-// https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS#identifying_allowed_request_methods
-
 func initializeRoutes(r *gin.Engine, cfg config.API) {
-	r.Static("/web", cfg.StaticsDir)
+	handlers.Init()
 
 	basePath := "/v1"
+	docs.SwaggerInfo.BasePath = basePath
 
 	ginSwagger.WrapHandler(swaggerFiles.Handler,
 		ginSwagger.URL(fmt.Sprintf("%s%s", basePath, "/swagger/doc.json")),
 		ginSwagger.DefaultModelsExpandDepth(-1))
 
-	docs.SwaggerInfo.BasePath = basePath
+	handlers.ExposeMetrics(r, cfg)
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	r.Static("/web", cfg.StaticsDir)
 
 	v1 := r.Group(basePath)
 
@@ -82,5 +82,4 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
 	v1.OPTIONS("/movies/:movie_id/posters/:poster_id", handlers.Option)
 	v1.HEAD("/movies/:movie_id/posters/:poster_id", handlers.Head)
-
 }
