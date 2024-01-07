@@ -176,7 +176,13 @@ Local URLs:
 
 <img src="assets/images/screen_captures/grafana_use.png">
 
-The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
+
+
+The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a [Datasource](http://localhost:3000/connections/datasources) aiming your prometheus URL http://prometheus-ticket:9090 and [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project.
+
+<img src="./assets/images/screen_captures/grafana-editing-datasource.png">
+
+
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
