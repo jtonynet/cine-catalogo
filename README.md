@@ -176,7 +176,7 @@ Local URLs:
 
 <img src="assets/images/screen_captures/grafana_use.png">
 
-The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to[ import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
+The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary to [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) into your local Grafana after the proper installation of the project.
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
@@ -309,10 +309,10 @@ erDiagram
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
   - [gopsutil]("github.com/shirou/gopsutil)
-  - [ginprom](https://github.com/Depado/ginprom)
+  - [client-prometheus](https://github.com/prometheus/client_golang)
   - [go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
   - [GORM](https://gorm.io/index.html)
-  - [GORM Prometheus](https://github.com/go-gorm/prometheus/blob/master/postgres.go)
+  - [GORM Prometheus](https://github.com/go-gorm/prometheus)
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
   - [gjson](https://github.com/tidwall/gjson)
