@@ -495,5 +495,8 @@ LOGGER ZAP WRAPPED
 Prometheus Postgres Exporter
   https://github.com/prometheus-community/postgres_exporter
 
+
+docker compose up postgres-catalogo
   
+https://medium.com/@vinjenks/dockerized-local-postgres-and-scram-authentication-a-quick-fix-21c432951bd
 -->

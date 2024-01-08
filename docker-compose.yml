@@ -3,7 +3,7 @@ name: cine
 
 networks:
   database:
-    internal: true
+  #  internal: true # Comment or set to false to use DB clients on the host machine for host tests or debugging purposes.
   cache:
     internal: true
   api:
