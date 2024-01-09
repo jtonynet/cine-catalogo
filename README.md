@@ -313,16 +313,17 @@ erDiagram
 
 - Framework & Libs:
   - [Gin](https://gin-gonic.com/)
-  - [gopsutil]("github.com/shirou/gopsutil)
-  - [client-prometheus](https://github.com/prometheus/client_golang)
-  - [go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
+  - [Testify](github.com/stretchr/testify)
+  - [Gopsutil]("github.com/shirou/gopsutil)
+  - [Client-prometheus](https://github.com/prometheus/client_golang)
+  - [Go opentelemetry](https://github.com/open-telemetry/opentelemetry-go-contrib)
   - [GORM](https://gorm.io/index.html)
   - [GORM Prometheus](https://github.com/go-gorm/prometheus)
   - [Viper](https://github.com/spf13/viper)
   - [Gin-Swagger](https://github.com/swaggo/gin-swagger)
-  - [gjson](https://github.com/tidwall/gjson)
+  - [Gjson](https://github.com/tidwall/gjson)
   - [uuid](https://github.com/google/uuid)
-  - [go2hall](https://github.com/pmoule/go2hall)
+  - [Go2hall](https://github.com/pmoule/go2hall)
   - [Zap log](https://github.com/uber-go/zap)
 
 - Infra & Technologies
@@ -497,6 +498,9 @@ Prometheus Postgres Exporter
 
 
 docker compose up postgres-catalogo
+go test -v -cover ./cmd/api/
   
-https://medium.com/@vinjenks/dockerized-local-postgres-and-scram-authentication-a-quick-fix-21c432951bd
+https://s3-sa-east-1.amazonaws.com/thedevconf/presentations/TDC2019SP/golang/ILL-6219_2019-07-20T084253_Testes%20em%20Go%20-%20TDC2019.pdf
+
+https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
 -->
