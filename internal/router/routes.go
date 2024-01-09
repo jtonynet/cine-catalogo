@@ -22,7 +22,9 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 		ginSwagger.URL(fmt.Sprintf("%s%s", basePath, "/swagger/doc.json")),
 		ginSwagger.DefaultModelsExpandDepth(-1))
 
-	handlers.ExposeMetrics(r, cfg)
+	if cfg.MetricEnabled {
+		handlers.ExposeMetrics(r, cfg)
+	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

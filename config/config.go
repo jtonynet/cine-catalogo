@@ -3,14 +3,15 @@ package config
 import "github.com/spf13/viper"
 
 type API struct {
-	Name       string `mapstructure:"API_NAME"`
-	Port       string `mapstructure:"API_PORT"`
-	TagVersion string `mapstructure:"API_TAG_VERSION"`
-	Env        string `mapstructure:"API_ENV"`
-	Host       string `mapstructure:"API_HOST"`
-	StaticsDir string `mapstructure:"API_STATICS_DIR"`
-	PostersDir string `mapstructure:"API_POSTERS_DIR"`
-	LogLevel   string `mapstructure:"API_LOG_LEVEL"`
+	Name          string `mapstructure:"API_NAME"`
+	Port          string `mapstructure:"API_PORT"`
+	TagVersion    string `mapstructure:"API_TAG_VERSION"`
+	Env           string `mapstructure:"API_ENV"`
+	Host          string `mapstructure:"API_HOST"`
+	StaticsDir    string `mapstructure:"API_STATICS_DIR"`
+	PostersDir    string `mapstructure:"API_POSTERS_DIR"`
+	MetricEnabled bool   `mapstructure:"API_METRICS_ENABLED"`
+	LogLevel      string `mapstructure:"API_LOG_LEVEL"`
 }
 
 type Database struct {
@@ -22,6 +23,7 @@ type Database struct {
 	Pass string `mapstructure:"DATABASE_PASSWORD"`
 	DB   string `mapstructure:"DATABASE_DB"`
 
+	MetricEnabled         bool   `mapstructure:"DATABASE_METRICS_ENABLED"`
 	MetricDBName          string `mapstructure:"DATABASE_METRICS_NAME"`
 	MetricRefreshInterval uint32 `mapstructure:"DATABASE_METRICS_INTERVAL_IN_SEC"`
 	MetricStartServer     bool   `mapstructure:"DATABASE_METRICS_START_SERVER"`

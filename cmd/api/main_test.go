@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -45,6 +44,7 @@ func SetupRouterV1() *gin.Engine {
 func TestV1CreateAddressesSucessful(t *testing.T) {
 	cfg, _ := SetupEnvVars()
 	cfg.Database.Host = "localhost"
+	cfg.Database.MetricEnabled = false
 	database.Init(cfg.Database)
 
 	r := SetupRouterV1()
@@ -69,5 +69,4 @@ func TestV1CreateAddressesSucessful(t *testing.T) {
 	r.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusOK, resp.Code)
-	fmt.Println(resp)
 }
