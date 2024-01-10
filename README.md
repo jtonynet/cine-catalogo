@@ -166,15 +166,15 @@ Local URLs:
 - Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
 - Prometheus - http://localhost:9090/
 
-<img src="assets/images/screen_captures/grafana_basic.png">
+<img src="./docs/assets/images/screen_captures/grafana_basic.png">
 
 <br/>
 
-<img src="assets/images/screen_captures/grafana_red.png">
+<img src="./docs/assets/images/screen_captures/grafana_red.png">
 
 <br/>
 
-<img src="assets/images/screen_captures/grafana_use.png">
+<img src="./docs/assets/images/screen_captures/grafana_use.png">
 
 
 The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a [Datasource](http://localhost:3000/connections/datasources) aiming your prometheus URL http://prometheus-ticket:9090 and [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project.
