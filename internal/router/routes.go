@@ -52,7 +52,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 
 	// Addresses Cinemas
 	v1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
-	v1.POST("addresses/:address_id/cinemas", handlers.CreateCinemas)
+	v1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
 	v1.OPTIONS("/addresses/:address_id/cinemas", handlers.Option)
 	v1.HEAD("/addresses/:address_id/cinemas", handlers.Head)
 
