@@ -1,8 +1,9 @@
-package main
+package main_test
 
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -19,21 +20,23 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
 )
 
-type IntegrationSuite struct {
+type IntegrationSuccesfulSuite struct {
 	suite.Suite
 	cfg      *config.Config
 	router   *gin.Engine
 	routesV1 *gin.RouterGroup
 }
 
-func (suite *IntegrationSuite) SetupSuite() {
-	basePath := "/v1"
+func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 
 	suite.cfg = setupConfig()
-	suite.router = setupRouter(suite.cfg.API)
-	suite.routesV1 = suite.router.Group(basePath)
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 
 	database.Init(suite.cfg.Database)
+}
+
+func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
+	fmt.Println(">>>End of IntegrationSuite!")
 }
 
 func setupConfig() *config.Config {
@@ -52,16 +55,18 @@ func setupConfig() *config.Config {
 	return &cfg
 }
 
-func setupRouter(cfg config.API) *gin.Engine {
+func setupRouterAndGroup(cfg config.API) (*gin.Engine, *gin.RouterGroup) {
+	basePath := "/v1"
+
 	gin.SetMode(gin.ReleaseMode)
 	routes := gin.Default()
 
 	routes.Use(middlewares.ConfigInject(cfg))
 
-	return routes
+	return routes, routes.Group(basePath)
 }
 
-func (suite *IntegrationSuite) TestV1CreateAddressesSuccessful() {
+func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
 	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
 
 	uniqueIDStr := "9aa904a0-feed-4502-ace8-bf9dd0e23fb5"
@@ -86,5 +91,5 @@ func (suite *IntegrationSuite) TestV1CreateAddressesSuccessful() {
 }
 
 func TestMySuite(t *testing.T) {
-	suite.Run(t, new(IntegrationSuite))
+	suite.Run(t, new(IntegrationSuccesfulSuite))
 }

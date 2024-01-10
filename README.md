@@ -498,7 +498,7 @@ Prometheus Postgres Exporter
 
 
 docker compose up postgres-catalogo
-go test -v -cover ./cmd/api/
+go test -v --cover ./cmd/api/
   
 https://s3-sa-east-1.amazonaws.com/thedevconf/presentations/TDC2019SP/golang/ILL-6219_2019-07-20T084253_Testes%20em%20Go%20-%20TDC2019.pdf
 
