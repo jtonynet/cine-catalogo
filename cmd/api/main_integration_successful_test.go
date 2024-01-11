@@ -18,16 +18,20 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/database"
 	"github.com/jtonynet/cine-catalogo/internal/handlers"
 	"github.com/jtonynet/cine-catalogo/internal/handlers/requests"
+	"github.com/jtonynet/cine-catalogo/internal/handlers/responses"
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
+	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
-// Using gin engine or ginTestEngine for tests, context params bugfixes (move to ADR or another doc):
-// https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
-// https://forum.golangbridge.org/t/how-to-test-gin-gonic-handler-function-within-a-function/33334/2
-// https://github.com/gin-gonic/gin/issues/1292
-// https://github.com/gin-gonic/gin/pull/2803
-// https://github.com/gin-gonic/gin/issues/2778
-// https://github.com/gin-gonic/gin/issues/2816
+/*
+TODO: Using gin engine or ginTestEngine for tests, context params bugfixes (move to ADR or another doc):
+	https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
+	https://forum.golangbridge.org/t/how-to-test-gin-gonic-handler-function-within-a-function/33334/2
+	https://github.com/gin-gonic/gin/issues/1292
+	https://github.com/gin-gonic/gin/pull/2803
+	https://github.com/gin-gonic/gin/issues/2778
+	https://github.com/gin-gonic/gin/issues/2816
+*/
 
 type IntegrationSuccesfulSuite struct {
 	suite.Suite
@@ -51,12 +55,15 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
-	database.DB.Exec(`
-	DELETE FROM cinemas CASCADE;
-	DELETE FROM addresses CASCADE;
-	DELETE FROM posters CASCADE;
-	DELETE FROM movies CASCADE;
-  `)
+	query := fmt.Sprintf(`
+	 DELETE FROM cinemas WHERE uuid in ('%v');
+	 DELETE FROM addresses WHERE uuid in ('%v');
+	 --DELETE FROM posters CASCADE;
+	 --DELETE FROM movies CASCADE;`,
+		suite.cinemaUUID.String(),
+		suite.addressUUID.String())
+
+	database.DB.Exec(query)
 
 }
 
@@ -80,11 +87,11 @@ func setupRouterAndGroup(cfg config.API) (*gin.Engine, *gin.RouterGroup) {
 	basePath := "/v1"
 
 	gin.SetMode(gin.TestMode)
-	routes := gin.Default()
+	router := gin.Default()
 
-	routes.Use(middlewares.ConfigInject(cfg))
+	router.Use(middlewares.ConfigInject(cfg))
 
-	return routes, routes.Group(basePath)
+	return router, router.Group(basePath)
 }
 
 func (suite *IntegrationSuccesfulSuite) SetupTest() {
@@ -92,9 +99,10 @@ func (suite *IntegrationSuccesfulSuite) SetupTest() {
 }
 
 func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
+	// Create Addresses
 	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
 
-	address := requests.Address{
+	addressCreate := requests.Address{
 		UUID:        suite.addressUUID,
 		Country:     "BR",
 		State:       "SP",
@@ -103,34 +111,85 @@ func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
 		PostalCode:  "1139050",
 		Name:        "Jardins Shoppings",
 	}
-
-	addressJson, _ := json.Marshal(address)
-	reqCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressJson))
+	addressCreateJson, _ := json.Marshal(addressCreate)
+	reqCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
 	respCreate := httptest.NewRecorder()
 	suite.router.ServeHTTP(respCreate, reqCreate)
-	assert.Equal(suite.T(), http.StatusOK, respCreate.Code)
+	assert.Equal(suite.T(), http.StatusCreated, respCreate.Code)
 
+	// Retrieve Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-
 	suite.routesV1.GET("/addresses/:address_id", handlers.RetrieveAddress)
 
-	retrieveAddressRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
-	reqRetrieve, _ := http.NewRequest("GET", retrieveAddressRoute, nil)
+	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
+
+	reqRetrieve, _ := http.NewRequest("GET", addressUUIDRoute, nil)
 	respRetrieve := httptest.NewRecorder()
 	suite.router.ServeHTTP(respRetrieve, reqRetrieve)
-	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
 
-	bodyJson := respRetrieve.Body.String()
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "uuid").String(), suite.addressUUID.String())
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "country").String(), address.Country)
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "state").String(), address.State)
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "telephone").String(), address.Telephone)
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "description").String(), address.Description)
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "postalCode").String(), address.PostalCode)
-	assert.Equal(suite.T(), gjson.Get(bodyJson, "name").String(), address.Name)
+	bodyCreateJson := respRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
+	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
+
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "uuid").String(), suite.addressUUID.String())
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "country").String(), addressCreate.Country)
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "state").String(), addressCreate.State)
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "telephone").String(), addressCreate.Telephone)
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "description").String(), addressCreate.Description)
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "postalCode").String(), addressCreate.PostalCode)
+	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "name").String(), addressCreate.Name)
+
+	// Update Address
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.PATCH("/addresses/:address_id", handlers.UpdateAddress)
+
+	addressUpdate := requests.UpdateAddress{
+		Telephone: "1111-1111",
+	}
+
+	addressUpdateJson, _ := json.Marshal(addressUpdate)
+	reqUpdate, _ := http.NewRequest("PATCH", addressUUIDRoute, bytes.NewBuffer(addressUpdateJson))
+	respUpdate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respUpdate, reqUpdate)
+
+	bodyUpdateJson := respUpdate.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respUpdate.Code)
+	assert.Equal(suite.T(), respUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
+	assert.Equal(suite.T(), gjson.Get(bodyUpdateJson, "telephone").String(), addressUpdate.Telephone)
+
+	// Retrieve Address List
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/addresses", handlers.RetrieveAddressList)
+
+	reqRetrieveList, _ := http.NewRequest("GET", "/v1/addresses", nil)
+	respRetrieveList := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieveList, reqRetrieveList)
+
+	bodyRetrieveListJson := respRetrieveList.Body.String()
+
+	addressModel, _ := models.NewAddress(
+		addressCreate.UUID,
+		addressCreate.Country,
+		addressCreate.State,
+		addressUpdate.Telephone,
+		addressCreate.Description,
+		addressCreate.PostalCode,
+		addressCreate.Name,
+	)
+
+	versionURL := fmt.Sprintf("%s/%s", suite.cfg.API.Host, "v1")
+	addressResponse := responses.NewAddress(
+		addressModel,
+		versionURL,
+	)
+	addressResponseJson, _ := json.Marshal(addressResponse)
+
+	assert.Equal(suite.T(), http.StatusOK, respRetrieveList.Code)
+	assert.Contains(suite.T(), gjson.Get(bodyRetrieveListJson, "_embedded.addresses").String(), string(addressResponseJson))
 }
 
 func (suite *IntegrationSuccesfulSuite) TestV1CreateCinemasSuccessful() {
+	// Create Cinemas
 	suite.routesV1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
 
 	cinema := requests.Cinema{
@@ -142,15 +201,16 @@ func (suite *IntegrationSuccesfulSuite) TestV1CreateCinemasSuccessful() {
 
 	cinemaJson, _ := json.Marshal(cinema)
 	route := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
-	req, _ := http.NewRequest("POST", route, bytes.NewBuffer(cinemaJson))
-	resp := httptest.NewRecorder()
+	reqCreate, _ := http.NewRequest("POST", route, bytes.NewBuffer(cinemaJson))
+	respCreate := httptest.NewRecorder()
 
-	context, _ := gin.CreateTestContext(resp)
-	context.Request = req
+	context, _ := gin.CreateTestContext(respCreate)
+	context.Request = reqCreate
 
-	suite.router.ServeHTTP(resp, req)
+	suite.router.ServeHTTP(respCreate, reqCreate)
 
-	assert.Equal(suite.T(), http.StatusOK, resp.Code)
+	assert.Equal(suite.T(), http.StatusCreated, respCreate.Code)
+	assert.Equal(suite.T(), respCreate.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {

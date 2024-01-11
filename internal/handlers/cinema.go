@@ -114,7 +114,7 @@ func CreateCinemas(ctx *gin.Context) {
 
 	responses.SendSuccess(
 		ctx,
-		http.StatusOK,
+		http.StatusCreated,
 		handler,
 		result,
 		responses.HALHeaders,

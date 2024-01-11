@@ -4,23 +4,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type header struct {
+type Header struct {
 	key   string
 	value string
 }
 
-type error struct {
-	message string
-	code    int
+func (h Header) Get(key string) string {
+	if h.key == key {
+		return h.value
+	}
+	return ""
 }
 
 var (
-	JSONDefaultHeaders = []header{{key: "Content-type", value: "application/json"}}
-	HALHeaders         = []header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}
-	MultipartFormData  = []header{{key: "Content-Type", value: "multipart/form-data"}}
+	JSONDefaultHeaders = []Header{{key: "Content-type", value: "application/json"}}
+	HALHeaders         = []Header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}
+	MultipartFormData  = []Header{{key: "Content-Type", value: "multipart/form-data"}}
 )
 
-func SendError(ctx *gin.Context, code int, msg string, headers []header) {
+func SendError(ctx *gin.Context, code int, msg string, headers []Header) {
 	setHeaders(ctx, headers)
 
 	ctx.JSON(code, gin.H{
@@ -29,13 +31,13 @@ func SendError(ctx *gin.Context, code int, msg string, headers []header) {
 	})
 }
 
-func SendSuccess(ctx *gin.Context, code int, op string, data interface{}, headers []header) {
+func SendSuccess(ctx *gin.Context, code int, op string, data interface{}, headers []Header) {
 	setHeaders(ctx, headers)
 
 	ctx.JSON(code, data)
 }
 
-func setHeaders(ctx *gin.Context, headers []header) {
+func setHeaders(ctx *gin.Context, headers []Header) {
 	if headers == nil {
 		headers = JSONDefaultHeaders
 	}
