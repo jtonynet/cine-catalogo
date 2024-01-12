@@ -4,8 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"net/textproto"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -44,6 +49,7 @@ type IntegrationSuccesfulSuite struct {
 	addressUUID uuid.UUID
 	cinemaUUID  uuid.UUID
 	movieUUID   uuid.UUID
+	posterUUID  uuid.UUID
 }
 
 func (suite *IntegrationSuccesfulSuite) SetupSuite() {
@@ -54,28 +60,38 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 
 	database.Init(suite.cfg.Database)
 
-	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New() //
+	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New()  //
 	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()  //
 	suite.movieUUID, _ = uuid.Parse("44adac31-5290-44bf-b330-ebffe60ae0be")   // uuid.New()  //
+	suite.posterUUID, _ = uuid.Parse("16462dd9-a701-430d-a443-4667b3a4614f")  // uuid.New()  //
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 	query := fmt.Sprintf(`
 	 DELETE FROM cinemas WHERE uuid in ('%v');
 	 DELETE FROM addresses WHERE uuid in ('%v');
-	 DELETE FROM movies WHERE uuid in ('%v')
-	 --DELETE FROM posters CASCADE;`,
+	 DELETE FROM posters WHERE uuid in ('%v');
+	 DELETE FROM movies WHERE uuid in ('%v');`,
 		suite.cinemaUUID.String(),
 		suite.addressUUID.String(),
-		suite.movieUUID)
+		suite.posterUUID.String(),
+		suite.movieUUID.String())
 
 	database.DB.Exec(query)
+
+	uploadPath := fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
+	err := os.RemoveAll(uploadPath)
+	if err != nil {
+		fmt.Printf("Error on exclude movie poster: %v\n", err)
+	}
 }
 
 func setupConfig() *config.Config {
 	cfg := config.Config{}
 
 	cfg.API.Host = "catalogo-api-test"
+	cfg.API.StaticsDir = "web"
+	cfg.API.PostersDir = "../../web/posters"
 	cfg.API.MetricEnabled = false
 
 	cfg.Database.Host = "localhost"
@@ -310,6 +326,51 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	assert.Equal(suite.T(), http.StatusCreated, respMoviesCreate.Code)
 
+	// POSTERS CONTEXT
+
+	// Upload Movie Poster
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
+
+	posterPath := "../../docs/assets/images/posters/back_to_the_recursion.png"
+	posterFile, err := os.Open(posterPath)
+	assert.NoError(suite.T(), err)
+	defer posterFile.Close()
+
+	fileInfo, _ := posterFile.Stat()
+	fileBuffer := make([]byte, fileInfo.Size())
+	posterFile.Read(fileBuffer)
+	fileBytes := bytes.NewReader(fileBuffer)
+
+	PosterRequestBody := &bytes.Buffer{}
+	writer := multipart.NewWriter(PosterRequestBody)
+	posterFileHeader := make(textproto.MIMEHeader)
+	posterFileHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filepath.Base(posterPath)))
+	posterFileHeader.Set("Content-Type", "image/png")
+	posterFilePart, err := writer.CreatePart(posterFileHeader)
+	assert.NoError(suite.T(), err)
+
+	io.Copy(posterFilePart, fileBytes)
+
+	fields := map[string]string{
+		"uuid":            suite.posterUUID.String(),
+		"name":            "Back To The Recursion",
+		"alternativeText": "Uma aventura no tempo usando técnicas avançadas de desenvolvimento de software",
+	}
+
+	for key, value := range fields {
+		err := writer.WriteField(key, value)
+		assert.NoError(suite.T(), err)
+	}
+	writer.Close()
+
+	uploadURL := fmt.Sprintf("/v1/movies/%s/posters", suite.movieUUID.String())
+	reqUploadPoster, _ := http.NewRequest("POST", uploadURL, PosterRequestBody)
+	reqUploadPoster.Header.Set("Content-Type", writer.FormDataContentType())
+	respUploadPoster := httptest.NewRecorder()
+	suite.router.ServeHTTP(respUploadPoster, reqUploadPoster)
+
+	assert.Equal(suite.T(), http.StatusOK, respUploadPoster.Code)
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {

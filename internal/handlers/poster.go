@@ -271,10 +271,10 @@ func uploadPoster(ctx *gin.Context, movieUUID, posterUUID uuid.UUID, file *multi
 
 	// TODO: posters dirs, move to storages local ceph | S3 in future and manage by envVars
 	uploadPath := fmt.Sprintf("%s/%s", cfg.PostersDir, movieUUID.String())
-	err := os.Mkdir(uploadPath, 0644) //0644 7777
+	err := os.Mkdir(uploadPath, os.ModeDir|0755) // 0644 7777 755
 	if err != nil && !os.IsExist(err) {
 		// TODO: Implements in future
-		fmt.Printf("error on create poster directory %v", err)
+		fmt.Printf("error on create poster directory %v ", err)
 		return "", err
 	}
 
