@@ -39,9 +39,11 @@ type IntegrationSuccesfulSuite struct {
 	router   *gin.Engine
 	routesV1 *gin.RouterGroup
 
-	versionURL  string
+	versionURL string
+
 	addressUUID uuid.UUID
 	cinemaUUID  uuid.UUID
+	movieUUID   uuid.UUID
 }
 
 func (suite *IntegrationSuccesfulSuite) SetupSuite() {
@@ -54,16 +56,18 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 
 	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New() //
 	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()  //
+	suite.movieUUID, _ = uuid.Parse("44adac31-5290-44bf-b330-ebffe60ae0be")   // uuid.New()  //
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 	query := fmt.Sprintf(`
 	 DELETE FROM cinemas WHERE uuid in ('%v');
 	 DELETE FROM addresses WHERE uuid in ('%v');
-	 --DELETE FROM posters CASCADE;
-	 --DELETE FROM movies CASCADE;`,
+	 DELETE FROM movies WHERE uuid in ('%v')
+	 --DELETE FROM posters CASCADE;`,
 		suite.cinemaUUID.String(),
-		suite.addressUUID.String())
+		suite.addressUUID.String(),
+		suite.movieUUID)
 
 	database.DB.Exec(query)
 }
@@ -129,7 +133,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	bodyAddressRetrieveJson := respCinemaRetrieve.Body.String()
 	assert.Equal(suite.T(), http.StatusOK, respCinemaRetrieve.Code)
-	assert.Equal(suite.T(), respCinemaRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), respCinemaRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
 
 	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "uuid").String(), suite.addressUUID.String())
 	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "country").String(), addressCreate.Country)
@@ -154,7 +158,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	bodyAddressUpdateJson := respAddressUpdate.Body.String()
 	assert.Equal(suite.T(), http.StatusOK, respAddressUpdate.Code)
-	assert.Equal(suite.T(), respAddressUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), respAddressUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
 	assert.Equal(suite.T(), gjson.Get(bodyAddressUpdateJson, "telephone").String(), addressUpdateRequest.Telephone)
 
 	// Retrieve Address List
@@ -199,15 +203,15 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		Capacity:    120,
 	}
 
-	cinemaJson, _ := json.Marshal(cinemaCreate)
-	route := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
-	reqCreate, _ := http.NewRequest("POST", route, bytes.NewBuffer(cinemaJson))
-	respCreate := httptest.NewRecorder()
+	cinemaCreateJson, _ := json.Marshal(cinemaCreate)
+	addressUUIDCinemaRoute := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
+	reqCinemasCreate, _ := http.NewRequest("POST", addressUUIDCinemaRoute, bytes.NewBuffer(cinemaCreateJson))
+	respCinemasCreate := httptest.NewRecorder()
 
-	suite.router.ServeHTTP(respCreate, reqCreate)
+	suite.router.ServeHTTP(respCinemasCreate, reqCinemasCreate)
 
-	assert.Equal(suite.T(), http.StatusCreated, respCreate.Code)
-	assert.Equal(suite.T(), respCreate.Header().Get("Content-Type"), responses.HALHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), http.StatusCreated, respCinemasCreate.Code)
+	assert.Equal(suite.T(), respCinemasCreate.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 
 	// Retrieve Cinema
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
@@ -221,7 +225,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	bodyRetrieveCinemaJson := respRetrieve.Body.String()
 	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
-	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
 
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "uuid").String(), suite.cinemaUUID.String())
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "name").String(), cinemaCreate.Name)
@@ -244,7 +248,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	bodyCinemaUpdateJson := respCinemaUpdate.Body.String()
 	assert.Equal(suite.T(), http.StatusOK, respCinemaUpdate.Code)
-	assert.Equal(suite.T(), respCinemaUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), respCinemaUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
 	assert.Equal(suite.T(), gjson.Get(bodyCinemaUpdateJson, "description").String(), cinemaUpdateRequest.Description)
 	assert.Equal(suite.T(), gjson.Get(bodyCinemaUpdateJson, "capacity").Int(), cinemaUpdateRequest.Capacity)
 
@@ -281,6 +285,30 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	assert.Equal(suite.T(), http.StatusOK, respRetrieveCinemaList.Code)
 	assert.Contains(suite.T(), gjson.Get(bodyRetrieveCinemaListJson, "_embedded.cinemas").String(), string(cinemaResponseJson))
+
+	// MOVIES CONTEXT
+
+	// Create Movies
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.POST("/movies", handlers.CreateMovies)
+
+	ageRating := int64(14)
+	published := true
+	subtitled := false
+	movieCreate := requests.Movie{
+		UUID:        suite.movieUUID,
+		Name:        "Back To The Recursion",
+		Description: "Uma aventura no tempo usando técnicas avançadas de desenvolvimento de software",
+		AgeRating:   &ageRating,
+		Published:   &published,
+		Subtitled:   &subtitled,
+	}
+	movieCreateJson, _ := json.Marshal(movieCreate)
+	reqMoviesCreate, _ := http.NewRequest("POST", "/v1/movies", bytes.NewBuffer(movieCreateJson))
+	respMoviesCreate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respMoviesCreate, reqMoviesCreate)
+
+	assert.Equal(suite.T(), http.StatusCreated, respMoviesCreate.Code)
 
 }
 
