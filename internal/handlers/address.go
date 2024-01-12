@@ -137,7 +137,6 @@ func UpdateAddress(ctx *gin.Context) {
 
 	var updateRequest requests.UpdateAddress
 	if err := ctx.ShouldBindBodyWith(&updateRequest, binding.JSON); err != nil {
-		//if err := ctx.ShouldBind(&updateRequest); err != nil { // TODO review test bug
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on binding requests.UpdateAddress")

@@ -39,6 +39,7 @@ type IntegrationSuccesfulSuite struct {
 	router   *gin.Engine
 	routesV1 *gin.RouterGroup
 
+	versionURL  string
 	addressUUID uuid.UUID
 	cinemaUUID  uuid.UUID
 }
@@ -46,12 +47,13 @@ type IntegrationSuccesfulSuite struct {
 func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 
 	suite.cfg = setupConfig()
+	suite.versionURL = fmt.Sprintf("%s/%s", suite.cfg.API.Host, "v1")
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 
 	database.Init(suite.cfg.Database)
 
-	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5")
-	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")
+	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New() //
+	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()  //
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
@@ -64,7 +66,6 @@ func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 		suite.addressUUID.String())
 
 	database.DB.Exec(query)
-
 }
 
 func setupConfig() *config.Config {
@@ -94,11 +95,10 @@ func setupRouterAndGroup(cfg config.API) (*gin.Engine, *gin.RouterGroup) {
 	return router, router.Group(basePath)
 }
 
-func (suite *IntegrationSuccesfulSuite) SetupTest() {
-	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-}
+func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
-func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
+	// ADDRESSES CONTEXT
+
 	// Create Addresses
 	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
 
@@ -112,10 +112,10 @@ func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
 		Name:        "Jardins Shoppings",
 	}
 	addressCreateJson, _ := json.Marshal(addressCreate)
-	reqCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
-	respCreate := httptest.NewRecorder()
-	suite.router.ServeHTTP(respCreate, reqCreate)
-	assert.Equal(suite.T(), http.StatusCreated, respCreate.Code)
+	reqAddressCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
+	respAddressCreate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respAddressCreate, reqAddressCreate)
+	assert.Equal(suite.T(), http.StatusCreated, respAddressCreate.Code)
 
 	// Retrieve Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
@@ -123,94 +123,165 @@ func (suite *IntegrationSuccesfulSuite) TestV1CreateAddressesSuccessful() {
 
 	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
 
-	reqRetrieve, _ := http.NewRequest("GET", addressUUIDRoute, nil)
-	respRetrieve := httptest.NewRecorder()
-	suite.router.ServeHTTP(respRetrieve, reqRetrieve)
+	reqAddressRetrieve, _ := http.NewRequest("GET", addressUUIDRoute, nil)
+	respCinemaRetrieve := httptest.NewRecorder()
+	suite.router.ServeHTTP(respCinemaRetrieve, reqAddressRetrieve)
 
-	bodyCreateJson := respRetrieve.Body.String()
-	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
-	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
+	bodyAddressRetrieveJson := respCinemaRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respCinemaRetrieve.Code)
+	assert.Equal(suite.T(), respCinemaRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
 
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "uuid").String(), suite.addressUUID.String())
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "country").String(), addressCreate.Country)
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "state").String(), addressCreate.State)
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "telephone").String(), addressCreate.Telephone)
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "description").String(), addressCreate.Description)
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "postalCode").String(), addressCreate.PostalCode)
-	assert.Equal(suite.T(), gjson.Get(bodyCreateJson, "name").String(), addressCreate.Name)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "uuid").String(), suite.addressUUID.String())
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "country").String(), addressCreate.Country)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "state").String(), addressCreate.State)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "telephone").String(), addressCreate.Telephone)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "description").String(), addressCreate.Description)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "postalCode").String(), addressCreate.PostalCode)
+	assert.Equal(suite.T(), gjson.Get(bodyAddressRetrieveJson, "name").String(), addressCreate.Name)
 
 	// Update Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.PATCH("/addresses/:address_id", handlers.UpdateAddress)
 
-	addressUpdate := requests.UpdateAddress{
+	addressUpdateRequest := requests.UpdateAddress{
 		Telephone: "1111-1111",
 	}
 
-	addressUpdateJson, _ := json.Marshal(addressUpdate)
-	reqUpdate, _ := http.NewRequest("PATCH", addressUUIDRoute, bytes.NewBuffer(addressUpdateJson))
-	respUpdate := httptest.NewRecorder()
-	suite.router.ServeHTTP(respUpdate, reqUpdate)
+	addressUpdateJson, _ := json.Marshal(addressUpdateRequest)
+	reqAddressUpdate, _ := http.NewRequest("PATCH", addressUUIDRoute, bytes.NewBuffer(addressUpdateJson))
+	respAddressUpdate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respAddressUpdate, reqAddressUpdate)
 
-	bodyUpdateJson := respUpdate.Body.String()
-	assert.Equal(suite.T(), http.StatusOK, respUpdate.Code)
-	assert.Equal(suite.T(), respUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
-	assert.Equal(suite.T(), gjson.Get(bodyUpdateJson, "telephone").String(), addressUpdate.Telephone)
+	bodyAddressUpdateJson := respAddressUpdate.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respAddressUpdate.Code)
+	assert.Equal(suite.T(), respAddressUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), gjson.Get(bodyAddressUpdateJson, "telephone").String(), addressUpdateRequest.Telephone)
 
 	// Retrieve Address List
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.GET("/addresses", handlers.RetrieveAddressList)
 
-	reqRetrieveList, _ := http.NewRequest("GET", "/v1/addresses", nil)
-	respRetrieveList := httptest.NewRecorder()
-	suite.router.ServeHTTP(respRetrieveList, reqRetrieveList)
+	reqRetrieveAddressList, _ := http.NewRequest("GET", "/v1/addresses", nil)
+	respRetrieveAddressList := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieveAddressList, reqRetrieveAddressList)
 
-	bodyRetrieveListJson := respRetrieveList.Body.String()
+	bodyRetrieveAddressListJson := respRetrieveAddressList.Body.String()
 
 	addressModel, _ := models.NewAddress(
 		addressCreate.UUID,
 		addressCreate.Country,
 		addressCreate.State,
-		addressUpdate.Telephone,
+		addressUpdateRequest.Telephone,
 		addressCreate.Description,
 		addressCreate.PostalCode,
 		addressCreate.Name,
 	)
 
-	versionURL := fmt.Sprintf("%s/%s", suite.cfg.API.Host, "v1")
 	addressResponse := responses.NewAddress(
 		addressModel,
-		versionURL,
+		suite.versionURL,
 	)
 	addressResponseJson, _ := json.Marshal(addressResponse)
 
-	assert.Equal(suite.T(), http.StatusOK, respRetrieveList.Code)
-	assert.Contains(suite.T(), gjson.Get(bodyRetrieveListJson, "_embedded.addresses").String(), string(addressResponseJson))
-}
+	assert.Equal(suite.T(), http.StatusOK, respRetrieveAddressList.Code)
+	assert.Contains(suite.T(), gjson.Get(bodyRetrieveAddressListJson, "_embedded.addresses").String(), string(addressResponseJson))
 
-func (suite *IntegrationSuccesfulSuite) TestV1CreateCinemasSuccessful() {
+	// CINEMAS CONTEXT
+
 	// Create Cinemas
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
 
-	cinema := requests.Cinema{
+	cinemaCreate := requests.Cinema{
 		UUID:        suite.cinemaUUID,
 		Name:        "Sala Majestic IMAX 1",
 		Description: "Sala IMAX com profundidade de audio",
 		Capacity:    120,
 	}
 
-	cinemaJson, _ := json.Marshal(cinema)
+	cinemaJson, _ := json.Marshal(cinemaCreate)
 	route := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
 	reqCreate, _ := http.NewRequest("POST", route, bytes.NewBuffer(cinemaJson))
 	respCreate := httptest.NewRecorder()
 
-	context, _ := gin.CreateTestContext(respCreate)
-	context.Request = reqCreate
-
 	suite.router.ServeHTTP(respCreate, reqCreate)
 
 	assert.Equal(suite.T(), http.StatusCreated, respCreate.Code)
-	assert.Equal(suite.T(), respCreate.Header().Get("Content-Type"), responses.JSONDefaultHeaders[0].Get("Content-type")) // Todo: Bad Smell, fix it
+	assert.Equal(suite.T(), respCreate.Header().Get("Content-Type"), responses.HALHeaders.Get("Content-Type"))
+
+	// Retrieve Cinema
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/cinemas/:cinema_id", handlers.RetrieveCinema)
+
+	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%v", suite.cinemaUUID.String())
+
+	reqRetrieve, _ := http.NewRequest("GET", cinemaUUIDRoute, nil)
+	respRetrieve := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieve, reqRetrieve)
+
+	bodyRetrieveCinemaJson := respRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
+	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "uuid").String(), suite.cinemaUUID.String())
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "name").String(), cinemaCreate.Name)
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "description").String(), cinemaCreate.Description)
+	assert.Equal(suite.T(), (gjson.Get(bodyRetrieveCinemaJson, "capacity").Int()), cinemaCreate.Capacity)
+
+	// Update Cinema
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.PATCH("/cinemas/:cinema_id", handlers.UpdateCinema)
+
+	cinemaUpdateRequest := requests.UpdateCinema{
+		Description: "Sala IMAX com profundidade de audio Surround 5D",
+		Capacity:    100,
+	}
+
+	cinemaUpdateJson, _ := json.Marshal(cinemaUpdateRequest)
+	reqCinemaUpdate, _ := http.NewRequest("PATCH", cinemaUUIDRoute, bytes.NewBuffer(cinemaUpdateJson))
+	respCinemaUpdate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respCinemaUpdate, reqCinemaUpdate)
+
+	bodyCinemaUpdateJson := respCinemaUpdate.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respCinemaUpdate.Code)
+	assert.Equal(suite.T(), respCinemaUpdate.Header().Get("Content-Type"), responses.JSONDefaultHeaders.Get("Content-Type"))
+	assert.Equal(suite.T(), gjson.Get(bodyCinemaUpdateJson, "description").String(), cinemaUpdateRequest.Description)
+	assert.Equal(suite.T(), gjson.Get(bodyCinemaUpdateJson, "capacity").Int(), cinemaUpdateRequest.Capacity)
+
+	// Retrieve Cinema List
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
+
+	addressCinemasListUUIDRoute := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
+	reqRetrieveCinemaList, _ := http.NewRequest("GET", addressCinemasListUUIDRoute, nil)
+	respRetrieveCinemaList := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieveCinemaList, reqRetrieveCinemaList)
+
+	bodyRetrieveCinemaListJson := respRetrieveCinemaList.Body.String()
+
+	addressCinemaListModel := models.Address{}
+	if err := database.DB.Where(&models.Address{UUID: suite.addressUUID}).First(&addressCinemaListModel).Error; err != nil {
+		fmt.Println("Address Not Found")
+		return
+	}
+	cinemaModel, _ := models.NewCinema(
+		suite.cinemaUUID,
+		addressCinemaListModel.ID,
+		cinemaCreate.Name,
+		cinemaUpdateRequest.Description,
+		cinemaUpdateRequest.Capacity,
+	)
+
+	cinemaResponse := responses.NewCinema(
+		cinemaModel,
+		addressResponse.Links.Self.HREF,
+		suite.versionURL,
+	)
+	cinemaResponseJson, _ := json.Marshal(cinemaResponse)
+
+	assert.Equal(suite.T(), http.StatusOK, respRetrieveCinemaList.Code)
+	assert.Contains(suite.T(), gjson.Get(bodyRetrieveCinemaListJson, "_embedded.cinemas").String(), string(cinemaResponseJson))
+
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {

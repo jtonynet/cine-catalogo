@@ -4,22 +4,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type Headers []Header
+
 type Header struct {
-	key   string
-	value string
+	Key   string
+	Value string
 }
 
-func (h Header) Get(key string) string {
-	if h.key == key {
-		return h.value
+func (h Headers) Get(key string) string {
+	for _, header := range h {
+		if header.Key == key {
+			return header.Value
+		}
 	}
 	return ""
 }
 
 var (
-	JSONDefaultHeaders = []Header{{key: "Content-type", value: "application/json"}}
-	HALHeaders         = []Header{{key: "Content-Type", value: "application/prs.hal-forms+json"}}
-	MultipartFormData  = []Header{{key: "Content-Type", value: "multipart/form-data"}}
+	JSONDefaultHeaders = Headers{{Key: "Content-Type", Value: "application/json"}}
+	HALHeaders         = Headers{{Key: "Content-Type", Value: "application/prs.hal-forms+json"}}
+	MultipartFormData  = Headers{{Key: "Content-Type", Value: "multipart/form-data"}}
 )
 
 func SendError(ctx *gin.Context, code int, msg string, headers []Header) {
@@ -37,12 +41,12 @@ func SendSuccess(ctx *gin.Context, code int, op string, data interface{}, header
 	ctx.JSON(code, data)
 }
 
-func setHeaders(ctx *gin.Context, headers []Header) {
+func setHeaders(ctx *gin.Context, headers Headers) {
 	if headers == nil {
 		headers = JSONDefaultHeaders
 	}
 
 	for _, header := range headers {
-		ctx.Header(header.key, header.value)
+		ctx.Header(header.Key, header.Value)
 	}
 }

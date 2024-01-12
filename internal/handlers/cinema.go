@@ -267,7 +267,7 @@ func UpdateCinema(ctx *gin.Context) {
 	}
 
 	var updateRequest requests.UpdateCinema
-	if err := ctx.ShouldBind(&updateRequest); err != nil {
+	if err := ctx.ShouldBindBodyWith(&updateRequest, binding.JSON); err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on binding requests.UpdateCinema")
