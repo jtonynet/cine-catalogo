@@ -1,4 +1,4 @@
-package main_test
+package main_routes_integration_test
 
 import (
 	"bytes"
@@ -40,16 +40,20 @@ TODO: Using gin engine or ginTestEngine for tests, context params bugfixes (move
 
 type IntegrationSuccesfulSuite struct {
 	suite.Suite
-	cfg      *config.Config
-	router   *gin.Engine
-	routesV1 *gin.RouterGroup
+
+	cfg *config.Config
 
 	versionURL string
+
+	router   *gin.Engine
+	routesV1 *gin.RouterGroup
 
 	addressUUID uuid.UUID
 	cinemaUUID  uuid.UUID
 	movieUUID   uuid.UUID
 	posterUUID  uuid.UUID
+
+	addressResponse responses.Address
 }
 
 func (suite *IntegrationSuccesfulSuite) SetupSuite() {
@@ -79,8 +83,8 @@ func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 
 	database.DB.Exec(query)
 
-	uploadPath := fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
-	err := os.RemoveAll(uploadPath)
+	uploadMoviePosterPath := fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
+	err := os.RemoveAll(uploadMoviePosterPath)
 	if err != nil {
 		fmt.Printf("Error on exclude movie poster: %v\n", err)
 	}
@@ -91,7 +95,7 @@ func setupConfig() *config.Config {
 
 	cfg.API.Host = "catalogo-api-test"
 	cfg.API.StaticsDir = "web"
-	cfg.API.PostersDir = "../../web/posters"
+	cfg.API.PostersDir = "web/posters"
 	cfg.API.MetricEnabled = false
 
 	cfg.Database.Host = "localhost"
@@ -116,9 +120,20 @@ func setupRouterAndGroup(cfg config.API) (*gin.Engine, *gin.RouterGroup) {
 }
 
 func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
-
 	// ADDRESSES CONTEXT
+	suite.addressesRoutes()
 
+	// CINEMAS CONTEXT
+	suite.cinemasRoutes()
+
+	// MOVIES CONTEXT
+	suite.moviesRoutes()
+
+	// POSTERS CONTEXT
+	suite.postersRoutes()
+}
+
+func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
 	// Create Addresses
 	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
 
@@ -131,6 +146,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		PostalCode:  "1139050",
 		Name:        "Jardins Shoppings",
 	}
+
 	addressCreateJson, _ := json.Marshal(addressCreate)
 	reqAddressCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
 	respAddressCreate := httptest.NewRecorder()
@@ -167,8 +183,10 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		Telephone: "1111-1111",
 	}
 
-	addressUpdateJson, _ := json.Marshal(addressUpdateRequest)
-	reqAddressUpdate, _ := http.NewRequest("PATCH", addressUUIDRoute, bytes.NewBuffer(addressUpdateJson))
+	addressUpdateJson, err := json.Marshal(addressUpdateRequest)
+	assert.NoError(suite.T(), err)
+	reqAddressUpdate, err := http.NewRequest("PATCH", addressUUIDRoute, bytes.NewBuffer(addressUpdateJson))
+	assert.NoError(suite.T(), err)
 	respAddressUpdate := httptest.NewRecorder()
 	suite.router.ServeHTTP(respAddressUpdate, reqAddressUpdate)
 
@@ -181,13 +199,14 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.GET("/addresses", handlers.RetrieveAddressList)
 
-	reqRetrieveAddressList, _ := http.NewRequest("GET", "/v1/addresses", nil)
+	reqRetrieveAddressList, err := http.NewRequest("GET", "/v1/addresses", nil)
+	assert.NoError(suite.T(), err)
 	respRetrieveAddressList := httptest.NewRecorder()
 	suite.router.ServeHTTP(respRetrieveAddressList, reqRetrieveAddressList)
 
 	bodyRetrieveAddressListJson := respRetrieveAddressList.Body.String()
 
-	addressModel, _ := models.NewAddress(
+	addressModel, err := models.NewAddress(
 		addressCreate.UUID,
 		addressCreate.Country,
 		addressCreate.State,
@@ -196,18 +215,22 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		addressCreate.PostalCode,
 		addressCreate.Name,
 	)
+	assert.NoError(suite.T(), err)
 
 	addressResponse := responses.NewAddress(
 		addressModel,
 		suite.versionURL,
 	)
-	addressResponseJson, _ := json.Marshal(addressResponse)
+	addressResponseJson, err := json.Marshal(addressResponse)
+	assert.NoError(suite.T(), err)
+
+	suite.addressResponse = addressResponse
 
 	assert.Equal(suite.T(), http.StatusOK, respRetrieveAddressList.Code)
 	assert.Contains(suite.T(), gjson.Get(bodyRetrieveAddressListJson, "_embedded.addresses").String(), string(addressResponseJson))
+}
 
-	// CINEMAS CONTEXT
-
+func (suite *IntegrationSuccesfulSuite) cinemasRoutes() {
 	// Create Cinemas
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
@@ -219,9 +242,11 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		Capacity:    120,
 	}
 
-	cinemaCreateJson, _ := json.Marshal(cinemaCreate)
+	cinemaCreateJson, err := json.Marshal(cinemaCreate)
+	assert.NoError(suite.T(), err)
 	addressUUIDCinemaRoute := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
-	reqCinemasCreate, _ := http.NewRequest("POST", addressUUIDCinemaRoute, bytes.NewBuffer(cinemaCreateJson))
+	reqCinemasCreate, err := http.NewRequest("POST", addressUUIDCinemaRoute, bytes.NewBuffer(cinemaCreateJson))
+	assert.NoError(suite.T(), err)
 	respCinemasCreate := httptest.NewRecorder()
 
 	suite.router.ServeHTTP(respCinemasCreate, reqCinemasCreate)
@@ -235,7 +260,8 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%v", suite.cinemaUUID.String())
 
-	reqRetrieve, _ := http.NewRequest("GET", cinemaUUIDRoute, nil)
+	reqRetrieve, err := http.NewRequest("GET", cinemaUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
 	respRetrieve := httptest.NewRecorder()
 	suite.router.ServeHTTP(respRetrieve, reqRetrieve)
 
@@ -257,8 +283,10 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		Capacity:    100,
 	}
 
-	cinemaUpdateJson, _ := json.Marshal(cinemaUpdateRequest)
-	reqCinemaUpdate, _ := http.NewRequest("PATCH", cinemaUUIDRoute, bytes.NewBuffer(cinemaUpdateJson))
+	cinemaUpdateJson, err := json.Marshal(cinemaUpdateRequest)
+	assert.NoError(suite.T(), err)
+	reqCinemaUpdate, err := http.NewRequest("PATCH", cinemaUUIDRoute, bytes.NewBuffer(cinemaUpdateJson))
+	assert.NoError(suite.T(), err)
 	respCinemaUpdate := httptest.NewRecorder()
 	suite.router.ServeHTTP(respCinemaUpdate, reqCinemaUpdate)
 
@@ -273,37 +301,39 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 	suite.routesV1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
 
 	addressCinemasListUUIDRoute := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
-	reqRetrieveCinemaList, _ := http.NewRequest("GET", addressCinemasListUUIDRoute, nil)
+	reqRetrieveCinemaList, err := http.NewRequest("GET", addressCinemasListUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
 	respRetrieveCinemaList := httptest.NewRecorder()
 	suite.router.ServeHTTP(respRetrieveCinemaList, reqRetrieveCinemaList)
 
 	bodyRetrieveCinemaListJson := respRetrieveCinemaList.Body.String()
 
 	addressCinemaListModel := models.Address{}
-	if err := database.DB.Where(&models.Address{UUID: suite.addressUUID}).First(&addressCinemaListModel).Error; err != nil {
-		fmt.Println("Address Not Found")
-		return
-	}
-	cinemaModel, _ := models.NewCinema(
+	err = database.DB.Where(&models.Address{UUID: suite.addressUUID}).First(&addressCinemaListModel).Error
+	assert.NoError(suite.T(), err)
+
+	cinemaModel, err := models.NewCinema(
 		suite.cinemaUUID,
 		addressCinemaListModel.ID,
 		cinemaCreate.Name,
 		cinemaUpdateRequest.Description,
 		cinemaUpdateRequest.Capacity,
 	)
+	assert.NoError(suite.T(), err)
 
 	cinemaResponse := responses.NewCinema(
 		cinemaModel,
-		addressResponse.Links.Self.HREF,
+		suite.addressResponse.Links.Self.HREF,
 		suite.versionURL,
 	)
-	cinemaResponseJson, _ := json.Marshal(cinemaResponse)
+	cinemaResponseJson, err := json.Marshal(cinemaResponse)
+	assert.NoError(suite.T(), err)
 
 	assert.Equal(suite.T(), http.StatusOK, respRetrieveCinemaList.Code)
 	assert.Contains(suite.T(), gjson.Get(bodyRetrieveCinemaListJson, "_embedded.cinemas").String(), string(cinemaResponseJson))
+}
 
-	// MOVIES CONTEXT
-
+func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 	// Create Movies
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies", handlers.CreateMovies)
@@ -319,31 +349,34 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 		Published:   &published,
 		Subtitled:   &subtitled,
 	}
-	movieCreateJson, _ := json.Marshal(movieCreate)
-	reqMoviesCreate, _ := http.NewRequest("POST", "/v1/movies", bytes.NewBuffer(movieCreateJson))
+	movieCreateJson, err := json.Marshal(movieCreate)
+	assert.NoError(suite.T(), err)
+	reqMoviesCreate, err := http.NewRequest("POST", "/v1/movies", bytes.NewBuffer(movieCreateJson))
+	assert.NoError(suite.T(), err)
 	respMoviesCreate := httptest.NewRecorder()
 	suite.router.ServeHTTP(respMoviesCreate, reqMoviesCreate)
 
 	assert.Equal(suite.T(), http.StatusCreated, respMoviesCreate.Code)
+}
 
-	// POSTERS CONTEXT
-
+func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	// Upload Movie Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
 
-	posterPath := "../../docs/assets/images/posters/back_to_the_recursion.png"
+	posterPath := "./docs/assets/images/posters/back_to_the_recursion.png"
 	posterFile, err := os.Open(posterPath)
 	assert.NoError(suite.T(), err)
 	defer posterFile.Close()
 
-	fileInfo, _ := posterFile.Stat()
+	fileInfo, err := posterFile.Stat()
+	assert.NoError(suite.T(), err)
 	fileBuffer := make([]byte, fileInfo.Size())
 	posterFile.Read(fileBuffer)
 	fileBytes := bytes.NewReader(fileBuffer)
 
-	PosterRequestBody := &bytes.Buffer{}
-	writer := multipart.NewWriter(PosterRequestBody)
+	posterMultPartRequestBody := &bytes.Buffer{}
+	writer := multipart.NewWriter(posterMultPartRequestBody)
 	posterFileHeader := make(textproto.MIMEHeader)
 	posterFileHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filepath.Base(posterPath)))
 	posterFileHeader.Set("Content-Type", "image/png")
@@ -365,12 +398,15 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 	writer.Close()
 
 	uploadURL := fmt.Sprintf("/v1/movies/%s/posters", suite.movieUUID.String())
-	reqUploadPoster, _ := http.NewRequest("POST", uploadURL, PosterRequestBody)
+	reqUploadPoster, err := http.NewRequest("POST", uploadURL, posterMultPartRequestBody)
+	assert.NoError(suite.T(), err)
 	reqUploadPoster.Header.Set("Content-Type", writer.FormDataContentType())
 	respUploadPoster := httptest.NewRecorder()
 	suite.router.ServeHTTP(respUploadPoster, reqUploadPoster)
 
 	assert.Equal(suite.T(), http.StatusOK, respUploadPoster.Code)
+	posterFileHeader.Get("Content-Type")
+
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {
