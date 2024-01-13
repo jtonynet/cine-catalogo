@@ -199,17 +199,6 @@ definitions:
       _links: {}
       _templates: {}
     type: object
-  responses.HATEOASMovieAndPostersList:
-    properties:
-      movies:
-        items:
-          $ref: '#/definitions/responses.MovieListItem'
-        type: array
-      posters:
-        items:
-          $ref: '#/definitions/responses.Poster'
-        type: array
-    type: object
   responses.HATEOASMovieLinks:
     properties:
       poster:
@@ -219,13 +208,6 @@ definitions:
       update-movie:
         $ref: '#/definitions/responses.HATEOASLink'
       upload-movie-poster:
-        $ref: '#/definitions/responses.HATEOASLink'
-    type: object
-  responses.HATEOASMovieListLinks:
-    properties:
-      create-movies:
-        $ref: '#/definitions/responses.HATEOASLink'
-      self:
         $ref: '#/definitions/responses.HATEOASLink'
     type: object
   responses.HATEOASMoviePosterList:
@@ -253,7 +235,7 @@ definitions:
       _links:
         $ref: '#/definitions/responses.HATEOASMovieLinks'
       _templates: {}
-      age_rating:
+      ageRating:
         type: integer
       description:
         type: string
@@ -267,33 +249,6 @@ definitions:
         type: boolean
       uuid:
         type: string
-    type: object
-  responses.MovieListItem:
-    properties:
-      _links:
-        $ref: '#/definitions/responses.HATEOASMovieLinks'
-      age_rating:
-        type: integer
-      description:
-        type: string
-      name:
-        type: string
-      posterLink:
-        type: string
-      published:
-        type: boolean
-      subtitled:
-        type: boolean
-      uuid:
-        type: string
-    type: object
-  responses.MovieListResult:
-    properties:
-      _embedded:
-        $ref: '#/definitions/responses.HATEOASMovieAndPostersList'
-      _links:
-        $ref: '#/definitions/responses.HATEOASMovieListLinks'
-      _templates: {}
     type: object
   responses.Poster:
     properties:
@@ -432,7 +387,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.MovieListResult'
+            $ref: '#/definitions/responses.HATEOASListResult'
       summary: Retrieve Cinema List
       tags:
       - Addresses Cinemas
@@ -538,7 +493,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.MovieListResult'
+            $ref: '#/definitions/responses.HATEOASListResult'
       summary: Retrieve Movie List
       tags:
       - Movies
@@ -561,7 +516,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/responses.MovieListResult'
+            $ref: '#/definitions/responses.HATEOASListResult'
       summary: Create Movies
       tags:
       - Movies

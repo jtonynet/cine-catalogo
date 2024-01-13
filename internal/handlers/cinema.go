@@ -329,7 +329,7 @@ func UpdateCinema(ctx *gin.Context) {
 // @Description Retrieve List all Cinemas from one Address
 // @Tags Addresses Cinemas
 // @Produce json
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses/{address_id}/cinemas [get]
 // @Param address_id path string true "Address UUID"
 func RetrieveCinemaList(ctx *gin.Context) {

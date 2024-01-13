@@ -155,8 +155,7 @@ This project is a simple CRUD with a two-tier architecture. Unit tests don't mak
 
 <a id="debug"></a>
 ### :beetle: Debug
-
-My `.vscode/launch.json` file:
+Using VSCode as a code editor with the following configuration in the `.vscode/launch.json` file:
 
 ```json
 {
@@ -180,6 +179,12 @@ Change the `.env` configuration from `DATABASE_HOST` to `localhost` to perform l
 ```env
 DATABASE_HOST=localhost          # postgres-catalogo | localhost
 ```
+
+Distribute breakpoints at code points of interest, and in "Run and Debug," click on "Launch Cinecatalogo." Access the API via the browser to initiate your debugging process.
+
+<img src="./docs/assets/images/screen_captures/run_debug.png">
+
+<img src="./docs/assets/images/screen_captures/debbuging_console.png">
 
 <br/>
 
