@@ -54,6 +54,8 @@ type IntegrationSuccesfulSuite struct {
 	posterUUID  uuid.UUID
 
 	addressResponse responses.Address
+
+	uploadMoviePosterPath string
 }
 
 func (suite *IntegrationSuccesfulSuite) SetupSuite() {
@@ -68,6 +70,8 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()
 	suite.movieUUID, _ = uuid.Parse("44adac31-5290-44bf-b330-ebffe60ae0be")   // uuid.New()
 	suite.posterUUID, _ = uuid.Parse("16462dd9-a701-430d-a443-4667b3a4614f")  // uuid.New()
+
+	suite.uploadMoviePosterPath = fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
@@ -84,8 +88,7 @@ func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 
 	database.DB.Exec(query)
 
-	uploadMoviePosterPath := fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
-	err := os.RemoveAll(uploadMoviePosterPath)
+	err := os.RemoveAll(suite.uploadMoviePosterPath)
 	if err != nil {
 		fmt.Printf("Error on exclude movie poster: %v\n", err)
 	}
@@ -402,15 +405,36 @@ func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 	assert.Equal(suite.T(), gjson.Get(bodyMovieUpdateJson, "name").String(), movieUpdateRequest.Name)
 
 	// Retrieve Movie List
-	// suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	// suite.routesV1.GET("/movies", handlers.RetrieveMovieList)
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/movies", handlers.RetrieveMovieList)
 
-	// reqRetrieveMovieList, err := http.NewRequest("GET", "/movies", nil)
-	// assert.NoError(suite.T(), err)
-	// respRetrieveMovieList := httptest.NewRecorder()
-	// suite.router.ServeHTTP(respMovieRetrieve, reqMovieRetrieve)
+	reqRetrieveMovieList, err := http.NewRequest("GET", "/v1/movies", nil)
+	assert.NoError(suite.T(), err)
+	respRetrieveMovieList := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieveMovieList, reqRetrieveMovieList)
 
-	// bodyRetrieveMovieJson := respRetrieveMovieList.Body.String()
+	bodyRetrieveMovieListJson := respRetrieveMovieList.Body.String()
+
+	movieModel, err := models.NewMovie(
+		suite.movieUUID,
+		movieUpdateRequest.Name,
+		movieCreate.Description,
+		*movieCreate.AgeRating,
+		*movieCreate.Published,
+		*movieCreate.Subtitled,
+	)
+	assert.NoError(suite.T(), err)
+
+	movieResponse := responses.NewMovieListItem(
+		movieModel,
+		suite.cfg.API.Host,
+		suite.versionURL,
+	)
+	movieResponseJson, err := json.Marshal(movieResponse)
+	assert.NoError(suite.T(), err)
+
+	assert.Equal(suite.T(), http.StatusOK, respMovieRetrieve.Code)
+	assert.Contains(suite.T(), gjson.Get(bodyRetrieveMovieListJson, "_embedded.movies").String(), string(movieResponseJson))
 
 }
 
@@ -461,6 +485,7 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 
 	assert.Equal(suite.T(), http.StatusOK, respUploadPoster.Code)
 	// posterFileHeader.Get("Content-Type")
+	assert.DirExists(suite.T(), suite.uploadMoviePosterPath)
 
 }
 
