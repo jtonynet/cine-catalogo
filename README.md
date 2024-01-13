@@ -186,6 +186,8 @@ Distribute breakpoints at code points of interest, and in "Run and Debug," click
 
 <img src="./docs/assets/images/screen_captures/debbuging_console.png">
 
+See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#_debugging) for more configuration details
+
 <br/>
 
 [:arrow_heading_up: back to top](#index)

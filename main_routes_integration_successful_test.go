@@ -2,6 +2,8 @@ package main_routes_integration_test
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -453,24 +455,27 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	fileBuffer := make([]byte, fileInfo.Size())
 	posterFile.Read(fileBuffer)
 	fileBytes := bytes.NewReader(fileBuffer)
+	posterFileUploadedMD5 := calculateMD5(fileBuffer)
+
+	imageContentType := "image/png"
 
 	posterMultPartRequestBody := &bytes.Buffer{}
 	writer := multipart.NewWriter(posterMultPartRequestBody)
 	posterFileHeader := make(textproto.MIMEHeader)
 	posterFileHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filepath.Base(posterPath)))
-	posterFileHeader.Set("Content-Type", "image/png")
+	posterFileHeader.Set("Content-Type", imageContentType)
 	posterFilePart, err := writer.CreatePart(posterFileHeader)
 	assert.NoError(suite.T(), err)
 
 	io.Copy(posterFilePart, fileBytes)
 
-	fields := map[string]string{
+	posterMultPartFields := map[string]string{
 		"uuid":            suite.posterUUID.String(),
 		"name":            "Back To The Recursion",
 		"alternativeText": "Uma aventura no tempo usando técnicas avançadas de desenvolvimento de software",
 	}
 
-	for key, value := range fields {
+	for key, value := range posterMultPartFields {
 		err := writer.WriteField(key, value)
 		assert.NoError(suite.T(), err)
 	}
@@ -487,6 +492,46 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	assert.Equal(suite.T(), respUploadPoster.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 	assert.DirExists(suite.T(), suite.uploadMoviePosterPath)
 
+	// Retrieve Static Poster File
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.router.Static("/web", suite.cfg.API.StaticsDir)
+
+	movieUUIDPosterUUIDFileRoute := fmt.Sprintf("/web/posters/%s/%s.png", suite.movieUUID.String(), suite.posterUUID)
+	reqRetrieveStaticPosterFile, err := http.NewRequest("GET", movieUUIDPosterUUIDFileRoute, nil)
+	assert.NoError(suite.T(), err)
+	respRetrieveStaticPosterFile := httptest.NewRecorder()
+	suite.router.ServeHTTP(respRetrieveStaticPosterFile, reqRetrieveStaticPosterFile)
+
+	assert.Equal(suite.T(), http.StatusOK, respRetrieveStaticPosterFile.Code)
+	assert.Equal(suite.T(), imageContentType, respRetrieveStaticPosterFile.Header().Get("Content-Type"))
+
+	posterFileRetrievedMD5 := calculateMD5(respRetrieveStaticPosterFile.Body.Bytes())
+	assert.Equal(suite.T(), posterFileUploadedMD5, posterFileRetrievedMD5)
+
+	// Retrieve Poster
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/movies/:movie_id/posters/:poster_id", handlers.RetrieveMoviePoster)
+
+	movieUUIDPosterUUIDRoute := fmt.Sprintf("/v1/movies/%s/posters/%s", suite.movieUUID, suite.posterUUID)
+
+	reqMoviePosterRetrieve, err := http.NewRequest("GET", movieUUIDPosterUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
+	respMoviePosterRetrieve := httptest.NewRecorder()
+	suite.router.ServeHTTP(respMoviePosterRetrieve, reqMoviePosterRetrieve)
+
+	bodyRetrieveMoviePoster := respMoviePosterRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respMoviePosterRetrieve.Code)
+	assert.Equal(suite.T(), respMoviePosterRetrieve.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMoviePoster, "uuid").String(), posterMultPartFields["uuid"])
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMoviePoster, "name").String(), posterMultPartFields["name"])
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMoviePoster, "alternativeText").String(), posterMultPartFields["alternativeText"])
+
+}
+
+func calculateMD5(buffer []byte) string {
+	hash := md5.New()
+	_, _ = hash.Write(buffer)
+	return hex.EncodeToString(hash.Sum(nil))
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {
