@@ -48,16 +48,17 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
   4. :newspaper: [API Documentation](#api-docs)
-  5. 🐞 [Debug](#debug)
-  6. :traffic_light: [HATEOAS HAL](#HATEOAS)
-  7. :umbrella: [Event Storming](#event-storming)
-  8. :detective: [Observability](#observability)
-  9. :bar_chart: [Diagrams](#diagrams)
-  10. :toolbox: [Tools](#tools)
-  11. :clap: [Best Practices](#best-practices)
-  12. :brain: [ADR - Architecture Decision Records](#adr)
-  13. :1234: [Versions](#versions)
-  14. :robot: [Use of AI](#ia)
+  5. :beetle: [Debug](#debug)
+  6. :white_check_mark: [Tests](#tests)
+  7. :traffic_light: [HATEOAS HAL](#HATEOAS)
+  8. :umbrella: [Event Storming](#event-storming)
+  9. :detective: [Observability](#observability)
+  10. :bar_chart: [Diagrams](#diagrams)
+  11. :toolbox: [Tools](#tools)
+  12. :clap: [Best Practices](#best-practices)
+  13. :brain: [ADR - Architecture Decision Records](#adr)
+  14. :1234: [Versions](#versions)
+  15. :robot: [Use of AI](#ia)
 
 
 <br/>
@@ -123,6 +124,27 @@ With the 'cine-catalogo' image running, type:
 ```bash
 $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
 ```
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+<a id="debug"></a>
+### :beetle: Debug
+
+Todo: Implements in near future
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="tests"></a>
+### :white_check_mark: Tests
+
+Todo: Implements in near future
 
 <br/>
 
@@ -326,6 +348,7 @@ erDiagram
   - [uuid](https://github.com/google/uuid)
   - [Go2hall](https://github.com/pmoule/go2hall)
   - [Zap log](https://github.com/uber-go/zap)
+  - [Delve](https://github.com/go-delve/delve)
 
 - Infra & Technologies
   - [Docker v24.0.6](https://www.docker.com/)
@@ -386,6 +409,7 @@ erDiagram
 - [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
 - [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
 - [0003: Prometheus Libs To Instrumentation](./docs/architecture/decisions/0003-prometheus-libs-to-instrumentation.md)
+- [0004: Integration Tests "Happy Path"](./docs/architecture/decisions/0004-integration-tests.md)
 
 <br/>
 

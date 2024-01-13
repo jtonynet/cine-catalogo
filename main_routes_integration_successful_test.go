@@ -344,7 +344,7 @@ func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 	subtitled := false
 	movieCreate := requests.Movie{
 		UUID:        suite.movieUUID,
-		Name:        "Back To The Recursion",
+		Name:        "Back To The recursion 2",
 		Description: "Uma aventura no tempo usando técnicas avançadas de desenvolvimento de software",
 		AgeRating:   &ageRating,
 		Published:   &published,
@@ -375,13 +375,43 @@ func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 	assert.Equal(suite.T(), http.StatusOK, respMovieRetrieve.Code)
 	assert.Equal(suite.T(), respMovieRetrieve.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "uuid").String(), suite.movieUUID.String())
-
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "name").String(), movieCreate.Name)
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "description").String(), movieCreate.Description)
-
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "ageRating").Int(), *movieCreate.AgeRating)
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "published").Bool(), *movieCreate.Published)
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "subtitled").Bool(), *movieCreate.Subtitled)
+
+	// Update Movie
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.PATCH("/movies/:movie_id", handlers.UpdateMovie)
+
+	movieUpdateRequest := requests.UpdateMovie{
+		Name: "Back To The recursion",
+	}
+
+	movieUpdateJson, err := json.Marshal(movieUpdateRequest)
+	assert.NoError(suite.T(), err)
+
+	reqMovieUpdate, err := http.NewRequest("PATCH", movieUUIDRoute, bytes.NewBuffer(movieUpdateJson))
+	assert.NoError(suite.T(), err)
+	respMovieUpdate := httptest.NewRecorder()
+	suite.router.ServeHTTP(respMovieUpdate, reqMovieUpdate)
+
+	bodyMovieUpdateJson := respMovieUpdate.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respMovieUpdate.Code)
+	assert.Equal(suite.T(), gjson.Get(bodyMovieUpdateJson, "name").String(), movieUpdateRequest.Name)
+
+	// Retrieve Movie List
+	// suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	// suite.routesV1.GET("/movies", handlers.RetrieveMovieList)
+
+	// reqRetrieveMovieList, err := http.NewRequest("GET", "/movies", nil)
+	// assert.NoError(suite.T(), err)
+	// respRetrieveMovieList := httptest.NewRecorder()
+	// suite.router.ServeHTTP(respMovieRetrieve, reqMovieRetrieve)
+
+	// bodyRetrieveMovieJson := respRetrieveMovieList.Body.String()
+
 }
 
 func (suite *IntegrationSuccesfulSuite) postersRoutes() {
