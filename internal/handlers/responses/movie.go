@@ -12,7 +12,7 @@ type baseMovie struct {
 	PosterLink  string    `json:"posterLink,omitempty"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	AgeRating   int64     `json:"age_rating"`
+	AgeRating   int64     `json:"ageRating"`
 	Published   bool      `json:"published"`
 	Subtitled   bool      `json:"subtitled"`
 }

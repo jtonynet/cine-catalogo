@@ -48,15 +48,16 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
   4. :newspaper: [API Documentation](#api-docs)
-  5. :traffic_light: [HATEOAS HAL](#HATEOAS)
-  6. :umbrella: [Event Storming](#event-storming)
-  7. :detective: [Observability](#observability)
-  8. :bar_chart: [Diagrams](#diagrams)
-  9. :toolbox: [Tools](#tools)
-  10. :clap: [Best Practices](#best-practices)
-  11. :brain: [ADR - Architecture Decision Records](#adr)
-  12. :1234: [Versions](#versions)
-  13. :robot: [Use of AI](#ia)
+  5. 🐞 [Debug](#debug)
+  6. :traffic_light: [HATEOAS HAL](#HATEOAS)
+  7. :umbrella: [Event Storming](#event-storming)
+  8. :detective: [Observability](#observability)
+  9. :bar_chart: [Diagrams](#diagrams)
+  10. :toolbox: [Tools](#tools)
+  11. :clap: [Best Practices](#best-practices)
+  12. :brain: [ADR - Architecture Decision Records](#adr)
+  13. :1234: [Versions](#versions)
+  14. :robot: [Use of AI](#ia)
 
 
 <br/>
@@ -503,4 +504,6 @@ go test -v --cover ./cmd/api/
 https://s3-sa-east-1.amazonaws.com/thedevconf/presentations/TDC2019SP/golang/ILL-6219_2019-07-20T084253_Testes%20em%20Go%20-%20TDC2019.pdf
 
 https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
+
+https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated
 -->

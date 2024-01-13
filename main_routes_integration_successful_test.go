@@ -64,22 +64,23 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 
 	database.Init(suite.cfg.Database)
 
-	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New()  //
-	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()  //
-	suite.movieUUID, _ = uuid.Parse("44adac31-5290-44bf-b330-ebffe60ae0be")   // uuid.New()  //
-	suite.posterUUID, _ = uuid.Parse("16462dd9-a701-430d-a443-4667b3a4614f")  // uuid.New()  //
+	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New()
+	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()
+	suite.movieUUID, _ = uuid.Parse("44adac31-5290-44bf-b330-ebffe60ae0be")   // uuid.New()
+	suite.posterUUID, _ = uuid.Parse("16462dd9-a701-430d-a443-4667b3a4614f")  // uuid.New()
 }
 
 func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 	query := fmt.Sprintf(`
-	 DELETE FROM cinemas WHERE uuid in ('%v');
-	 DELETE FROM addresses WHERE uuid in ('%v');
-	 DELETE FROM posters WHERE uuid in ('%v');
-	 DELETE FROM movies WHERE uuid in ('%v');`,
+		DELETE FROM cinemas WHERE uuid in ('%s');
+		DELETE FROM addresses WHERE uuid in ('%s');
+		DELETE FROM posters WHERE uuid in ('%s');
+		DELETE FROM movies WHERE uuid in ('%s');`,
 		suite.cinemaUUID.String(),
 		suite.addressUUID.String(),
 		suite.posterUUID.String(),
-		suite.movieUUID.String())
+		suite.movieUUID.String(),
+	)
 
 	database.DB.Exec(query)
 
@@ -93,7 +94,7 @@ func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
 func setupConfig() *config.Config {
 	cfg := config.Config{}
 
-	cfg.API.Host = "catalogo-api-test"
+	cfg.API.Host = "localhost:8080"
 	cfg.API.StaticsDir = "web"
 	cfg.API.PostersDir = "web/posters"
 	cfg.API.MetricEnabled = false
@@ -260,14 +261,14 @@ func (suite *IntegrationSuccesfulSuite) cinemasRoutes() {
 
 	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%v", suite.cinemaUUID.String())
 
-	reqRetrieve, err := http.NewRequest("GET", cinemaUUIDRoute, nil)
+	reqCinemaRetrieve, err := http.NewRequest("GET", cinemaUUIDRoute, nil)
 	assert.NoError(suite.T(), err)
-	respRetrieve := httptest.NewRecorder()
-	suite.router.ServeHTTP(respRetrieve, reqRetrieve)
+	respCinemaRetrieve := httptest.NewRecorder()
+	suite.router.ServeHTTP(respCinemaRetrieve, reqCinemaRetrieve)
 
-	bodyRetrieveCinemaJson := respRetrieve.Body.String()
-	assert.Equal(suite.T(), http.StatusOK, respRetrieve.Code)
-	assert.Equal(suite.T(), respRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
+	bodyRetrieveCinemaJson := respCinemaRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respCinemaRetrieve.Code)
+	assert.Equal(suite.T(), respCinemaRetrieve.Header().Get("Content-Type"), responses.JSONDefaultHeaders["Content-Type"])
 
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "uuid").String(), suite.cinemaUUID.String())
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveCinemaJson, "name").String(), cinemaCreate.Name)
@@ -357,6 +358,30 @@ func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 	suite.router.ServeHTTP(respMoviesCreate, reqMoviesCreate)
 
 	assert.Equal(suite.T(), http.StatusCreated, respMoviesCreate.Code)
+	assert.Equal(suite.T(), respMoviesCreate.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
+
+	// Retrieve Movie
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.GET("/movies/:movie_id", handlers.RetrieveMovie)
+
+	movieUUIDRoute := fmt.Sprintf("/v1/movies/%v", suite.movieUUID.String())
+
+	reqMovieRetrieve, err := http.NewRequest("GET", movieUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
+	respMovieRetrieve := httptest.NewRecorder()
+	suite.router.ServeHTTP(respMovieRetrieve, reqMovieRetrieve)
+
+	bodyRetrieveMovieJson := respMovieRetrieve.Body.String()
+	assert.Equal(suite.T(), http.StatusOK, respMovieRetrieve.Code)
+	assert.Equal(suite.T(), respMovieRetrieve.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "uuid").String(), suite.movieUUID.String())
+
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "name").String(), movieCreate.Name)
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "description").String(), movieCreate.Description)
+
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "ageRating").Int(), *movieCreate.AgeRating)
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "published").Bool(), *movieCreate.Published)
+	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMovieJson, "subtitled").Bool(), *movieCreate.Subtitled)
 }
 
 func (suite *IntegrationSuccesfulSuite) postersRoutes() {
@@ -405,7 +430,7 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	suite.router.ServeHTTP(respUploadPoster, reqUploadPoster)
 
 	assert.Equal(suite.T(), http.StatusOK, respUploadPoster.Code)
-	posterFileHeader.Get("Content-Type")
+	// posterFileHeader.Get("Content-Type")
 
 }
 
