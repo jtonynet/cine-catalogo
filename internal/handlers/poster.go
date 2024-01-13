@@ -113,7 +113,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 
 	responses.SendSuccess(
 		ctx,
-		http.StatusOK,
+		http.StatusCreated,
 		"upload-movies-poster",
 		result,
 		responses.HALHeaders,

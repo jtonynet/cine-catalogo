@@ -48,12 +48,12 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   2. :green_book: [About](#about)
   3. :computer: [Run the project](#run)
   4. :newspaper: [API Documentation](#api-docs)
-  5. :beetle: [Debug](#debug)
-  6. :white_check_mark: [Tests](#tests)
-  7. :traffic_light: [HATEOAS HAL](#HATEOAS)
-  8. :umbrella: [Event Storming](#event-storming)
-  9. :detective: [Observability](#observability)
-  10. :bar_chart: [Diagrams](#diagrams)
+  5. :white_check_mark: [Tests](#tests)
+  6. :beetle: [Debug](#debug)
+  7. :umbrella: [Event Storming](#event-storming)
+  8. :bar_chart: [Diagrams](#diagrams)
+  9. :traffic_light: [HATEOAS HAL](#HATEOAS)
+  10. :detective: [Observability](#observability)
   11. :toolbox: [Tools](#tools)
   12. :clap: [Best Practices](#best-practices)
   13. :brain: [ADR - Architecture Decision Records](#adr)
@@ -130,21 +130,21 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 [:arrow_heading_up: back to top](#index)
 
 ---
-<a id="debug"></a>
-### :beetle: Debug
-
-Todo: Implements in near future
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
----
 
 <a id="tests"></a>
 ### :white_check_mark: Tests
 
-Todo: Implements in near future
+In the project root directory, runs following commands:
+
+```bash
+$ docker compose up postgres-catalogo -d
+$ go test -v
+```
+
+The Output:
+<img src="./docs/assets/images/screen_captures/main_routes_integration_succesful.png">
+
+This project is a simple CRUD with a two-tier architecture. Unit tests don't make sense in this scenario. An integration test is the best approach. At the moment, only the "happy path" for success is covered. I plan to increase the test coverage in the future to include corner cases.
 
 <br/>
 
@@ -152,12 +152,34 @@ Todo: Implements in near future
 
 ---
 
-<a id="HATEOAS"></a>
-### 🚥 HATEOAS HAL
 
-The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
+<a id="debug"></a>
+### :beetle: Debug
 
-<img src="./docs/assets/images/screen_captures/hal.png"/>
+My `.vscode/launch.json` file:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch CineCatalogo",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/api/main.go",
+            "cwd": "${workspaceFolder}",
+            "trace": "verbose",
+        }
+    ]
+}
+```
+
+Change the `.env` configuration from `DATABASE_HOST` to `localhost` to perform local debugging.
+
+```env
+DATABASE_HOST=localhost          # postgres-catalogo | localhost
+```
 
 <br/>
 
@@ -182,36 +204,6 @@ At the moment, we are abstracting the authentication flow and the ticket purchas
 [:arrow_heading_up: back to top](#index)
 
 ---
-<a id="observability"></a>
-## 🕵️ Observability:
-
-Local URLs:
-- Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
-- Prometheus - http://localhost:9090/
-
-<img src="./docs/assets/images/screen_captures/grafana_basic.png">
-
-<br/>
-
-<img src="./docs/assets/images/screen_captures/grafana_red.png">
-
-<br/>
-
-<img src="./docs/assets/images/screen_captures/grafana_use.png">
-
-
-The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a [Datasource](http://localhost:3000/connections/datasources) aiming your prometheus URL http://prometheus-ticket:9090 and [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project.
-
-<img src="./docs/assets/images/screen_captures/grafana-editing-datasource.png">
-
-
-
-The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
-
-[:arrow_heading_up: back to top](#index)
-
----
-
 
 <a id="diagrams"></a>
 ## 📊 System Diagrams:
@@ -322,6 +314,50 @@ erDiagram
 ```
 
 <br/>
+
+[:arrow_heading_up: back to top](#index)
+
+
+---
+
+<a id="HATEOAS"></a>
+### 🚥 HATEOAS HAL
+
+The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
+
+<img src="./docs/assets/images/screen_captures/hal.png"/>
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="observability"></a>
+## 🕵️ Observability:
+
+Local URLs:
+- Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
+- Prometheus - http://localhost:9090/
+
+<img src="./docs/assets/images/screen_captures/grafana_basic.png">
+
+<br/>
+
+<img src="./docs/assets/images/screen_captures/grafana_red.png">
+
+<br/>
+
+<img src="./docs/assets/images/screen_captures/grafana_use.png">
+
+
+The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a [Datasource](http://localhost:3000/connections/datasources) aiming your prometheus URL http://prometheus-ticket:9090 and [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project.
+
+<img src="./docs/assets/images/screen_captures/grafana-editing-datasource.png">
+
+
+
+The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
 
 [:arrow_heading_up: back to top](#index)
 

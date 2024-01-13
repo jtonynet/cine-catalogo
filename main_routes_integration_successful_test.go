@@ -483,8 +483,8 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	respUploadPoster := httptest.NewRecorder()
 	suite.router.ServeHTTP(respUploadPoster, reqUploadPoster)
 
-	assert.Equal(suite.T(), http.StatusOK, respUploadPoster.Code)
-	// posterFileHeader.Get("Content-Type")
+	assert.Equal(suite.T(), http.StatusCreated, respUploadPoster.Code)
+	assert.Equal(suite.T(), respUploadPoster.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 	assert.DirExists(suite.T(), suite.uploadMoviePosterPath)
 
 }
