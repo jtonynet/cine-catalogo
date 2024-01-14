@@ -12,8 +12,10 @@ The project started with a focus on simplicity, and TDD was not adopted due to e
 
 Reference material:
 - The book [Test-Driven Development in Go](https://www.amazon.com.br/Test-Driven-Development-practical-idiomatic-real-world/dp/1803247878) was used as a guide.
+- https://quii.gitbook.io/learn-go-with-tests/
 - https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
 - https://forum.golangbridge.org/t/how-to-test-gin-gonic-handler-function-within-a-function/33334/2
+
 
 Issues regarding "context passing" bugs in integration tests:
 - https://github.com/gin-gonic/gin/issues/1292
