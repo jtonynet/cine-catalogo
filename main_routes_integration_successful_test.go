@@ -153,8 +153,10 @@ func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
 		Name:        "Jardins Shoppings",
 	}
 
-	addressCreateJson, _ := json.Marshal(addressCreate)
-	reqAddressCreate, _ := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
+	addressCreateJson, err := json.Marshal(addressCreate)
+	assert.NoError(suite.T(), err)
+	reqAddressCreate, err := http.NewRequest("POST", "/v1/addresses", bytes.NewBuffer(addressCreateJson))
+	assert.NoError(suite.T(), err)
 	respAddressCreate := httptest.NewRecorder()
 	suite.router.ServeHTTP(respAddressCreate, reqAddressCreate)
 	assert.Equal(suite.T(), http.StatusCreated, respAddressCreate.Code)
@@ -165,7 +167,8 @@ func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
 
 	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
 
-	reqAddressRetrieve, _ := http.NewRequest("GET", addressUUIDRoute, nil)
+	reqAddressRetrieve, err := http.NewRequest("GET", addressUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
 	respCinemaRetrieve := httptest.NewRecorder()
 	suite.router.ServeHTTP(respCinemaRetrieve, reqAddressRetrieve)
 
@@ -445,6 +448,8 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
 
+	imageContentType := "image/png"
+
 	posterPath := "./docs/assets/images/posters/back_to_the_recursion.png"
 	posterFile, err := os.Open(posterPath)
 	assert.NoError(suite.T(), err)
@@ -456,8 +461,6 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	posterFile.Read(fileBuffer)
 	fileBytes := bytes.NewReader(fileBuffer)
 	posterFileUploadedMD5 := calculateMD5(fileBuffer)
-
-	imageContentType := "image/png"
 
 	posterMultPartRequestBody := &bytes.Buffer{}
 	writer := multipart.NewWriter(posterMultPartRequestBody)
@@ -471,7 +474,7 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 
 	posterMultPartFields := map[string]string{
 		"uuid":            suite.posterUUID.String(),
-		"name":            "Back To The Recursion",
+		"name":            "Back To The Recursion 2",
 		"alternativeText": "Uma aventura no tempo usando técnicas avançadas de desenvolvimento de software",
 	}
 
@@ -481,8 +484,8 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	}
 	writer.Close()
 
-	uploadURL := fmt.Sprintf("/v1/movies/%s/posters", suite.movieUUID.String())
-	reqUploadPoster, err := http.NewRequest("POST", uploadURL, posterMultPartRequestBody)
+	movieUUIDPostersRoute := fmt.Sprintf("/v1/movies/%s/posters", suite.movieUUID.String())
+	reqUploadPoster, err := http.NewRequest("POST", movieUUIDPostersRoute, posterMultPartRequestBody)
 	assert.NoError(suite.T(), err)
 	reqUploadPoster.Header.Set("Content-Type", writer.FormDataContentType())
 	respUploadPoster := httptest.NewRecorder()
@@ -526,6 +529,51 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMoviePoster, "name").String(), posterMultPartFields["name"])
 	assert.Equal(suite.T(), gjson.Get(bodyRetrieveMoviePoster, "alternativeText").String(), posterMultPartFields["alternativeText"])
 
+	// Update Poster
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
+
+	posterUpdatePath := "./docs/assets/images/posters/back_to_the_recursion.png"
+	posterUpdateFile, err := os.Open(posterUpdatePath)
+	assert.NoError(suite.T(), err)
+	defer posterUpdateFile.Close()
+
+	fileUpdateInfo, err := posterUpdateFile.Stat()
+	assert.NoError(suite.T(), err)
+	fileUpdateBuffer := make([]byte, fileUpdateInfo.Size())
+	posterUpdateFile.Read(fileUpdateBuffer)
+	fileUpdateBytes := bytes.NewReader(fileUpdateBuffer)
+
+	posterUpdateMultPartRequestBody := &bytes.Buffer{}
+	writerUpdate := multipart.NewWriter(posterUpdateMultPartRequestBody)
+	posterUpdateFileHeader := make(textproto.MIMEHeader)
+	posterUpdateFileHeader.Set("Content-Disposition", fmt.Sprintf(`form-data; name="%s"; filename="%s"`, "file", filepath.Base(posterUpdatePath)))
+	posterUpdateFileHeader.Set("Content-Type", imageContentType)
+	posterUpdateFilePart, err := writerUpdate.CreatePart(posterUpdateFileHeader)
+	assert.NoError(suite.T(), err)
+
+	io.Copy(posterUpdateFilePart, fileUpdateBytes)
+
+	posterUpdateMultPartFields := map[string]string{
+		"name":            "Back To The Recursion",
+		"alternativeText": "",
+	}
+
+	for key, value := range posterUpdateMultPartFields {
+		err := writerUpdate.WriteField(key, value)
+		assert.NoError(suite.T(), err)
+	}
+	writerUpdate.Close()
+
+	movieUUIDPostersUUIDRoute := fmt.Sprintf("/v1/movies/%s/posters/%s", suite.movieUUID.String(), suite.posterUUID.String())
+	reqUpdatePoster, err := http.NewRequest("PATCH", movieUUIDPostersUUIDRoute, posterUpdateMultPartRequestBody)
+	assert.NoError(suite.T(), err)
+	reqUpdatePoster.Header.Set("Content-Type", writerUpdate.FormDataContentType())
+	respUpdatePoster := httptest.NewRecorder()
+	suite.router.ServeHTTP(respUpdatePoster, reqUpdatePoster)
+
+	assert.Equal(suite.T(), http.StatusOK, respUpdatePoster.Code)
+	assert.Equal(suite.T(), respUpdatePoster.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 }
 
 func calculateMD5(buffer []byte) string {

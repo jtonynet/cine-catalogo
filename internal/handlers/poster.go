@@ -156,7 +156,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 	var updateRequest requests.UpdatePoster
 	if err := ctx.ShouldBindWith(&updateRequest, binding.FormMultipart); err != nil {
 		// TODO: Implements in future
-		fmt.Printf("updateRequest ShouldBindJSON %v", err)
+		fmt.Printf("updateRequest ShouldBindWith %v", err)
 		responses.SendError(ctx, http.StatusBadRequest, "malformed request formData", nil)
 		return
 	}
