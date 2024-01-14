@@ -180,9 +180,12 @@ Using VSCode as a code editor with the following configuration in the `.vscode/l
 }
 ```
 
-Change the `.env` configuration from `DATABASE_HOST` to `localhost` to perform local debugging.
+Alter the `.env` configuration for `DATABASE_HOST` and `API_HOST` to `localhost` and `localhost:8080` respectively to enable local debugging.
 
 ```env
+...
+API_HOST=localhost:8080          # catalogo-api | localhost:8080
+...
 DATABASE_HOST=localhost          # postgres-catalogo | localhost
 ```
 
@@ -200,10 +203,10 @@ Distribute breakpoints at code points of interest, and in "Run and Debug," click
 
 See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#_debugging) for more configuration details
 
-> :writing_hand: **Note**:
+> :writing_hand: **Notes**:
 >
->It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because debugging runs locally.
->
+> - It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because debugging runs locally.
+> - Revert `.env` to its original values to execute `docker compose up` and restore the correct system behavior.
 
 <br/>
 
