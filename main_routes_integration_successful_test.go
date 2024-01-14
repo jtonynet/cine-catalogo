@@ -585,7 +585,7 @@ func (suite *IntegrationSuccesfulSuite) deleteCinemaRoute() {
 }
 
 func (suite *IntegrationSuccesfulSuite) deleteAddressRoute() {
-	// Delete Cinema
+	// Delete Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.DELETE("/addresses/:address_id", handlers.DeleteAddress)
 
