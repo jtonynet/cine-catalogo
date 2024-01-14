@@ -5,9 +5,9 @@ name: Go
 
 on:
   push:
-    branches: [ "feature/add-githubactions" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "feature/add-githubactions" ]
+    branches: [ "main" ]
 
 jobs:
 
