@@ -30,16 +30,6 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
-/*
-TODO: Using gin engine or ginTestEngine for tests, context params bugfixes (move to ADR or another doc):
-	https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
-	https://forum.golangbridge.org/t/how-to-test-gin-gonic-handler-function-within-a-function/33334/2
-	https://github.com/gin-gonic/gin/issues/1292
-	https://github.com/gin-gonic/gin/pull/2803
-	https://github.com/gin-gonic/gin/issues/2778
-	https://github.com/gin-gonic/gin/issues/2816
-*/
-
 type IntegrationSuccesfulSuite struct {
 	suite.Suite
 
@@ -66,6 +56,7 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 	suite.versionURL = fmt.Sprintf("%s/%s", suite.cfg.API.Host, "v1")
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 
+	handlers.Init()
 	database.Init(suite.cfg.Database)
 
 	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New()
@@ -137,6 +128,10 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 
 	// POSTERS CONTEXT
 	suite.postersRoutes()
+
+	// DELETES
+	suite.deleteCinemaRoute()
+	suite.deleteAddressRoute()
 }
 
 func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
@@ -555,8 +550,7 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	io.Copy(posterUpdateFilePart, fileUpdateBytes)
 
 	posterUpdateMultPartFields := map[string]string{
-		"name":            "Back To The Recursion",
-		"alternativeText": "",
+		"name": "Back To The Recursion",
 	}
 
 	for key, value := range posterUpdateMultPartFields {
@@ -574,6 +568,34 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 
 	assert.Equal(suite.T(), http.StatusOK, respUpdatePoster.Code)
 	assert.Equal(suite.T(), respUpdatePoster.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
+}
+
+func (suite *IntegrationSuccesfulSuite) deleteCinemaRoute() {
+	// Delete Cinema
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.DELETE("/cinemas/:cinema_id", handlers.DeleteCinema)
+
+	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%s", suite.cinemaUUID.String())
+	reqCinemaDelete, err := http.NewRequest("DELETE", cinemaUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
+	respCinemaDelete := httptest.NewRecorder()
+	suite.router.ServeHTTP(respCinemaDelete, reqCinemaDelete)
+
+	assert.Equal(suite.T(), http.StatusNoContent, respCinemaDelete.Code)
+}
+
+func (suite *IntegrationSuccesfulSuite) deleteAddressRoute() {
+	// Delete Cinema
+	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
+	suite.routesV1.DELETE("/addresses/:address_id", handlers.DeleteAddress)
+
+	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
+	reqAddressDelete, err := http.NewRequest("DELETE", addressUUIDRoute, nil)
+	assert.NoError(suite.T(), err)
+	respAddressDelete := httptest.NewRecorder()
+	suite.router.ServeHTTP(respAddressDelete, reqAddressDelete)
+
+	assert.Equal(suite.T(), http.StatusNoContent, respAddressDelete.Code)
 }
 
 func calculateMD5(buffer []byte) string {
