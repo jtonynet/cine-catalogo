@@ -113,7 +113,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 
 	responses.SendSuccess(
 		ctx,
-		http.StatusOK,
+		http.StatusCreated,
 		"upload-movies-poster",
 		result,
 		responses.HALHeaders,
@@ -156,7 +156,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 	var updateRequest requests.UpdatePoster
 	if err := ctx.ShouldBindWith(&updateRequest, binding.FormMultipart); err != nil {
 		// TODO: Implements in future
-		fmt.Printf("updateRequest ShouldBindJSON %v", err)
+		fmt.Printf("updateRequest ShouldBindWith %v", err)
 		responses.SendError(ctx, http.StatusBadRequest, "malformed request formData", nil)
 		return
 	}
@@ -271,10 +271,10 @@ func uploadPoster(ctx *gin.Context, movieUUID, posterUUID uuid.UUID, file *multi
 
 	// TODO: posters dirs, move to storages local ceph | S3 in future and manage by envVars
 	uploadPath := fmt.Sprintf("%s/%s", cfg.PostersDir, movieUUID.String())
-	err := os.Mkdir(uploadPath, 0644) //0644 7777
+	err := os.Mkdir(uploadPath, os.ModeDir|0755) // 0644 7777 755
 	if err != nil && !os.IsExist(err) {
 		// TODO: Implements in future
-		fmt.Printf("error on create poster directory %v", err)
+		fmt.Printf("error on create poster directory %v ", err)
 		return "", err
 	}
 

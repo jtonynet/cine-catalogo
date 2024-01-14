@@ -94,7 +94,7 @@ func CreateAddresses(ctx *gin.Context) {
 	}
 
 	responses.SendSuccess(
-		ctx, http.StatusOK,
+		ctx, http.StatusCreated,
 		handler,
 		result,
 		responses.HALHeaders,
@@ -136,7 +136,7 @@ func UpdateAddress(ctx *gin.Context) {
 	}
 
 	var updateRequest requests.UpdateAddress
-	if err := ctx.ShouldBind(&updateRequest); err != nil {
+	if err := ctx.ShouldBindBodyWith(&updateRequest, binding.JSON); err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on binding requests.UpdateAddress")

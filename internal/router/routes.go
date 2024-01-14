@@ -22,7 +22,9 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 		ginSwagger.URL(fmt.Sprintf("%s%s", basePath, "/swagger/doc.json")),
 		ginSwagger.DefaultModelsExpandDepth(-1))
 
-	handlers.ExposeMetrics(r, cfg)
+	if cfg.MetricEnabled {
+		handlers.ExposeMetrics(r, cfg)
+	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -50,7 +52,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 
 	// Addresses Cinemas
 	v1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
-	v1.POST("addresses/:address_id/cinemas", handlers.CreateCinemas)
+	v1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
 	v1.OPTIONS("/addresses/:address_id/cinemas", handlers.Option)
 	v1.HEAD("/addresses/:address_id/cinemas", handlers.Head)
 

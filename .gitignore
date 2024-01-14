@@ -21,3 +21,6 @@ docker_data/
 
 # env
 .env
+
+# vscode
+.vscode/

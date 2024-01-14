@@ -74,7 +74,7 @@ func CreateMovies(ctx *gin.Context) {
 
 	responses.SendSuccess(
 		ctx,
-		http.StatusOK,
+		http.StatusCreated,
 		handler,
 		result,
 		responses.HALHeaders,
@@ -155,7 +155,7 @@ func UpdateMovie(ctx *gin.Context) {
 	}
 
 	var updateRequest requests.UpdateMovie
-	if err := ctx.ShouldBind(&updateRequest); err != nil {
+	if err := ctx.ShouldBindBodyWith(&updateRequest, binding.JSON); err != nil {
 		// TODO: Implements in future
 		fmt.Printf("updateRequest ShouldBindJSON %v", err)
 		responses.SendError(ctx, http.StatusBadRequest, "malformed request body", nil)

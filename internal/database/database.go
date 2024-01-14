@@ -28,7 +28,8 @@ func Init(cfg config.Database) error {
 	}
 	log = decorators.NewLoggerWithMetrics(l)
 
-	log.Info("database: trying open connection")
+	log.WithField("origin", key).
+		Info("database: trying open connection")
 
 	strConn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%v sslmode=disable",
 		cfg.Host,
@@ -43,18 +44,20 @@ func Init(cfg config.Database) error {
 		return err
 	}
 
-	DB.Use(prometheus.New(prometheus.Config{
-		DBName:          cfg.MetricDBName,          // `DBName` as metrics label
-		RefreshInterval: cfg.MetricRefreshInterval, // refresh metrics interval (default 15 seconds)
-		StartServer:     cfg.MetricStartServer,     // start http server to expose metrics
-		HTTPServerPort:  cfg.MetricServerPort,      // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
-		MetricsCollector: []prometheus.MetricsCollector{
-			&prometheus.Postgres{VariableNames: []string{"Threads_running"}},
-		},
-	}))
+	if cfg.MetricEnabled {
+		DB.Use(prometheus.New(prometheus.Config{
+			DBName:          cfg.MetricDBName,          // `DBName` as metrics label
+			RefreshInterval: cfg.MetricRefreshInterval, // refresh metrics interval (default 15 seconds)
+			StartServer:     cfg.MetricStartServer,     // start http server to expose metrics
+			HTTPServerPort:  cfg.MetricServerPort,      // configure http server port, default port 8080 (if you have configured multiple instances, only the first `HTTPServerPort` will be used to start server)
+			MetricsCollector: []prometheus.MetricsCollector{
+				&prometheus.Postgres{VariableNames: []string{"Threads_running"}},
+			},
+		}))
+	}
 
 	log.WithField("origin", key).
-		Info("connection is openned")
+		Info("database: connection is openned")
 
 	DB.AutoMigrate(&models.Address{})
 	DB.AutoMigrate(&models.Cinema{})
@@ -63,7 +66,7 @@ func Init(cfg config.Database) error {
 	DB.AutoMigrate(&models.Poster{})
 
 	log.WithField("origin", key).
-		Info("tables created")
+		Info("database: tables created")
 
 	return nil
 }

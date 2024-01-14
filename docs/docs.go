@@ -194,7 +194,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.MovieListResult"
+                            "$ref": "#/definitions/responses.HATEOASListResult"
                         }
                     }
                 }
@@ -354,7 +354,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.MovieListResult"
+                            "$ref": "#/definitions/responses.HATEOASListResult"
                         }
                     }
                 }
@@ -389,7 +389,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/responses.MovieListResult"
+                            "$ref": "#/definitions/responses.HATEOASListResult"
                         }
                     }
                 }
@@ -904,23 +904,6 @@ const docTemplate = `{
                 "_templates": {}
             }
         },
-        "responses.HATEOASMovieAndPostersList": {
-            "type": "object",
-            "properties": {
-                "movies": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/responses.MovieListItem"
-                    }
-                },
-                "posters": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/responses.Poster"
-                    }
-                }
-            }
-        },
         "responses.HATEOASMovieLinks": {
             "type": "object",
             "properties": {
@@ -934,17 +917,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/responses.HATEOASLink"
                 },
                 "upload-movie-poster": {
-                    "$ref": "#/definitions/responses.HATEOASLink"
-                }
-            }
-        },
-        "responses.HATEOASMovieListLinks": {
-            "type": "object",
-            "properties": {
-                "create-movies": {
-                    "$ref": "#/definitions/responses.HATEOASLink"
-                },
-                "self": {
                     "$ref": "#/definitions/responses.HATEOASLink"
                 }
             }
@@ -987,7 +959,7 @@ const docTemplate = `{
                     "$ref": "#/definitions/responses.HATEOASMovieLinks"
                 },
                 "_templates": {},
-                "age_rating": {
+                "ageRating": {
                     "type": "integer"
                 },
                 "description": {
@@ -1008,47 +980,6 @@ const docTemplate = `{
                 "uuid": {
                     "type": "string"
                 }
-            }
-        },
-        "responses.MovieListItem": {
-            "type": "object",
-            "properties": {
-                "_links": {
-                    "$ref": "#/definitions/responses.HATEOASMovieLinks"
-                },
-                "age_rating": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "posterLink": {
-                    "type": "string"
-                },
-                "published": {
-                    "type": "boolean"
-                },
-                "subtitled": {
-                    "type": "boolean"
-                },
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "responses.MovieListResult": {
-            "type": "object",
-            "properties": {
-                "_embedded": {
-                    "$ref": "#/definitions/responses.HATEOASMovieAndPostersList"
-                },
-                "_links": {
-                    "$ref": "#/definitions/responses.HATEOASMovieListLinks"
-                },
-                "_templates": {}
             }
         },
         "responses.Poster": {

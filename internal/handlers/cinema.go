@@ -114,7 +114,7 @@ func CreateCinemas(ctx *gin.Context) {
 
 	responses.SendSuccess(
 		ctx,
-		http.StatusOK,
+		http.StatusCreated,
 		handler,
 		result,
 		responses.HALHeaders,
@@ -139,7 +139,6 @@ func RetrieveCinema(ctx *gin.Context) {
 		log.WithField("origin", handler).
 			Error("error invalid cinema_id")
 
-		//responses.SendError(ctx, http.StatusForbidden, "Malformed or missing address_id", nil)
 		responses.SendError(ctx, http.StatusInternalServerError, "Malformed or missing address_id", nil)
 		return
 	}
@@ -267,7 +266,7 @@ func UpdateCinema(ctx *gin.Context) {
 	}
 
 	var updateRequest requests.UpdateCinema
-	if err := ctx.ShouldBind(&updateRequest); err != nil {
+	if err := ctx.ShouldBindBodyWith(&updateRequest, binding.JSON); err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on binding requests.UpdateCinema")
@@ -329,7 +328,7 @@ func UpdateCinema(ctx *gin.Context) {
 // @Description Retrieve List all Cinemas from one Address
 // @Tags Addresses Cinemas
 // @Produce json
-// @Success 200 {object} responses.MovieListResult
+// @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses/{address_id}/cinemas [get]
 // @Param address_id path string true "Address UUID"
 func RetrieveCinemaList(ctx *gin.Context) {
