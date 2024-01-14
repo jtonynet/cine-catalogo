@@ -28,7 +28,7 @@ jobs:
       run: docker compose up postgres-catalogo -d
 
     - name: Wait for DB to start
-      run: sleep 20
+      run: sleep 5
 
     - name: Test
       run: go test -v main_routes_integration_successful_test.go
