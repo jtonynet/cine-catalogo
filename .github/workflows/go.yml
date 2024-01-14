@@ -25,7 +25,7 @@ jobs:
       run: docker compose build postgres-catalogo
 
     - name: Create-DB
-      run: docker compose uo postgres-catalogo -d
+      run: docker compose up postgres-catalogo -d
 
     - name: Test
       run: go test -v main_routes_integration_successful_test.go
