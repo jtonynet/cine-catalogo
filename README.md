@@ -134,7 +134,7 @@ $ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclud
 <a id="tests"></a>
 ### :white_check_mark: Tests
 
-In the project root directory, runs following commands:
+In the project root directory, and without running all Docker Compose dependencies, execute the following commands:
 
 ```bash
 $ docker compose up postgres-catalogo -d
@@ -145,6 +145,12 @@ The Output:
 <img src="./docs/assets/images/screen_captures/main_routes_integration_succesful.png">
 
 This project is a simple CRUD with a two-tier architecture. Unit tests don't make sense in this scenario. An integration test is the best approach. At the moment, only the "happy path" for success is covered. I plan to increase the test coverage in the future to include corner cases.
+
+> :writing_hand: **Note**:
+>
+>It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because tests runs locally.
+>
+
 
 <br/>
 
@@ -180,6 +186,12 @@ Change the `.env` configuration from `DATABASE_HOST` to `localhost` to perform l
 DATABASE_HOST=localhost          # postgres-catalogo | localhost
 ```
 
+
+In the project root directory, and without running all Docker Compose dependencies, execute the following commands:
+```bash
+$ docker compose up postgres-catalogo -d
+```
+
 Distribute breakpoints at code points of interest, and in "Run and Debug," click on "Launch Cinecatalogo." Access the API via the browser to initiate your debugging process.
 
 <img src="./docs/assets/images/screen_captures/run_debug.png">
@@ -187,6 +199,11 @@ Distribute breakpoints at code points of interest, and in "Run and Debug," click
 <img src="./docs/assets/images/screen_captures/debbuging_console.png">
 
 See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#_debugging) for more configuration details
+
+> :writing_hand: **Note**:
+>
+>It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because debugging runs locally.
+>
 
 <br/>
 
