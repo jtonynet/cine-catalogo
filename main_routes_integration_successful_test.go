@@ -95,7 +95,7 @@ func setupConfig() *config.Config {
 	cfg.API.PostersDir = "web/posters"
 	cfg.API.MetricEnabled = false
 
-	cfg.Database.Host = "postgres-catalogo"
+	cfg.Database.Host = "localhost"
 	cfg.Database.Port = "5432"
 	cfg.Database.User = "api_user"
 	cfg.Database.Pass = "api_pass"
