@@ -151,6 +151,9 @@ This project is a simple CRUD with a two-tier architecture. Unit tests don't mak
 >It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because tests runs locally.
 >
 
+Integration tests running on github action:
+<img src="./docs/assets/images/screen_captures/integration_tests_succesful_githubaction.png">
+
 
 <br/>
 
