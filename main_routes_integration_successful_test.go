@@ -30,7 +30,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
-type IntegrationSuccesfulSuite struct {
+type IntegrationSuccesful struct {
 	suite.Suite
 
 	cfg *config.Config
@@ -50,7 +50,7 @@ type IntegrationSuccesfulSuite struct {
 	uploadMoviePosterPath string
 }
 
-func (suite *IntegrationSuccesfulSuite) SetupSuite() {
+func (suite *IntegrationSuccesful) SetupSuite() {
 
 	suite.cfg = setupConfig()
 	suite.versionURL = fmt.Sprintf("%s/%s", suite.cfg.API.Host, "v1")
@@ -67,7 +67,7 @@ func (suite *IntegrationSuccesfulSuite) SetupSuite() {
 	suite.uploadMoviePosterPath = fmt.Sprintf("%s/%s", suite.cfg.API.PostersDir, suite.movieUUID.String())
 }
 
-func (suite *IntegrationSuccesfulSuite) TearDownSuite() {
+func (suite *IntegrationSuccesful) TearDownSuite() {
 	query := fmt.Sprintf(`
 		DELETE FROM cinemas WHERE uuid in ('%s');
 		DELETE FROM addresses WHERE uuid in ('%s');
@@ -116,7 +116,7 @@ func setupRouterAndGroup(cfg config.API) (*gin.Engine, *gin.RouterGroup) {
 	return router, router.Group(basePath)
 }
 
-func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
+func (suite *IntegrationSuccesful) TestV1HappyPathIntegrationSuccessful() {
 	// ADDRESSES CONTEXT
 	suite.addressesRoutes()
 
@@ -134,7 +134,7 @@ func (suite *IntegrationSuccesfulSuite) TestV1HappyPathIntegrationSuccessful() {
 	suite.deleteAddressRoute()
 }
 
-func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
+func (suite *IntegrationSuccesful) addressesRoutes() {
 	// Create Addresses
 	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
 
@@ -234,7 +234,7 @@ func (suite *IntegrationSuccesfulSuite) addressesRoutes() {
 	assert.Contains(suite.T(), gjson.Get(bodyRetrieveAddressListJson, "_embedded.addresses").String(), string(addressResponseJson))
 }
 
-func (suite *IntegrationSuccesfulSuite) cinemasRoutes() {
+func (suite *IntegrationSuccesful) cinemasRoutes() {
 	// Create Cinemas
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
@@ -337,7 +337,7 @@ func (suite *IntegrationSuccesfulSuite) cinemasRoutes() {
 	assert.Contains(suite.T(), gjson.Get(bodyRetrieveCinemaListJson, "_embedded.cinemas").String(), string(cinemaResponseJson))
 }
 
-func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
+func (suite *IntegrationSuccesful) moviesRoutes() {
 	// Create Movies
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies", handlers.CreateMovies)
@@ -438,7 +438,7 @@ func (suite *IntegrationSuccesfulSuite) moviesRoutes() {
 
 }
 
-func (suite *IntegrationSuccesfulSuite) postersRoutes() {
+func (suite *IntegrationSuccesful) postersRoutes() {
 	// Upload Movie Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
@@ -570,7 +570,7 @@ func (suite *IntegrationSuccesfulSuite) postersRoutes() {
 	assert.Equal(suite.T(), respUpdatePoster.Header().Get("Content-Type"), responses.HALHeaders["Content-Type"])
 }
 
-func (suite *IntegrationSuccesfulSuite) deleteCinemaRoute() {
+func (suite *IntegrationSuccesful) deleteCinemaRoute() {
 	// Delete Cinema
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.DELETE("/cinemas/:cinema_id", handlers.DeleteCinema)
@@ -584,7 +584,7 @@ func (suite *IntegrationSuccesfulSuite) deleteCinemaRoute() {
 	assert.Equal(suite.T(), http.StatusNoContent, respCinemaDelete.Code)
 }
 
-func (suite *IntegrationSuccesfulSuite) deleteAddressRoute() {
+func (suite *IntegrationSuccesful) deleteAddressRoute() {
 	// Delete Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.DELETE("/addresses/:address_id", handlers.DeleteAddress)
@@ -605,5 +605,5 @@ func calculateMD5(buffer []byte) string {
 }
 
 func TestIntegrationSuccessfulSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationSuccesfulSuite))
+	suite.Run(t, new(IntegrationSuccesful))
 }

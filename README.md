@@ -178,6 +178,14 @@ Using VSCode as a code editor with the following configuration in the `.vscode/l
             "program": "${workspaceFolder}/cmd/api/main.go",
             "cwd": "${workspaceFolder}",
             "trace": "verbose",
+        },
+        {
+            "name": "Test CineCatalogo",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "program":"${workspaceFolder}/main_routes_integration_successful_test.go",
+            "trace": "verbose",
         }
     ]
 }
@@ -198,11 +206,20 @@ In the project root directory, and without running all Docker Compose dependenci
 $ docker compose up postgres-catalogo -d
 ```
 
-Distribute breakpoints at code points of interest, and in "Run and Debug," click on "Launch Cinecatalogo." Access the API via the browser to initiate your debugging process.
+Distribute breakpoints at code points of interest, and in `Run and Debug` click on `Launch Cinecatalogo`. Access the API via the browser to initiate your debugging process.
 
 <img src="./docs/assets/images/screen_captures/run_debug.png">
 
 <img src="./docs/assets/images/screen_captures/debbuging_console.png">
+
+<br/>
+<br/>
+
+To run debugging on test routines, select and click on the "Test CineCatalogo" option in `Run and Debug`. To enable debugging in test mode, no changes are required in the `.env` file, as these environment variable values are initialized within the test suite itself.
+
+<img src="./docs/assets/images/screen_captures/run_debug_test.png">
+
+<img src="./docs/assets/images/screen_captures/debbuging_console_test.png">
 
 See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#_debugging) for more configuration details
 
