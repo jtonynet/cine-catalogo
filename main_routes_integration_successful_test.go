@@ -130,7 +130,7 @@ func (suite *IntegrationSuccesful) TestV1IntegrationSuccessful() {
 	suite.createAndRetrieveMovies()
 	suite.createAndRetrieveMovieList()
 
-	suite.CreateAndRetrieveAndUpdatePoster()
+	suite.createAndRetrieveAndUpdatePoster()
 
 	suite.deleteCinema()
 	suite.deleteAddress()
@@ -455,7 +455,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveMovieList() {
 
 }
 
-func (suite *IntegrationSuccesful) CreateAndRetrieveAndUpdatePoster() {
+func (suite *IntegrationSuccesful) createAndRetrieveAndUpdatePoster() {
 	// Upload Movie Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
