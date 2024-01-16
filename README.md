@@ -20,11 +20,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
 
-
  [![Miro](https://img.shields.io/badge/VISIT%20OUR-MIRO-050038?style=for-the-badge&logo=MIRO&logoColor=white)](https://miro.com/app/board/uXjVNRofMoA=/) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/2)
-
-
-
 
  __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
 
@@ -35,10 +31,7 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 #### 🕸️ Found me in web:
 [![linkedin](https://img.shields.io/badge/Linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jos%C3%A9-r-99896a39/) [![dev.to](https://img.shields.io/badge/dev.to-0A0A0A?style=for-the-badge&logo=devdotto&logoColor=white)](https://dev.to/learningenuity) [![gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:learningenuity@gmail.com) [![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/aromademirtilo) [![instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/learningenuity) 
 
-
-
 ---
-
 
 <a id="index"></a>
 ## :arrow_heading_up: index
@@ -59,7 +52,6 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   13. :brain: [ADR - Architecture Decision Records](#adr)
   14. :1234: [Versions](#versions)
   15. :robot: [Use of AI](#ia)
-
 
 <br/>
 
@@ -93,7 +85,6 @@ Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker 
 $ docker compose up
 ```
 
-
 > :writing_hand: **Note**:
 >
 > __Troubleshooting with [Docker Volumes](https://betterstack.com/community/questions/what-is-the-best-way-to-manage-permissions-for-docker-shared-volumes/)__
@@ -101,6 +92,17 @@ $ docker compose up
 >```bash
 >sudo chmod -R 777 docker_data/
 >``` 
+
+> :writing_hand: **Note**:
+>
+> __Troubleshoting:__ Error response from daemon: listen tcp4 0.0.0.0:5432: bind: address already in use
+>It's not uncommon, while running tests and other applications concurrently with Postgres, to encounter a port collision caused by the container/image. You should stop the relevant container, and if the issue persists, use the following commands:
+>```bash
+>sudo lsof -i -P -n | grep 5432
+>sudo kill -9 <process id>
+>```
+>as seen in this [Stack Overflow](https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated) question with other possible solutions.
+
 
 <br/>
 
@@ -111,7 +113,6 @@ $ docker compose up
 ## 📰  API Documentation
 
 ####  <img src="./docs/assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Swagger docs:
-
 
 Below is a screenshot of the latest documentation, which can be accessed here on http://localhost:8080/swagger/index.html with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
 <img src="./docs/assets/images/screen_captures/swagger_01.png"/>
@@ -154,13 +155,11 @@ This project is a simple CRUD with a two-tier architecture. Unit tests don't mak
 Integration tests running on github action:
 <img src="./docs/assets/images/screen_captures/integration_tests_succesful_githubaction.png">
 
-
 <br/>
 
 [:arrow_heading_up: back to top](#index)
 
 ---
-
 
 <a id="debug"></a>
 ### :beetle: Debug
@@ -227,6 +226,7 @@ See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#
 >
 > - It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because debugging runs locally.
 > - Revert `.env` to its original values to execute `docker compose up` and restore the correct system behavior.
+>
 
 <br/>
 
@@ -612,5 +612,5 @@ https://s3-sa-east-1.amazonaws.com/thedevconf/presentations/TDC2019SP/golang/ILL
 
 https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
 
-https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated
+https://github.com/renovatebot/renovate
 -->
