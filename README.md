@@ -17,8 +17,10 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!--
 [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./docs/assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./docs/assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./docs/assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
 -->
+![Badge GitHubActions](https://github.com/jtonynet/cine-catalogo/actions/workflows/main.yml/badge.svg?branch=main)
 
-![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) ![Badge GitHubActions](https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=main)
+
+![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green?style=for-the-badge) 
 
  [![Miro](https://img.shields.io/badge/VISIT%20OUR-MIRO-050038?style=for-the-badge&logo=MIRO&logoColor=white)](https://miro.com/app/board/uXjVNRofMoA=/) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/2)
 
