@@ -40,10 +40,19 @@ jobs:
       run: go test -v main_routes_integration_successful_test.go
 
   build:
-    needs: test  
+    needs: test
     runs-on: ubuntu-latest
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#       os: ['ubuntu-latest', 'ubuntu-18.04']
     steps:
     - uses: actions/checkout@v3
     
     - name: Build
       run: go build -v cmd/api/main.go
+
+  docker:
+    needs: build
+    uses: ./.github/workflows/Docker.yml
+      
