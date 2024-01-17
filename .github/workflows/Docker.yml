@@ -18,4 +18,11 @@ jobs:
       with:
         username: jtony.net@gmail.com
         password: ${{ secrets.PASSWORD_DOCKER_HUB }}
-          
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v5.1.0
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: jtonynet/cine-catalogo:${{ github.ref_name }}
