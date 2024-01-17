@@ -120,11 +120,14 @@ Below is a screenshot of the latest documentation, which can be accessed here on
 <br/>
 
 __Generate Docs:__
-With the 'cine-catalogo' image running, type:
+You need to have Golang and the project installed locally to run the following command in the project's root directory:
 
 ```bash
-$ docker exec -ti cine-catalogo swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
+swag init --generalInfo cmd/api/main.go --exclude ./web,./tools -o ./api
 ```
+<!-- 
+swag init --generalInfo cmd/api/main.go --exclude ./web,./tools
+-->
 
 <br/>
 

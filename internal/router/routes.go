@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	docs "github.com/jtonynet/cine-catalogo/api"
 	"github.com/jtonynet/cine-catalogo/config"
-	docs "github.com/jtonynet/cine-catalogo/docs"
 	"github.com/jtonynet/cine-catalogo/internal/handlers"
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
 	swaggerFiles "github.com/swaggo/files"
