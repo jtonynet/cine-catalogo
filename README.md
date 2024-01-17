@@ -158,6 +158,15 @@ This project is a simple CRUD with a two-tier architecture. Unit tests don't mak
 Integration tests running on github action:
 <img src="./docs/assets/images/screen_captures/integration_tests_succesful_githubaction.png">
 
+<br>
+
+Upon successful completion of tests, the CI generates a Docker Hub registry.
+<img src="./docs/assets/images/screen_captures/ci_running.png">
+<img src="./docs/assets/images/screen_captures/ci_docker_hub_image.png">
+
+To set secret password Docker Hub from GitHub repository [used in CI](.github/workflows/Docker.yml):
+repository settings -> security -> Secrets and Variables -> Actions -> New Repository Secret -> `PASSWORD_DOCKER_HUB`
+
 <br/>
 
 [:arrow_heading_up: back to top](#index)
