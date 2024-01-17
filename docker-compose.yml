@@ -30,7 +30,7 @@ services:
   catalogo-api:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.Local
       target: api
     depends_on:
       - postgres-catalogo

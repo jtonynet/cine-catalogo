@@ -616,4 +616,6 @@ https://s3-sa-east-1.amazonaws.com/thedevconf/presentations/TDC2019SP/golang/ILL
 https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery-c31ea2cc88f9
 
 https://github.com/renovatebot/renovate
+
+repository settings -> security -> Secrets and Variables -> Actions -> New Repository Secret -> `PASSWORD_DOCKER_HUB`
 -->

@@ -27,6 +27,6 @@ jobs:
       uses: docker/build-push-action@v5.1.0
       with:
         context: .
-        file: ./Dockerfile
+        file: ./Dockerfile.CI
         push: true
         tags: jtonynet/cine-catalogo:${{ github.ref_name }}

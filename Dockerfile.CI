@@ -1,0 +1,10 @@
+FROM golang:1.21.1-alpine AS api
+WORKDIR /usr/src/app
+
+COPY ./main main
+COPY ./web web
+COPY ./api api
+
+EXPOSE 8080
+
+CMD ["./main"]
