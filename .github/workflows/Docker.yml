@@ -30,3 +30,4 @@ jobs:
         file: ./Dockerfile.CI
         push: true
         tags: jtonynet/cine-catalogo:${{ github.ref_name }}
+
