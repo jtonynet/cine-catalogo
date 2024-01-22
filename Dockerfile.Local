@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 RUN go build cmd/api/main.go 
 
 COPY ./main main
+RUN chmod 777 main
+
 COPY ./web web
 COPY ./api api
 
