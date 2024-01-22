@@ -47,6 +47,9 @@ jobs:
       with:
         name: cine-catalogo-api
         path: main 
+        
+    - name: set-main-permission
+      run: chmod 777 main
 
   docker:
     needs: build
