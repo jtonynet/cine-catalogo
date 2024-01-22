@@ -29,5 +29,5 @@ jobs:
         context: .
         file: ./Dockerfile.CI
         push: true
-        tags: jtonynet/cine-catalogo:${{ github.ref_name }}
-
+        tags: jtonynet/cine-catalogo:latest
+        # tags: jtonynet/cine-catalogo:${{ github.ref_name }}
