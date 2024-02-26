@@ -1,8 +1,8 @@
 FROM golang:1.21.1-alpine AS api
 WORKDIR /usr/src/app
 
-COPY ./main main
-RUN chmod 777 ./main
+COPY ./main ./main
+RUN chmod +x ./main
 
 COPY ./web web
 COPY ./api api

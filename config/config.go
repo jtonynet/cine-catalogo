@@ -4,10 +4,10 @@ import "github.com/spf13/viper"
 
 type API struct {
 	Name          string `mapstructure:"API_NAME"`
-	Port          string `mapstructure:"API_PORT"`
+	Port          string `mapstructure:"PORT"`
 	TagVersion    string `mapstructure:"API_TAG_VERSION"`
 	Env           string `mapstructure:"API_ENV"`
-	Host          string `mapstructure:"API_HOST"`
+	Host          string `mapstructure:"HOST"`
 	StaticsDir    string `mapstructure:"API_STATICS_DIR"`
 	PostersDir    string `mapstructure:"API_POSTERS_DIR"`
 	MetricEnabled bool   `mapstructure:"API_METRICS_ENABLED"`

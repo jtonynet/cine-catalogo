@@ -12,20 +12,19 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./docs/assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) 
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Gonic" title="Gin Gonic">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./docs/assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) 
 
 <!--
 [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./docs/assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./docs/assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://gatling.io/) [<img src="./docs/assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
 -->
 
-![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green) ![Badge GitHubActions](https://github.com/jtonynet/cine-catalogo/actions/workflows/main.yml/badge.svg?branch=main)
+![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAM-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/2) ![Badge GitHubActions](https://github.com/jtonynet/cine-catalogo/actions/workflows/main.yml/badge.svg?branch=main)
 
 
- [![Miro](https://img.shields.io/badge/VISIT%20OUR-MIRO-050038?logo=MIRO&logoColor=white)](https://miro.com/app/board/uXjVNRofMoA=/) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW-GITHUB-181717?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/2)
+ [![Miro](https://img.shields.io/badge/VISIT%20OUR-MIRO-050038?logo=MIRO&logoColor=white)](https://miro.com/app/board/uXjVNRofMoA=/) [![Youtube](https://img.shields.io/badge/API%20Event%20storming%20PTBR-Youtube-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=6nEbm71Vc3w)
 
- __This is an initial readme, here you can find the project's goals, and some features are not yet fully available. *__ 
+ _This is an initial readme, here you can find the project's goals, and some features are not yet fully available._
 
-<br/>
 
 ---
 
@@ -48,9 +47,9 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
   8. :bar_chart: [Diagrams](#diagrams)
   9. :traffic_light: [HATEOAS HAL](#HATEOAS)
   10. :detective: [Observability](#observability)
-  11. :toolbox: [Tools](#tools)
+  11. :brain: [ADR - Architecture Decision Records](#adr)
   12. :clap: [Best Practices](#best-practices)
-  13. :brain: [ADR - Architecture Decision Records](#adr)
+  13. :toolbox: [Tools](#tools)
   14. :1234: [Versions](#versions)
   15. :robot: [Use of AI](#ia)
 
@@ -116,6 +115,9 @@ $ docker compose up
 ####  <img src="./docs/assets/images/icons/swagger.svg" width="20px" height="20px" alt="Swagger" title="Swagger"> Swagger docs:
 
 Below is a screenshot of the latest documentation, which can be accessed here on http://localhost:8080/swagger/index.html with the project running locally. For now, only the happy path is functional; new iterations will add observability, testing, and other components.
+
+<br/>
+
 <img src="./docs/assets/images/screen_captures/swagger_01.png"/>
 
 <br/>
@@ -156,14 +158,24 @@ This project is a simple CRUD with a two-tier architecture. Unit tests don't mak
 >It is necessary to have Go 1.21.1 or GVM with this version installed on the machine because tests runs locally.
 >
 
-Integration tests running on github action:
-<img src="./docs/assets/images/screen_captures/integration_tests_succesful_githubaction.png">
+<br/>
+
+#### <img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions"> Tests CI with GitHub Actions
+
+<details>
+  <summary>Integration tests running on github action:</summary>
+  <img src="./docs/assets/images/screen_captures/integration_tests_succesful_githubaction.png">
+</details>
 
 <br>
 
-Upon successful completion of tests, the CI generates a Docker Hub registry.
-<img src="./docs/assets/images/screen_captures/ci_running.png">
-<img src="./docs/assets/images/screen_captures/ci_docker_hub_image.png">
+<details>
+  <summary>Upon successful completion of tests, the CI generates a Docker Hub registry:</summary>
+  <img src="./docs/assets/images/screen_captures/ci_running.png">
+  <img src="./docs/assets/images/screen_captures/ci_docker_hub_image.png">
+</details>
+
+<br>
 
 To set secret password Docker Hub from GitHub repository [used in CI](.github/workflows/Docker.yml):
 repository settings -> security -> Secrets and Variables -> Actions -> New Repository Secret -> `PASSWORD_DOCKER_HUB`
@@ -218,20 +230,23 @@ In the project root directory, and without running all Docker Compose dependenci
 $ docker compose up postgres-catalogo -d
 ```
 
-Distribute breakpoints at code points of interest, and in `Run and Debug` click on `Launch Cinecatalogo`. Access the API via the browser to initiate your debugging process.
 
-<img src="./docs/assets/images/screen_captures/run_debug.png">
+<details>
+  <summary>Distribute breakpoints at code points of interest, and in `Run and Debug` click on `Launch Cinecatalogo`. Access the API via the browser to initiate your debugging process:</summary>
+  <img src="./docs/assets/images/screen_captures/run_debug.png">
+  <img src="./docs/assets/images/screen_captures/debbuging_console.png">
+</details>
 
-<img src="./docs/assets/images/screen_captures/debbuging_console.png">
 
 <br/>
+
+<details>
+  <summary>To run debugging on test routines, select and click on the "Test CineCatalogo" option in `Run and Debug`. To enable debugging in test mode, no changes are required in the `.env` file, as these environment variable values are initialized within the test suite itself:</summary>
+  <img src="./docs/assets/images/screen_captures/run_debug_test.png">
+  <img src="./docs/assets/images/screen_captures/debbuging_console_test.png">
+</details>
+
 <br/>
-
-To run debugging on test routines, select and click on the "Test CineCatalogo" option in `Run and Debug`. To enable debugging in test mode, no changes are required in the `.env` file, as these environment variable values are initialized within the test suite itself.
-
-<img src="./docs/assets/images/screen_captures/run_debug_test.png">
-
-<img src="./docs/assets/images/screen_captures/debbuging_console_test.png">
 
 See [VisualStudio Go Debugging](https://code.visualstudio.com/docs/languages/go#_debugging) for more configuration details
 
@@ -297,7 +312,9 @@ graph LR
     FIL -->|Associate| SES
     SES -->|Associate| ROO
 ```
-<br/><br/>
+
+<br/>
+<br/>
 
 **DER:**
 
@@ -397,8 +414,8 @@ The API is being developed following RESTful guidelines at `maturity level 4` fo
 ## 🕵️ Observability:
 
 Local URLs:
-- Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
-- Prometheus - http://localhost:9090/
+- <img src="./docs/assets/images/icons/prometheus.svg" width="20px" height="20px" alt="Prometheus Logo" title="Prometheus"> Prometheus - http://localhost:9090/
+- <img src="./docs/assets/images/icons/grafana.svg" width="20px" height="20px" alt="Grafana Logo" title="Grafana"> Grafana - http://localhost:3000/ (user/pwd: admin - admin | admin - 12345)
 
 <img src="./docs/assets/images/screen_captures/grafana_basic.png">
 
@@ -410,14 +427,61 @@ Local URLs:
 
 <img src="./docs/assets/images/screen_captures/grafana_use.png">
 
+<br/>
+<br/>
 
-The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a [Datasource](http://localhost:3000/connections/datasources) aiming your prometheus URL http://prometheus-ticket:9090 and [import the corresponding JSON](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project.
+<details>
+  <summary>The volume data is not shared in this repository. To use the 'catalogo-api' project dashboard, it will be necessary create a <a href="http://localhost:3000/connections/datasources">Datasource</a> aiming your prometheus URL <a href="http://prometheus-ticket:9090">http://prometheus-ticket:9090</a> and <a href="(https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard">import the corresponding JSON</a> on `scripts/grafana-dashboards/dash-catalogo-api.json` into your local Grafana after the proper installation of the project:</summary>
+  <img src="./docs/assets/images/screen_captures/grafana-editing-datasource.png">
+</details>
 
-<img src="./docs/assets/images/screen_captures/grafana-editing-datasource.png">
-
-
+<br/>
 
 The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashboards)
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="adr"></a>
+## 🧠 ADR - Architecture Decision Records:
+
+- [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
+- [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
+- [0003: Prometheus Libs To Instrumentation](./docs/architecture/decisions/0003-prometheus-libs-to-instrumentation.md)
+- [0004: Integration Tests "Happy Path"](./docs/architecture/decisions/0004-integration-tests.md)
+
+<br/>
+
+[:arrow_heading_up: back to top](#index)
+
+---
+
+<a id="best-practices"></a>
+## 👏 Best Practices
+
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+- [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+- [Event Storming](https://en.wikipedia.org/wiki/Event_storming)
+- [Miro Diagrams](https://miro.com/)
+- [Mermaid Diagrams](https://mermaid.js.org)
+- [Swagger](https://swagger.io/)
+- [RESTful](https://restfulapi.net/)
+- [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
+- [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
+- [Observability](https://en.wikipedia.org/wiki/Observability_(software)) with:
+  - [Prometheus](https://prometheus.io/docs/guides/go-application/)
+  - [Grafana](https://grafana.com/)
+
+<!-- 
+- [Load testing](https://en.wikipedia.org/wiki/Load_testing)
+- [Go pprof](https://go.dev/blog/pprof)
+-->
+
+<br/>
 
 [:arrow_heading_up: back to top](#index)
 
@@ -464,48 +528,6 @@ The JSON file is located in [scripts/grafana-dashboards](./scripts/grafana-dashb
   - [DBeaver](https://dbeaver.io/)
   - [Another Redis Desktop Manager](https://github.com/qishibo/AnotherRedisDesktopManager)
 
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
----
-
-<a id="best-practices"></a>
-## 👏 Best Practices
-
-- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-- [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-- [ADR - Architecture Decision Records](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
-- [Event Storming](https://en.wikipedia.org/wiki/Event_storming)
-- [Miro Diagrams](https://miro.com/)
-- [Mermaid Diagrams](https://mermaid.js.org)
-- [Swagger](https://swagger.io/)
-- [RESTful](https://restfulapi.net/)
-- [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)
-- [High Rest Maturity Model](https://martinfowler.com/articles/richardsonMaturityModel.html)
-- [Observability](https://en.wikipedia.org/wiki/Observability_(software)) with:
-  - [Prometheus](https://prometheus.io/docs/guides/go-application/)
-  - [Grafana](https://grafana.com/)
-
-<!-- 
-- [Load testing](https://en.wikipedia.org/wiki/Load_testing)
-- [Go pprof](https://go.dev/blog/pprof)
--->
-
-<br/>
-
-[:arrow_heading_up: back to top](#index)
-
----
-
-<a id="adr"></a>
-## 🧠 ADR - Architecture Decision Records:
-
-- [0001: Record architecture decisions](./docs/architecture/decisions/0001-record-architecture-decisions.md)
-- [0002: Gin, Gorm and Postegres in two tier architecture](./docs/architecture/decisions/0002-gin-gorm-and-postgres-in-two-tier-architecture.md)
-- [0003: Prometheus Libs To Instrumentation](./docs/architecture/decisions/0003-prometheus-libs-to-instrumentation.md)
-- [0004: Integration Tests "Happy Path"](./docs/architecture/decisions/0004-integration-tests.md)
 
 <br/>
 
