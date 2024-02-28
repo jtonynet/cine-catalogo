@@ -8,6 +8,7 @@ import (
 	"github.com/jtonynet/cine-catalogo/config"
 	"github.com/jtonynet/cine-catalogo/internal/handlers"
 	"github.com/jtonynet/cine-catalogo/internal/middlewares"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -23,7 +24,7 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 		ginSwagger.DefaultModelsExpandDepth(-1))
 
 	if cfg.MetricEnabled {
-		handlers.ExposeMetrics(r, cfg)
+		initializeMetricsRoute(r, cfg)
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -84,4 +85,11 @@ func initializeRoutes(r *gin.Engine, cfg config.API) {
 	v1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
 	v1.OPTIONS("/movies/:movie_id/posters/:poster_id", handlers.Option)
 	v1.HEAD("/movies/:movie_id/posters/:poster_id", handlers.Head)
+}
+
+func initializeMetricsRoute(r *gin.Engine, cfg config.API) {
+	middlewares.InitPrometheus(r, cfg)
+
+	r.Use(middlewares.Prometheus())
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 }

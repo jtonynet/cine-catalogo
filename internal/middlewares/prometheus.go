@@ -1,4 +1,4 @@
-package handlers
+package middlewares
 
 import (
 	"runtime"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/load"
@@ -128,9 +127,7 @@ var (
 	)
 )
 
-func ExposeMetrics(r *gin.Engine, cfg config.API) {
-	metricsLoop(cfg)
-
+func InitPrometheus(r *gin.Engine, cfg config.API) {
 	// Use OpenTelemetry middleware
 	r.Use(otelgin.Middleware(cfg.Name))
 
@@ -148,9 +145,7 @@ func ExposeMetrics(r *gin.Engine, cfg config.API) {
 	prometheus.Register(requestsDuration)
 	prometheus.Register(requestsMaxDuration)
 
-	r.Use(prometheusMiddleware())
-
-	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	metricsLoop(cfg)
 }
 
 func metricsLoop(cfg config.API) {
@@ -195,7 +190,7 @@ func metricsLoop(cfg config.API) {
 	}()
 }
 
-func prometheusMiddleware() gin.HandlerFunc {
+func Prometheus() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		initialRequestTime := time.Now()
 
