@@ -1,14 +1,25 @@
-FROM golang:1.21.1-alpine AS api
+FROM golang:1.21.1-alpine AS builder
 WORKDIR /usr/src/app
 
-RUN go build cmd/api/main.go 
+COPY go.mod ./
+COPY go.sum ./
 
-COPY ./main main
-RUN chmod 777 main
+RUN go mod download
 
-COPY ./web web
-COPY ./api api
+COPY api ./api
+COPY cmd ./cmd
+COPY config ./config
+COPY internal ./internal
 
-EXPOSE 8080
+RUN go build ./cmd/api/main.go
+RUN chmod a+x main
+
+FROM alpine:latest
+WORKDIR /usr/src/app
+
+COPY .env .env
+COPY api ./api
+
+COPY --from=builder /usr/src/app/main /usr/src/app/main
 
 CMD ["./main"]

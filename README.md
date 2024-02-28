@@ -82,16 +82,9 @@ In the current branch, you will find the "happy path" for creating addresses, ci
 
 Create a copy of the 'SAMPLE.env' file with the name '.env' and run the 'docker compose up' command (according to your 'docker compose' version) in the project's root directory:
 ```bash
+$ docker compose build
 $ docker compose up
 ```
-
-> :writing_hand: **Note**:
->
-> __Troubleshooting with [Docker Volumes](https://betterstack.com/community/questions/what-is-the-best-way-to-manage-permissions-for-docker-shared-volumes/)__
-> For the purpose of setting up the local environment, one might encounter issues with permissions in the docker_data folder, which stores the volumes of the components needed to run the environment. The docker-compose creates this folder but does not grant it the necessary permissions to manage these volumes. The approach we are currently using to handle this is to run the following command in case you encounter an error on the first attempt of `docker compose up`:
->```bash
->sudo chmod -R 777 docker_data/
->``` 
 
 > :writing_hand: **Note**:
 >
@@ -102,7 +95,6 @@ $ docker compose up
 >sudo kill -9 <process id>
 >```
 >as seen in this [Stack Overflow](https://stackoverflow.com/questions/46176584/docker-bind-for-0-0-0-04000-failed-port-is-already-allocated) question with other possible solutions.
-
 
 <br/>
 
@@ -400,7 +392,7 @@ erDiagram
 <a id="HATEOAS"></a>
 ### 🚥 HATEOAS HAL
 
-The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a [local tests URL](http://localhost:4200/#uri=http://localhost:8080/v1/) with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
+The API is being developed following RESTful guidelines at `maturity level 4` for educational purposes. Hal Explores can be used to navigate and validate consistency with the specification by simply accessing a local tests URL http://localhost:4200/#uri=http://localhost:8080/v1/ with the application running. See the [Hypertext Application Language](https://en.wikipedia.org/wiki/Hypertext_Application_Language) for more details .
 
 <img src="./docs/assets/images/screen_captures/hal.png"/>
 
@@ -650,4 +642,7 @@ https://medium.com/nerd-for-tech/testing-rest-api-in-go-with-testify-and-mockery
 https://github.com/renovatebot/renovate
 
 repository settings -> security -> Secrets and Variables -> Actions -> New Repository Secret -> `PASSWORD_DOCKER_HUB`
+
+golang livereload
+https://thegodev.com/live-reloading/
 -->

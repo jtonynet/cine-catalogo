@@ -11,6 +11,14 @@ networks:
   monit:
   proxy:
 
+volumes:
+  postgres-catalogo-data:
+    external: false
+  prometheus-data:
+    external: false
+  grafana-data:
+    external: false  
+
 services:
   postgres-catalogo:
     image: postgres:16.0-alpine
@@ -23,28 +31,27 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./docker_data/postgres-data:/var/lib/postgresql/data  
+      - postgres-catalogo-data:/var/lib/postgresql/data  
     networks:
       - database
 
   catalogo-api:
     build: 
       context: .
-      dockerfile: Dockerfile.Local
-      target: api
+      dockerfile: Dockerfile.LiveReload
     depends_on:
       - postgres-catalogo
     container_name: catalogo-api
     hostname: catalogo-api
     ports: 
       - "8080:8080"
-    volumes: 
-      - ./:/usr/src/app/
     tty: true
     networks:
       - api
       - database
       - proxy # Reverse Proxy NGNX in future
+    volumes:
+      - ./:/usr/src/app/ # Use only live reload mode, otherwise comments this volume and parameter
 
   hal-catalogo:
     build:
@@ -65,7 +72,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./tools/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./docker_data/prometheus/prometheus_data:/prometheus
+      - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -84,7 +91,7 @@ services:
     image: grafana/grafana
     container_name: grafana-ticket
     volumes:
-      - ./docker_data/grafana:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
     restart: unless-stopped
     ports:
       - 3000:3000

@@ -3,6 +3,7 @@
 *.dll
 *.so
 *.dylyb
+main
 
 # Build directories
 /bin/
