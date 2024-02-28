@@ -14,19 +14,19 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
-var (
+type Database struct {
 	DB  *gorm.DB
 	log interfaces.Logger
-)
+}
 
-func Init(cfg config.Database) error {
+func NewDatabase(cfg *config.Database) (*Database, error) {
 	key := "database-init"
 
 	l, err := logger.NewLogger()
 	if err != nil {
 		fmt.Printf("log database failure %v", err)
 	}
-	log = decorators.NewLoggerWithMetrics(l)
+	log := decorators.NewLoggerWithMetrics(l)
 
 	log.WithField("origin", key).
 		Info("database: trying open connection")
@@ -38,14 +38,15 @@ func Init(cfg config.Database) error {
 		cfg.DB,
 		cfg.Port)
 
-	DB, err = gorm.Open(postgres.Open(strConn))
+	var db *gorm.DB
+	db, err = gorm.Open(postgres.Open(strConn))
 	if err != nil {
 		log.WithError(err).Error("database: error on connection")
-		return err
+		return nil, err
 	}
 
 	if cfg.MetricEnabled {
-		DB.Use(prometheus.New(prometheus.Config{
+		db.Use(prometheus.New(prometheus.Config{
 			DBName:          cfg.MetricDBName,          // `DBName` as metrics label
 			RefreshInterval: cfg.MetricRefreshInterval, // refresh metrics interval (default 15 seconds)
 			StartServer:     cfg.MetricStartServer,     // start http server to expose metrics
@@ -59,23 +60,24 @@ func Init(cfg config.Database) error {
 	log.WithField("origin", key).
 		Info("database: connection is openned")
 
-	DB.AutoMigrate(&models.Address{})
-	DB.AutoMigrate(&models.Cinema{})
+	db.AutoMigrate(&models.Address{})
+	db.AutoMigrate(&models.Cinema{})
 
-	DB.AutoMigrate(&models.Movie{})
-	DB.AutoMigrate(&models.Poster{})
+	db.AutoMigrate(&models.Movie{})
+	db.AutoMigrate(&models.Poster{})
 
 	log.WithField("origin", key).
 		Info("database: tables created")
 
-	return nil
+	resultDatabase := &Database{DB: db, log: log}
+	return resultDatabase, nil
 }
 
-func IsConnected() error {
+func (db *Database) IsConnected() error {
 	key := "database-is-connected"
 
-	if err := DB.Raw("SELECT 1").Error; err != nil {
-		log.WithError(err).
+	if err := db.DB.Raw("SELECT 1").Error; err != nil {
+		db.log.WithError(err).
 			WithField("origin", key).
 			Error("error trying check readiness")
 		return err

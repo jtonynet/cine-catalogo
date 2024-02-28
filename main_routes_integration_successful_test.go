@@ -50,7 +50,14 @@ type IntegrationSuccesful struct {
 	addressResponse responses.Address
 	movieCreate     requests.Movie
 
+	addressHandler *handlers.AdrressHandler
+	cinemaHandler  *handlers.CinemaHandler
+	movieHandler   *handlers.MovieHandler
+	posterHandler  *handlers.PosterHandler
+
 	uploadMoviePosterPath string
+
+	Database *database.Database
 }
 
 func (suite *IntegrationSuccesful) SetupSuite() {
@@ -60,7 +67,18 @@ func (suite *IntegrationSuccesful) SetupSuite() {
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
 
 	handlers.Init()
-	database.Init(suite.cfg.Database)
+
+	db, err := database.NewDatabase(&suite.cfg.Database)
+	if err != nil {
+		panic("cannot connect to database")
+	}
+
+	suite.Database = db
+
+	suite.addressHandler = handlers.NewAddressHandler(db)
+	suite.cinemaHandler = handlers.NewCinemaHandler(db)
+	suite.movieHandler = handlers.NewMovieHandler(db)
+	suite.posterHandler = handlers.NewPosterHandler(db)
 
 	suite.addressUUID, _ = uuid.Parse("9aa904a0-feed-4502-ace8-bf9dd0e23fb5") // uuid.New()
 	suite.cinemaUUID, _ = uuid.Parse("51276e29-940d-4d21-aa74-c0c4d3c5d632")  // uuid.New()
@@ -83,7 +101,7 @@ func (suite *IntegrationSuccesful) TearDownSuite() {
 		suite.movieUUID.String(),
 	)
 
-	database.DB.Exec(query)
+	suite.Database.DB.Exec(query)
 
 	err := os.RemoveAll(suite.uploadMoviePosterPath)
 	if err != nil {
@@ -138,7 +156,7 @@ func (suite *IntegrationSuccesful) TestV1IntegrationSuccessful() {
 
 func (suite *IntegrationSuccesful) createAndRetrieveAddresses() {
 	// Create Addresses
-	suite.routesV1.POST("/addresses", handlers.CreateAddresses)
+	suite.routesV1.POST("/addresses", suite.addressHandler.CreateAddresses)
 
 	addressCreate := requests.Address{
 		UUID:        suite.addressUUID,
@@ -161,7 +179,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveAddresses() {
 
 	// Retrieve Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/addresses/:address_id", handlers.RetrieveAddress)
+	suite.routesV1.GET("/addresses/:address_id", suite.addressHandler.RetrieveAddress)
 
 	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
 
@@ -187,7 +205,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveAddresses() {
 func (suite *IntegrationSuccesful) updateAndRetrieveAddressList() {
 	// Update Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.PATCH("/addresses/:address_id", handlers.UpdateAddress)
+	suite.routesV1.PATCH("/addresses/:address_id", suite.addressHandler.UpdateAddress)
 
 	addressUpdateRequest := requests.UpdateAddress{
 		Telephone: "1111-1111",
@@ -209,7 +227,7 @@ func (suite *IntegrationSuccesful) updateAndRetrieveAddressList() {
 
 	// Retrieve Address List
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/addresses", handlers.RetrieveAddressList)
+	suite.routesV1.GET("/addresses", suite.addressHandler.RetrieveAddressList)
 
 	reqRetrieveAddressList, err := http.NewRequest("GET", "/v1/addresses", nil)
 	assert.NoError(suite.T(), err)
@@ -245,7 +263,7 @@ func (suite *IntegrationSuccesful) updateAndRetrieveAddressList() {
 func (suite *IntegrationSuccesful) createAndRetrieveCinemas() {
 	// Create Cinemas
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.POST("/addresses/:address_id/cinemas", handlers.CreateCinemas)
+	suite.routesV1.POST("/addresses/:address_id/cinemas", suite.cinemaHandler.CreateCinemas)
 
 	cinemaCreate := requests.Cinema{
 		UUID:        suite.cinemaUUID,
@@ -269,7 +287,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveCinemas() {
 
 	// Retrieve Cinema
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/cinemas/:cinema_id", handlers.RetrieveCinema)
+	suite.routesV1.GET("/cinemas/:cinema_id", suite.cinemaHandler.RetrieveCinema)
 
 	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%v", suite.cinemaUUID.String())
 
@@ -290,7 +308,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveCinemas() {
 func (suite *IntegrationSuccesful) updateAndRetrieveCinemaList() {
 	// Update Cinema
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.PATCH("/cinemas/:cinema_id", handlers.UpdateCinema)
+	suite.routesV1.PATCH("/cinemas/:cinema_id", suite.cinemaHandler.UpdateCinema)
 
 	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%v", suite.cinemaUUID.String())
 
@@ -314,7 +332,7 @@ func (suite *IntegrationSuccesful) updateAndRetrieveCinemaList() {
 
 	// Retrieve Cinema List
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/addresses/:address_id/cinemas", handlers.RetrieveCinemaList)
+	suite.routesV1.GET("/addresses/:address_id/cinemas", suite.cinemaHandler.RetrieveCinemaList)
 
 	addressCinemasListUUIDRoute := fmt.Sprintf("/v1/addresses/%s/cinemas", suite.addressUUID.String())
 	reqRetrieveCinemaList, err := http.NewRequest("GET", addressCinemasListUUIDRoute, nil)
@@ -325,7 +343,7 @@ func (suite *IntegrationSuccesful) updateAndRetrieveCinemaList() {
 	bodyRetrieveCinemaListJson := respRetrieveCinemaList.Body.String()
 
 	addressCinemaListModel := models.Address{}
-	err = database.DB.Where(&models.Address{UUID: suite.addressUUID}).First(&addressCinemaListModel).Error
+	err = suite.Database.DB.Where(&models.Address{UUID: suite.addressUUID}).First(&addressCinemaListModel).Error
 	assert.NoError(suite.T(), err)
 
 	cinemaModel, err := models.NewCinema(
@@ -352,7 +370,7 @@ func (suite *IntegrationSuccesful) updateAndRetrieveCinemaList() {
 func (suite *IntegrationSuccesful) createAndRetrieveMovies() {
 	// Create Movies
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.POST("/movies", handlers.CreateMovies)
+	suite.routesV1.POST("/movies", suite.movieHandler.CreateMovies)
 
 	ageRating := int64(14)
 	published := true
@@ -378,7 +396,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveMovies() {
 
 	// Retrieve Movie
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/movies/:movie_id", handlers.RetrieveMovie)
+	suite.routesV1.GET("/movies/:movie_id", suite.movieHandler.RetrieveMovie)
 
 	movieUUIDRoute := fmt.Sprintf("/v1/movies/%v", suite.movieUUID.String())
 
@@ -401,7 +419,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveMovies() {
 func (suite *IntegrationSuccesful) createAndRetrieveMovieList() {
 	// Update Movie
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.PATCH("/movies/:movie_id", handlers.UpdateMovie)
+	suite.routesV1.PATCH("/movies/:movie_id", suite.movieHandler.UpdateMovie)
 
 	movieUUIDRoute := fmt.Sprintf("/v1/movies/%v", suite.movieUUID.String())
 
@@ -423,7 +441,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveMovieList() {
 
 	// Retrieve Movie List
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/movies", handlers.RetrieveMovieList)
+	suite.routesV1.GET("/movies", suite.movieHandler.RetrieveMovieList)
 
 	reqRetrieveMovieList, err := http.NewRequest("GET", "/v1/movies", nil)
 	assert.NoError(suite.T(), err)
@@ -458,7 +476,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveMovieList() {
 func (suite *IntegrationSuccesful) createAndRetrieveAndUpdatePoster() {
 	// Upload Movie Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.POST("/movies/:movie_id/posters", handlers.UploadMoviePoster)
+	suite.routesV1.POST("/movies/:movie_id/posters", suite.posterHandler.UploadMoviePoster)
 
 	imageContentType := "image/png"
 
@@ -525,7 +543,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveAndUpdatePoster() {
 
 	// Retrieve Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.GET("/movies/:movie_id/posters/:poster_id", handlers.RetrieveMoviePoster)
+	suite.routesV1.GET("/movies/:movie_id/posters/:poster_id", suite.posterHandler.RetrieveMoviePoster)
 
 	movieUUIDPosterUUIDRoute := fmt.Sprintf("/v1/movies/%s/posters/%s", suite.movieUUID, suite.posterUUID)
 
@@ -543,7 +561,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveAndUpdatePoster() {
 
 	// Update Poster
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.PATCH("/movies/:movie_id/posters/:poster_id", handlers.UpdateMoviePoster)
+	suite.routesV1.PATCH("/movies/:movie_id/posters/:poster_id", suite.posterHandler.UpdateMoviePoster)
 
 	posterUpdatePath := "./docs/assets/images/posters/back_to_the_recursion.png"
 	posterUpdateFile, err := os.Open(posterUpdatePath)
@@ -590,7 +608,7 @@ func (suite *IntegrationSuccesful) createAndRetrieveAndUpdatePoster() {
 func (suite *IntegrationSuccesful) deleteCinema() {
 	// Delete Cinema
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.DELETE("/cinemas/:cinema_id", handlers.DeleteCinema)
+	suite.routesV1.DELETE("/cinemas/:cinema_id", suite.cinemaHandler.DeleteCinema)
 
 	cinemaUUIDRoute := fmt.Sprintf("/v1/cinemas/%s", suite.cinemaUUID.String())
 	reqCinemaDelete, err := http.NewRequest("DELETE", cinemaUUIDRoute, nil)
@@ -604,7 +622,7 @@ func (suite *IntegrationSuccesful) deleteCinema() {
 func (suite *IntegrationSuccesful) deleteAddress() {
 	// Delete Address
 	suite.router, suite.routesV1 = setupRouterAndGroup(suite.cfg.API)
-	suite.routesV1.DELETE("/addresses/:address_id", handlers.DeleteAddress)
+	suite.routesV1.DELETE("/addresses/:address_id", suite.addressHandler.DeleteAddress)
 
 	addressUUIDRoute := fmt.Sprintf("/v1/addresses/%s", suite.addressUUID.String())
 	reqAddressDelete, err := http.NewRequest("DELETE", addressUUIDRoute, nil)

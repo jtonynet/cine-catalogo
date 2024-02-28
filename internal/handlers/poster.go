@@ -17,6 +17,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
+type PosterHandler struct {
+	*database.Database
+}
+
+func NewPosterHandler(db *database.Database) *PosterHandler {
+	return &PosterHandler{
+		Database: db,
+	}
+}
+
 // @BasePath /v1
 
 // @Summary Upload Movie Poster
@@ -29,7 +39,7 @@ import (
 // @Param file formData file true "binary poster data"
 // @Produce json
 // @Success 200 {object} responses.Poster
-func UploadMoviePoster(ctx *gin.Context) {
+func (ph *PosterHandler) UploadMoviePoster(ctx *gin.Context) {
 
 	// INFO: Param swaggo dont accepts complex type as `File *multipart.FileHeader`
 	// into requests.Poster struct. Therefore, I defined the type in the Swaggo
@@ -47,7 +57,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 	movieUUID := uuid.MustParse(movieId)
 
 	var movie models.Movie
-	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+	if err := ph.Database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
 		// TODO: Implements in future
 		fmt.Println("dont found movie")
 		return
@@ -72,7 +82,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 	}
 	posterUUID := uuid.MustParse(requestForm.UUID)
 
-	posterUploadedPath, err := uploadPoster(ctx, movieUUID, posterUUID, requestForm.File)
+	posterUploadedPath, err := ph.uploadPoster(ctx, movieUUID, posterUUID, requestForm.File)
 	if err != nil {
 		// TODO: Implements in future
 		fmt.Printf("error on posterUploadedPath %v", err)
@@ -92,7 +102,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 		return
 	}
 
-	if err := database.DB.Create(&poster).Error; err != nil {
+	if err := ph.Database.DB.Create(&poster).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
@@ -131,7 +141,7 @@ func UploadMoviePoster(ctx *gin.Context) {
 // @Param file formData file true "binary poster data"
 // @Produce json
 // @Success 200 {object} responses.Poster
-func UpdateMoviePoster(ctx *gin.Context) {
+func (ph *PosterHandler) UpdateMoviePoster(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
@@ -146,7 +156,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 	movieUUID := uuid.MustParse(movieId)
 	posterUUID := uuid.MustParse(posterId)
 
-	existingPoster, err := getPosterByMovieAndPosterUUID(posterUUID, movieUUID)
+	existingPoster, err := ph.getPosterByMovieAndPosterUUID(posterUUID, movieUUID)
 	if err != nil {
 		// TODO: Implements in future
 		fmt.Printf("existingPoster %v", err)
@@ -163,7 +173,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 
 	var posterUploadedPath string
 	if updateRequest.File != nil {
-		posterUploadedPath, err = uploadPoster(ctx, movieUUID, posterUUID, updateRequest.File)
+		posterUploadedPath, err = ph.uploadPoster(ctx, movieUUID, posterUUID, updateRequest.File)
 		if err != nil {
 			// TODO: Implements in future
 			fmt.Printf("posterUploadedPath %v", err)
@@ -182,7 +192,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 		existingPoster.AlternativeText = updateRequest.AlternativeText
 	}
 
-	if err := database.DB.Save(&existingPoster).Error; err != nil {
+	if err := ph.Database.DB.Save(&existingPoster).Error; err != nil {
 		// TODO: Implements in future
 		fmt.Printf("database.DB.Save %v", err)
 		return
@@ -220,7 +230,7 @@ func UpdateMoviePoster(ctx *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 200 {object} responses.Poster
-func RetrieveMoviePoster(ctx *gin.Context) {
+func (ph *PosterHandler) RetrieveMoviePoster(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
@@ -235,7 +245,7 @@ func RetrieveMoviePoster(ctx *gin.Context) {
 	movieUUID := uuid.MustParse(movieId)
 	posterUUID := uuid.MustParse(posterId)
 
-	existingPoster, err := getPosterByMovieAndPosterUUID(posterUUID, movieUUID)
+	existingPoster, err := ph.getPosterByMovieAndPosterUUID(posterUUID, movieUUID)
 	if err != nil {
 		// TODO: Implements in future
 		fmt.Printf("existingPoster %v", err)
@@ -266,7 +276,7 @@ func RetrieveMoviePoster(ctx *gin.Context) {
 
 }
 
-func uploadPoster(ctx *gin.Context, movieUUID, posterUUID uuid.UUID, file *multipart.FileHeader) (string, error) {
+func (ph *PosterHandler) uploadPoster(ctx *gin.Context, movieUUID, posterUUID uuid.UUID, file *multipart.FileHeader) (string, error) {
 	cfg := ctx.MustGet("cfg").(config.API)
 
 	// TODO: posters dirs, move to storages local ceph | S3 in future and manage by envVars
@@ -288,14 +298,14 @@ func uploadPoster(ctx *gin.Context, movieUUID, posterUUID uuid.UUID, file *multi
 	return posterPath, nil
 }
 
-func getPosterByMovieAndPosterUUID(posterUUID, movieUUID uuid.UUID) (models.Poster, error) {
+func (ph *PosterHandler) getPosterByMovieAndPosterUUID(posterUUID, movieUUID uuid.UUID) (models.Poster, error) {
 
 	// TODO: Uggly query, move to model
 	// or find better way:
 	// https://gorm.io/docs/preload.html
 
 	var existingPoster models.Poster
-	if err := database.DB.
+	if err := ph.Database.DB.
 		Preload("Movie").
 		Joins("INNER JOIN movies ON posters.movie_id = movies.id").
 		Where("posters.uuid = ? AND movies.uuid = ?", posterUUID, movieUUID).
