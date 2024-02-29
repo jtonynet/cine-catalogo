@@ -9,14 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added [Testfy](github.com/stretchr/testify)
-- Added "Happy Path" Integration Succesful Routes tests
-- Added debug and tests section on readme.md doc
-
 
 ### Fixed
 
+---
 
+## [0.1.2] - 2024-02-29
+
+### Added
+- Added `LiveReload` behavior to Dockerfile using [CompileDaemon](https://github.com/githubnemo/CompileDaemon).
+- Removed dependency on the `docker_data` folder. Principal volumes are now external.
+- Other improvements based on [go-products-api](https://github.com/jtonynet/go-products-api)
+
+### Fixed
+- Converted "Happy Path" to a black box smoke test, along with several test fixes.
+- Corrected dependency injection for a two-tier approach. Handlers now receive a database instance.
+- Fixed the location for the Prometheus Custom Middleware.
 
 ---
 
@@ -68,6 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - We start the project [Project](https://github.com/users/jtonynet/projects/2) with initial commit. Base docs: Rich Readme, ADR [0002: Gin, Gorm and Postegres in three tier architecture](./assets/architecture/decisions/0002-gin-gorm-and-postgres-in-three-tier-architecture.md), [Miro Event Storming](https://miro.com/app/board/uXjVNRofMoA=/) and [Mermaid Diagrams](https://github.com/jtonynet/cine-catalogo/tree/main#diagrams)
 
+[0.1.2]: https://github.com/jtonynet/cine-catalogo/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/jtonynet/cine-catalogo/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/jtonynet/cine-catalogo/compare/v0.0.1...v0.1.0
 [0.0.1]: https://github.com/jtonynet/cine-catalogo/compare/v0.0.0...v0.0.1

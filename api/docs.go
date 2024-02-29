@@ -695,7 +695,7 @@ const docTemplate = `{
         "requests.Movie": {
             "type": "object",
             "required": [
-                "age_rating",
+                "ageRating",
                 "description",
                 "name",
                 "published",
@@ -703,7 +703,7 @@ const docTemplate = `{
                 "uuid"
             ],
             "properties": {
-                "age_rating": {
+                "ageRating": {
                     "type": "integer",
                     "example": 12
                 },
@@ -778,7 +778,7 @@ const docTemplate = `{
         "requests.UpdateMovie": {
             "type": "object",
             "properties": {
-                "age_rating": {
+                "ageRating": {
                     "type": "integer",
                     "example": 12
                 },
