@@ -684,7 +684,7 @@
         "requests.Movie": {
             "type": "object",
             "required": [
-                "age_rating",
+                "ageRating",
                 "description",
                 "name",
                 "published",
@@ -692,7 +692,7 @@
                 "uuid"
             ],
             "properties": {
-                "age_rating": {
+                "ageRating": {
                     "type": "integer",
                     "example": 12
                 },
@@ -767,7 +767,7 @@
         "requests.UpdateMovie": {
             "type": "object",
             "properties": {
-                "age_rating": {
+                "ageRating": {
                     "type": "integer",
                     "example": 12
                 },

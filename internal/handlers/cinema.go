@@ -16,6 +16,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
+type CinemaHandler struct {
+	*database.Database
+}
+
+func NewCinemaHandler(db *database.Database) *CinemaHandler {
+	return &CinemaHandler{
+		Database: db,
+	}
+}
+
 // @BasePath /v1
 
 // @Summary Create Addresses Cinemas
@@ -27,7 +37,7 @@ import (
 // @Param address_id path string true "Address UUID"
 // @Param request body []requests.Cinema true "Request body"
 // @Success 200 {object} responses.HATEOASListResult
-func CreateCinemas(ctx *gin.Context) {
+func (ch *CinemaHandler) CreateCinemas(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "create-cinemas"
@@ -44,7 +54,7 @@ func CreateCinemas(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	var address models.Address
-	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	if err := ch.Database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 
 		log.WithError(err).
 			WithField("origin", handler).
@@ -93,7 +103,7 @@ func CreateCinemas(ctx *gin.Context) {
 		cinemas = append(cinemas, cinema)
 	}
 
-	if err := database.DB.Create(&cinemas).Error; err != nil {
+	if err := ch.Database.DB.Create(&cinemas).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB create cinemas")
@@ -102,7 +112,7 @@ func CreateCinemas(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getCinemaListResult(cinemas, address, versionURL)
+	result, err := ch.getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -128,7 +138,7 @@ func CreateCinemas(ctx *gin.Context) {
 // @Router /cinemas/{cinema_id} [get]
 // @Param cinema_id path string true "Cinema UUID"
 // @Success 200 {object} responses.Cinema
-func RetrieveCinema(ctx *gin.Context) {
+func (ch *CinemaHandler) RetrieveCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-cinema"
@@ -145,7 +155,7 @@ func RetrieveCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+	if err := ch.Database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB fetch cinema")
@@ -154,7 +164,7 @@ func RetrieveCinema(ctx *gin.Context) {
 		return
 	}
 
-	templateJSON, err := getCinemasTemplates(versionURL)
+	templateJSON, err := ch.getCinemasTemplates(versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -190,7 +200,7 @@ func RetrieveCinema(ctx *gin.Context) {
 // @Router /cinemas/{cinema_id} [delete]
 // @Param cinema_id path string true "Cinema UUID"
 // @Success 204
-func DeleteCinema(ctx *gin.Context) {
+func (ch *CinemaHandler) DeleteCinema(ctx *gin.Context) {
 	handler := "delete-cinema"
 
 	cinemaId := ctx.Param("cinema_id")
@@ -204,7 +214,7 @@ func DeleteCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	if err := database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+	if err := ch.Database.DB.Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB fetch cinema")
@@ -213,7 +223,7 @@ func DeleteCinema(ctx *gin.Context) {
 		return
 	}
 
-	if result := database.DB.Delete(&cinema); result.Error != nil {
+	if result := ch.Database.DB.Delete(&cinema); result.Error != nil {
 		log.WithError(result.Error).
 			WithField("origin", handler).
 			Error("error on DB delete cinema")
@@ -240,7 +250,7 @@ func DeleteCinema(ctx *gin.Context) {
 // @Param cinema_id path string true "Cinema UUID"
 // @Param request body requests.UpdateCinema true "Request body"
 // @Success 200 {object} responses.Cinema
-func UpdateCinema(ctx *gin.Context) {
+func (ch *CinemaHandler) UpdateCinema(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-cinema"
@@ -256,7 +266,7 @@ func UpdateCinema(ctx *gin.Context) {
 	cinemaUUID := uuid.MustParse(cinemaId)
 
 	cinema := models.Cinema{UUID: cinemaUUID}
-	if err := database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
+	if err := ch.Database.DB.Preload("Address").Where(&models.Cinema{UUID: cinemaUUID}).First(&cinema).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB fetch cinema")
@@ -287,7 +297,7 @@ func UpdateCinema(ctx *gin.Context) {
 		cinema.Capacity = updateRequest.Capacity
 	}
 
-	if err := database.DB.Save(&cinema).Error; err != nil {
+	if err := ch.Database.DB.Save(&cinema).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB update cinema")
@@ -296,7 +306,7 @@ func UpdateCinema(ctx *gin.Context) {
 		return
 	}
 
-	templateJSON, err := getCinemasTemplates(versionURL)
+	templateJSON, err := ch.getCinemasTemplates(versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -331,7 +341,7 @@ func UpdateCinema(ctx *gin.Context) {
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses/{address_id}/cinemas [get]
 // @Param address_id path string true "Address UUID"
-func RetrieveCinemaList(ctx *gin.Context) {
+func (ch *CinemaHandler) RetrieveCinemaList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-cinema-list"
@@ -347,7 +357,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
-	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	if err := ch.Database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB fetch address")
@@ -357,7 +367,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	}
 
 	cinemas := []models.Cinema{}
-	if err := database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
+	if err := ch.Database.DB.Where(&models.Cinema{AddressID: address.ID}).Find(&cinemas).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB fetch cinemas")
@@ -366,7 +376,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getCinemaListResult(cinemas, address, versionURL)
+	result, err := ch.getCinemaListResult(cinemas, address, versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -385,7 +395,7 @@ func RetrieveCinemaList(ctx *gin.Context) {
 	)
 }
 
-func getCinemaListResult(cinemas []models.Cinema, address models.Address, versionURL string) (*responses.HATEOASListResult, error) {
+func (ch *CinemaHandler) getCinemaListResult(cinemas []models.Cinema, address models.Address, versionURL string) (*responses.HATEOASListResult, error) {
 	var cinemaListResponse []responses.Cinema
 
 	addressResponse := responses.NewAddress(address, versionURL)
@@ -408,7 +418,7 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 		Self: responses.HATEOASLink{HREF: fmt.Sprintf("%s/addresses/%s/cinemas", versionURL, address.UUID)},
 	}
 
-	templateJSON, err := getCinemasTemplates(versionURL)
+	templateJSON, err := ch.getCinemasTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return nil, err
@@ -423,7 +433,7 @@ func getCinemaListResult(cinemas []models.Cinema, address models.Address, versio
 	return result, nil
 }
 
-func getCinemasTemplates(
+func (ch *CinemaHandler) getCinemasTemplates(
 	versionURL string,
 ) (interface{}, error) {
 	templateParams := []hateoas.TemplateParams{

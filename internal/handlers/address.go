@@ -18,6 +18,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
+type AdrressHandler struct {
+	*database.Database
+}
+
+func NewAddressHandler(db *database.Database) *AdrressHandler {
+	return &AdrressHandler{
+		Database: db,
+	}
+}
+
 // @BasePath /v1
 
 // @Summary Create Addresses
@@ -28,7 +38,7 @@ import (
 // @Param request body []requests.Address true "Request body"
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses [post]
-func CreateAddresses(ctx *gin.Context) {
+func (ah *AdrressHandler) CreateAddresses(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "create-addresses"
@@ -74,7 +84,7 @@ func CreateAddresses(ctx *gin.Context) {
 		addresses = append(addresses, address)
 	}
 
-	if err := database.DB.Create(&addresses).Error; err != nil {
+	if err := ah.Database.DB.Create(&addresses).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on DB create addresses")
@@ -83,7 +93,7 @@ func CreateAddresses(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getAddresListResult(addresses, versionURL)
+	result, err := ah.getAddresListResult(addresses, versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -110,7 +120,7 @@ func CreateAddresses(ctx *gin.Context) {
 // @Param address_id path string true "Address UUID"
 // @Param request body requests.UpdateAddress true "Request body"
 // @Success 200 {object} responses.Address
-func UpdateAddress(ctx *gin.Context) {
+func (ah *AdrressHandler) UpdateAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "update-address"
@@ -126,7 +136,7 @@ func UpdateAddress(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
-	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	if err := ah.Database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on DB fetch address")
@@ -169,7 +179,7 @@ func UpdateAddress(ctx *gin.Context) {
 		address.PostalCode = updateRequest.PostalCode
 	}
 
-	if err := database.DB.Save(&address).Error; err != nil {
+	if err := ah.Database.DB.Save(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Error("error on DB update address")
@@ -227,7 +237,7 @@ func UpdateAddress(ctx *gin.Context) {
 // @Param address_id path string true "UUID of the address"
 // @Success 200 {object} responses.Address
 // @Router /addresses/{address_id} [get]
-func RetrieveAddress(ctx *gin.Context) {
+func (ah *AdrressHandler) RetrieveAddress(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-address"
@@ -249,7 +259,7 @@ func RetrieveAddress(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
-	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	if err := ah.Database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithFields(logFields...).
 			Warning("error on DB fetch address")
@@ -306,13 +316,13 @@ func RetrieveAddress(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /addresses [get]
-func RetrieveAddressList(ctx *gin.Context) {
+func (ah *AdrressHandler) RetrieveAddressList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "retrieve-address-list"
 
 	addresses := []models.Address{}
-	if err := database.DB.Find(&addresses).Error; err != nil {
+	if err := ah.Database.DB.Find(&addresses).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on DB fetch addresses")
@@ -321,7 +331,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 		return
 	}
 
-	result, err := getAddresListResult(addresses, versionURL)
+	result, err := ah.getAddresListResult(addresses, versionURL)
 	if err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
@@ -348,7 +358,7 @@ func RetrieveAddressList(ctx *gin.Context) {
 // @Router /addresses/{address_id} [delete]
 // @Param address_id path string true "Address UUID"
 // @Success 204
-func DeleteAddress(ctx *gin.Context) {
+func (ah *AdrressHandler) DeleteAddress(ctx *gin.Context) {
 	handler := "delete-address"
 
 	addressId := ctx.Param("address_id")
@@ -362,7 +372,7 @@ func DeleteAddress(ctx *gin.Context) {
 	addressUUID := uuid.MustParse(addressId)
 
 	address := models.Address{UUID: addressUUID}
-	if err := database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
+	if err := ah.Database.DB.Where(&models.Address{UUID: addressUUID}).First(&address).Error; err != nil {
 		log.WithError(err).
 			WithField("origin", handler).
 			Warning("error on DB fetch address")
@@ -371,7 +381,7 @@ func DeleteAddress(ctx *gin.Context) {
 		return
 	}
 
-	if result := database.DB.Delete(&address); result.Error != nil {
+	if result := ah.Database.DB.Delete(&address); result.Error != nil {
 		log.WithError(result.Error).
 			WithField("origin", handler).
 			Error("error on DB delete address")
@@ -389,7 +399,7 @@ func DeleteAddress(ctx *gin.Context) {
 	)
 }
 
-func getAddresListResult(addresses []models.Address, versionURL string) (*responses.HATEOASListResult, error) {
+func (ah *AdrressHandler) getAddresListResult(addresses []models.Address, versionURL string) (*responses.HATEOASListResult, error) {
 	addressListResponse := []responses.Address{}
 
 	for _, address := range addresses {

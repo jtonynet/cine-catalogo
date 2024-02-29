@@ -16,6 +16,16 @@ import (
 	"github.com/jtonynet/cine-catalogo/internal/models"
 )
 
+type MovieHandler struct {
+	*database.Database
+}
+
+func NewMovieHandler(db *database.Database) *MovieHandler {
+	return &MovieHandler{
+		Database: db,
+	}
+}
+
 // @BasePath /v1
 
 // @Summary Create Movies
@@ -26,7 +36,7 @@ import (
 // @Param request body []requests.Movie true "Request body"
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [post]
-func CreateMovies(ctx *gin.Context) {
+func (mh *MovieHandler) CreateMovies(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 	handler := "create-movies"
@@ -61,12 +71,12 @@ func CreateMovies(ctx *gin.Context) {
 		movies = append(movies, movie)
 	}
 
-	if err := database.DB.Create(&movies).Error; err != nil {
+	if err := mh.Database.DB.Create(&movies).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
 
-	result, err := getMovieListResult(movies, cfg.Host, versionURL)
+	result, err := mh.getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -89,7 +99,7 @@ func CreateMovies(ctx *gin.Context) {
 // @Param movie_id path string true "UUID of the movie"
 // @Success 200 {object} responses.Movie
 // @Router /movies/{movie_id} [get]
-func RetrieveMovie(ctx *gin.Context) {
+func (mh *MovieHandler) RetrieveMovie(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
@@ -101,12 +111,12 @@ func RetrieveMovie(ctx *gin.Context) {
 	movieUUID := uuid.MustParse(movieId)
 
 	movie := models.Movie{UUID: movieUUID}
-	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+	if err := mh.Database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
 		responses.SendError(ctx, http.StatusForbidden, "dont fetch Movie and Poster", nil)
 		return
 	}
 
-	templateJSON, err := getMoviesTemplates(versionURL)
+	templateJSON, err := mh.getMoviesTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -137,7 +147,7 @@ func RetrieveMovie(ctx *gin.Context) {
 // @Param request body requests.UpdateMovie true "Request body for update"
 // @Produce json
 // @Success 200 {object} responses.Movie
-func UpdateMovie(ctx *gin.Context) {
+func (mh *MovieHandler) UpdateMovie(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
@@ -149,7 +159,7 @@ func UpdateMovie(ctx *gin.Context) {
 	movieUUID := uuid.MustParse(movieId)
 
 	movie := models.Movie{UUID: movieUUID}
-	if err := database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
+	if err := mh.Database.DB.Preload("Posters").Where(&models.Movie{UUID: movieUUID}).First(&movie).Error; err != nil {
 		responses.SendError(ctx, http.StatusForbidden, "dont fetch Movie and Poster", nil)
 		return
 	}
@@ -182,13 +192,13 @@ func UpdateMovie(ctx *gin.Context) {
 		movie.Subtitled = *updateRequest.Subtitled
 	}
 
-	if err := database.DB.Save(&movie).Error; err != nil {
+	if err := mh.Database.DB.Save(&movie).Error; err != nil {
 		// TODO: Implements in future
 		fmt.Printf("database.DB.Save %v", err)
 		return
 	}
 
-	templateJSON, err := getMoviesTemplates(versionURL)
+	templateJSON, err := mh.getMoviesTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -217,17 +227,17 @@ func UpdateMovie(ctx *gin.Context) {
 // @Produce json
 // @Success 200 {object} responses.HATEOASListResult
 // @Router /movies [get]
-func RetrieveMovieList(ctx *gin.Context) {
+func (mh *MovieHandler) RetrieveMovieList(ctx *gin.Context) {
 	cfg := ctx.MustGet("cfg").(config.API)
 	versionURL := fmt.Sprintf("%s/%s", cfg.Host, "v1")
 
 	movies := []models.Movie{}
-	if err := database.DB.Preload("Posters").Find(&movies).Error; err != nil {
+	if err := mh.Database.DB.Preload("Posters").Find(&movies).Error; err != nil {
 		// TODO: Implements in future
 		return
 	}
 
-	result, err := getMovieListResult(movies, cfg.Host, versionURL)
+	result, err := mh.getMovieListResult(movies, cfg.Host, versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return
@@ -242,7 +252,7 @@ func RetrieveMovieList(ctx *gin.Context) {
 	)
 }
 
-func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
+func (mh *MovieHandler) getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*responses.HATEOASListResult, error) {
 	movieListResponse := []responses.MovieListItem{}
 	posterListResponse := []responses.Poster{}
 
@@ -282,7 +292,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 		CreateMovies: responses.HATEOASLink{HREF: fmt.Sprintf("%s/movies", versionURL)},
 	}
 
-	templateJSON, err := getMoviesTemplates(versionURL)
+	templateJSON, err := mh.getMoviesTemplates(versionURL)
 	if err != nil {
 		// TODO: Implements in future
 		return nil, err
@@ -297,7 +307,7 @@ func getMovieListResult(movies []models.Movie, baseURL, versionURL string) (*res
 	return &result, nil
 }
 
-func getMoviesTemplates(
+func (mh *MovieHandler) getMoviesTemplates(
 	versionURL string,
 ) (interface{}, error) {
 	templateParams := []hateoas.TemplateParams{

@@ -53,7 +53,7 @@ definitions:
     type: object
   requests.Movie:
     properties:
-      age_rating:
+      ageRating:
         example: 12
         type: integer
       description:
@@ -72,7 +72,7 @@ definitions:
         example: 206dad85-cbcd-4b71-8fda-efd6ca87ebc7
         type: string
     required:
-    - age_rating
+    - ageRating
     - description
     - name
     - published
@@ -114,7 +114,7 @@ definitions:
     type: object
   requests.UpdateMovie:
     properties:
-      age_rating:
+      ageRating:
         example: 12
         type: integer
       description:
