@@ -12,10 +12,10 @@ next to a blue gopher, symbol of the golang programming language, sitting in a f
 <!-- 
     icons by: https://simpleicons.org
 -->
-[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Gonic" title="Gin Gonic">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./docs/assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/)  [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) 
+[<img src="./docs/assets/images/icons/go.svg" width="25px" height="25px" alt="go" title="Go">](https://go.dev/) [<img src="./docs/assets/images/icons/gin.svg" width="25px" height="25px" alt="Gin Gonic" title="Gin Gonic">](https://gin-gonic.com/) [<img src="./docs/assets/images/icons/docker.svg" width="25px" height="25px" alt="Docker Logo" title="Docker">](https://www.docker.com/) [<img src="./docs/assets/images/icons/ubuntu.svg" width="25px" height="25px Logo" title="Ubunto" alt="Ubunto" />](https://ubuntu.com/) [<img src="./docs/assets/images/icons/dotenv.svg" width="25px" height="25px" alt="DotEnv Logo" title="DotEnv">](https://github.com/spf13/viper) [<img src="./docs/assets/images/icons/github.svg" width="25px" height="25px" alt="GitHub Logo" title="GitHub">](https://github.com/jtonynet) [<img src="./docs/assets/images/icons/miro.svg" width="25px" height="25px" alt="Miro Logo" title="Miro">](https://miro.com/) [<img src="./docs/assets/images/icons/mermaidjs.svg" width="25px" height="25px" alt="MermaidJS Logo" title="MermaidJS">](https://mermaid.js.org/) [<img src="./docs/assets/images/icons/visualstudiocode.svg" width="25px" height="25px" alt="VsCode Logo" title="VsCode">](https://code.visualstudio.com/) [<img src="./docs/assets/images/icons/hal.svg" width="35px" height="35px" alt="HAL Logo" title="HAL">](https://en.wikipedia.org/wiki/Hypertext_Application_Language) [<img src="./docs/assets/images/icons/postman.svg" width="25px" height="25px" alt="Postman Logo" title="Postman">](https://blog.postman.com/introducing-the-postman-vs-code-extension/) [<img src="./docs/assets/images/icons/postgresql.svg" width="25px" height="25px" alt="PostgreSQL Logo" title="PostgreSQL">](https://www.postgresql.org/) [<img src="./docs/assets/images/icons/swagger.svg" width="25px" height="25px" alt="Swagger Logo" title="Swagger">](https://swagger.io/) [<img src="./docs/assets/images/icons/prometheus.svg" width="25px" height="25px" alt="Prometheus Logo" title="Prometheus">](https://prometheus.io/) [<img src="./docs/assets/images/icons/grafana.svg" width="25px" height="25px" alt="Grafana Logo" title="Grafana">](https://grafana.com/) [<img src="./docs/assets/images/icons/grafana_loki.png" width="25px" height="25px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/githubactions.svg" width="25px" height="25px" alt="GithubActions Logo" title="GithubActions">](https://docs.github.com/en/actions) 
 
 <!--
-[<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./docs/assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./docs/assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./docs/assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
+[<img src="./docs/assets/images/icons/grafana_loki.png" width="25px" height="25px" alt="Grafana Loki Logo" title="Grafana Loki">](https://grafana.com/oss/loki/) [<img src="./docs/assets/images/icons/jaeger.svg" width="25px" height="25px" alt="Jaeger Logo" title="Jaeger">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/opentelemetry.svg" width="25px" height="25px" alt="OpenTelemetry Logo" title="OpenTelemetry">](https://www.jaegertracing.io/) [<img src="./docs/assets/images/icons/redis.svg" width="25px" height="25px" alt="Redis Logo" title="Redis">](https://redis.io/) [<img src="./docs/assets/images/icons/gatling.svg" width="25px" height="25px" alt="Gatling Logo" title="Gatling">](https://gatling.io/) [<img src="./docs/assets/images/icons/keycloak.svg" width="25px" height="25px" alt="Keycloak Logo" title="Keycloak">](https://www.keycloak.org/) [<img src="./docs/assets/images/icons/ceph.svg" width="25px" height="25px" alt="Ceph Logo" title="Ceph">](https://ceph.io/en/) 
 -->
 
 ![Badge Status](https://img.shields.io/badge/STATUS-IN_DEVELOPMENT-green) [![Github Project](https://img.shields.io/badge/PROJECT%20VIEW%20KANBAM-GITHUB-green?logo=github&logoColor=white)](https://github.com/users/jtonynet/projects/2) ![Badge GitHubActions](https://github.com/jtonynet/cine-catalogo/actions/workflows/main.yml/badge.svg?branch=main)
@@ -645,4 +645,36 @@ repository settings -> security -> Secrets and Variables -> Actions -> New Repos
 
 golang livereload
 https://thegodev.com/live-reloading/
+
+https://stackoverflow.com/questions/43654656/dockerfile-if-else-condition-with-external-arguments
+
+
+LOKI:
+sum without(level,app,host,class,message,thread) (count_over_time({level="INFO"}[5m])) > sum without(level,app,host,class,message,thread) (count_over_time({level="WARN"}[5m]))
+
+error tax
+sum by(host) (count_over_time({app="api-cursos", level="ERROR"}[5m])) / sum by(host) (count_over_time({app="api-cursos"}[5m]))
+
+
+level error vs avg levels not errors
+max by (level) (count_over_time({app="api-cursos",level="ERROR"}[5m])) > ignoring(level) avg(count_over_time({app="api-cursos",level!="ERROR"}[5m]))
+
+sum by (app, level) (rate({app="api-cursos"}[5m])) / on (app) group_left sum by (app) (rate({app="api-cursos"}[5m]))
+
+
+DB Fail Alert
+sum(count_over_time({app="api-cursos",class="SqlExceptionHelper",level="ERROR",method="logExceptions"}[5m])) >= 5
+sum(count_over_time({app="api-cursos",class="PoolBase",level="WARN"}[5m])) >= 5
+
+## Grafana Loki Links:
+https://github.com/alibaba/ilogtail
+https://pkg.go.dev/github.com/paul-milne/zap-loki#section-readme
+https://grafana.com/docs/loki/latest/send-data/
+
+https://github.com/cucumber/godog
+
+cryptoshred
+https://en.wikipedia.org/wiki/Crypto-shredding
+https://github.com/prisma-capacity/cryptoshred
+
 -->
